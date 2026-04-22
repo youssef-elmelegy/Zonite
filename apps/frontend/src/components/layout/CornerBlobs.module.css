@@ -1,0 +1,36 @@
+/* Primitive: CornerBlobs
+   Documented surface: --bg-page (decorative layer, absolutely positioned behind content)
+   Consumed tokens: --grad-fire, --grad-magenta-glass, --blur-lg
+*/
+
+.root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.blobFire {
+  position: absolute;
+  right: -120px;
+  bottom: -120px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: var(--grad-fire);
+  filter: var(--blur-lg);
+  opacity: 0.35;
+}
+
+.blobMagenta {
+  position: absolute;
+  left: -140px;
+  top: -140px;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  background: var(--grad-magenta-glass);
+  filter: var(--blur-lg);
+  opacity: 0.25;
+}

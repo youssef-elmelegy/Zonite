@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+packages/*/node_modules/
+apps/*/node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+out/
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Development artifacts
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+logs/
+
+# Next.js
+.next/
+
+# Testing
+.jest-cache/
+
+# Vite
+.vite/
+
+# Ignore spec directories entirely (design docs shouldn't be linted)
+specs/
+docs/design/

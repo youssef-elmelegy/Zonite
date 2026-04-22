@@ -1,0 +1,55 @@
+openapi: 3.0.3
+info:
+  title: Zonite Health API (Phase 2)
+  version: "0.1.0"
+  description: >
+    Liveness endpoint — intentionally minimal. No DB probe in the handler (DB readiness
+    is enforced at startup, per research §6). No "degraded" state — the process is up or
+    it is not running.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local dev
+
+tags:
+  - name: health
+    description: Liveness check
+
+paths:
+  /health:
+    get:
+      tags: [health]
+      summary: Liveness probe
+      description: >
+        Returns 200 with a status snapshot once the process has bound its listener.
+        Before `app.listen()` the route is unreachable (the server is not accepting
+        connections yet).
+      responses:
+        "200":
+          description: Backend is live
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/SuccessEnvelopeBase"
+                  - type: object
+                    required: [data]
+                    properties:
+                      data:
+                        type: object
+                        required: [status, uptime, environment]
+                        properties:
+                          status:      { type: string, enum: [ok] }
+                          uptime:      { type: number, description: "Process uptime in seconds" }
+                          environment: { type: string, enum: [development, production] }
+
+components:
+  schemas:
+    SuccessEnvelopeBase:
+      type: object
+      required: [code, success, message, timestamp]
+      properties:
+        code:      { type: integer, example: 200 }
+        success:   { type: boolean, enum: [true] }
+        message:   { type: string }
+        timestamp: { type: string, format: date-time }

@@ -1,0 +1,67 @@
+/* Showcase top-level layout (dev-only) */
+
+.page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  color: var(--fg-primary);
+  padding: var(--sp-6);
+  font-family: var(--font-ui);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4) 0;
+  border-bottom: 1px solid var(--border-default);
+  margin-bottom: var(--sp-6);
+  position: sticky;
+  top: 0;
+  background: var(--bg-page);
+  z-index: 50;
+}
+
+.headerTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-4);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-3xl);
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--fg-tertiary);
+  font-size: var(--fs-sm);
+}
+
+.controls {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.toc {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.toc a {
+  color: var(--fg-secondary);
+  text-decoration: none;
+  font-size: var(--fs-sm);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+}
+
+.toc a:hover {
+  background: var(--overlay-white-05);
+  color: var(--fg-primary);
+}

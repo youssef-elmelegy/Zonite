@@ -1,0 +1,48 @@
+/* Primitive: Badge
+   Documented surface: --bg-card
+   Consumed tokens: --accent-yellow, --ink-900, --radius-pill, --sp-1, --sp-2
+*/
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--fw-semibold);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.sm {
+  padding: 2px var(--sp-1);
+  font-size: var(--fs-xs);
+}
+
+.md {
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-sm);
+}
+
+.accent {
+  background: var(--accent-yellow);
+  color: var(--ink-900);
+}
+
+.success {
+  background: var(--lime-500);
+  color: var(--ink-900);
+}
+
+.warning {
+  background: var(--orange-500);
+  color: var(--ink-900);
+}
+
+.error {
+  background: var(--fire-red);
+  color: var(--fg-primary);
+}
+
+.info {
+  background: var(--sky-300);
+  color: var(--ink-900);
+}

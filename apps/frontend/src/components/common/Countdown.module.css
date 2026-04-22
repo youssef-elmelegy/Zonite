@@ -1,0 +1,98 @@
+/* Primitive: Countdown
+   Documented surface: --bg-card-solid
+   Consumed tokens: --accent-yellow, --orange-500, --team-red, --glow-yellow, --glow-red,
+     --fire-red, --font-display, --fs-2xl, --border-default, --border-subtle,
+     --bg-elevated, --ink-850, --fg-tertiary, --radius-md, --radius-pill, --sp-1, --sp-2
+   Animation: timerPulse (critical state only, reduced-motion guarded by animations.css)
+*/
+
+.root {
+  display: inline-flex;
+  gap: var(--sp-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.tile {
+  background: var(--ink-850);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3) var(--sp-4);
+  text-align: center;
+  min-width: 62px;
+}
+
+.tileValue {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--accent-yellow);
+  line-height: 1;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.tileLabel {
+  font-size: var(--fs-xs);
+  color: var(--fg-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: var(--sp-1);
+}
+
+/* State: warning — orange digits */
+.stateWarning .tileValue {
+  color: var(--orange-500);
+}
+
+/* State: critical — red digits with red glow */
+.stateCritical .tileValue {
+  color: var(--team-red);
+}
+
+.stateCritical .tile {
+  border-color: var(--fire-red);
+  box-shadow: var(--glow-red);
+}
+
+/* Compact pill layout */
+.compact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body-lg);
+  color: var(--accent-yellow);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.compact.stateWarning {
+  color: var(--orange-500);
+  border-color: var(--orange-500);
+}
+
+.compact.stateCritical {
+  color: var(--team-red);
+  border-color: var(--fire-red);
+  box-shadow: var(--glow-red);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+.digits {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Animation hook `timer-critical` is a plain (non-module) class applied in TSX
+   when state === 'critical'; the keyframe is declared in animations.css under
+   prefers-reduced-motion: no-preference. */

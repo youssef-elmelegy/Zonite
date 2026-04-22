@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zonite — Claim Your Territory</title>
+  <link rel="stylesheet" href="colors_and_type.css">
+  <link rel="icon" href="assets/zonite-logo.png">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    html, body { margin:0; padding:0; background: var(--ink-900); color: var(--fg-primary); font-family: var(--font-ui); }
+    * { box-sizing: border-box; }
+    input { font-family: var(--font-ui); }
+    input::placeholder { color: var(--fg-muted); }
+    button:focus-visible, input:focus-visible { outline: 2px solid var(--accent-yellow); outline-offset: 2px; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+    @keyframes claimPulse {
+      0% { transform: scale(0.6); filter: brightness(2.2); }
+      60% { transform: scale(1.12); filter: brightness(1.4); }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+    @keyframes cellPulse { 0%,100% { opacity: 0.9; } 50% { opacity: 0.5; } }
+    @keyframes timerPulse { 0%,100% { box-shadow: 0 0 24px rgba(247,23,86,0.5); } 50% { box-shadow: 0 0 40px rgba(247,23,86,0.8); } }
+    @keyframes gridDrift { from { background-position: 0 0, 0 0; } to { background-position: 48px 48px, 48px 48px; } }
+    @keyframes zpulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeUp 300ms var(--ease-out); }
+    input[type=range] {
+      -webkit-appearance: none; height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent-yellow); border-radius: 50%;
+      cursor: pointer; box-shadow: 0 0 12px rgba(253,235,86,0.55); border: 2px solid var(--ink-900);
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 18px; height: 18px; background: var(--accent-yellow); border-radius: 50%;
+      cursor: pointer; border: 2px solid var(--ink-900);
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" src="components/Icons.jsx"></script>
+  <script type="text/babel" src="components/Shell.jsx"></script>
+  <script type="text/babel" src="components/Auth.jsx"></script>
+  <script type="text/babel" src="components/Profile.jsx"></script>
+  <script type="text/babel" src="components/Home.jsx"></script>
+  <script type="text/babel" src="components/CreateRoom.jsx"></script>
+  <script type="text/babel" src="components/Lobby.jsx"></script>
+  <script type="text/babel" src="components/Game.jsx"></script>
+  <script type="text/babel" src="components/Results.jsx"></script>
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useRef } = React;
+
+    // -------- Mock users / palette for solo players --------
+    const SOLO_COLORS = [
+      'rgb(253,235,86)',   // yellow (you)
+      'rgb(55,234,246)',   // cyan
+      'rgb(247,23,86)',    // red
+      'rgb(188,90,215)',   // magenta
+      'rgb(75,255,84)',    // lime
+      'rgb(240,133,25)',   // orange
+      'rgb(142,201,237)',  // sky
+      'rgb(238,176,254)',  // pink
+      'rgb(31,208,49)',    // green
+      'rgb(126,255,236)'   // cyan-light
+    ];
+
+    const BOT_NAMES = ['Viper','RedLead','Phantom','KairosX','Nova','Zephyr','Shade','Blitz','Echo','Raven','Onyx','Specter'];
+
+    function makePlayers(count, mode, youName='KairosX') {
+      const players = [];
+      const youIdx = 0;
+      const pool = BOT_NAMES.filter(n => n !== youName);
+      for (let i = 0; i < count; i++) {
+        const isYou = i === youIdx;
+        const name = isYou ? youName : pool[i % pool.length] + (i >= pool.length ? (Math.floor(i/pool.length)+1) : '');
+        const team = mode==='team' ? (i % 2 === 0 ? 'blue' : 'red') : undefined;
+        players.push({
+          id: 'p'+i,
+          name,
+          color: SOLO_COLORS[i % SOLO_COLORS.length],
+          team,
+          ready: isYou ? false : (i < 2), // 2 bots ready by default for easy demo
+          isYou,
+          isHost: isYou,
+          rank: ['Bronze','Silver','Gold II','Gold I','Plat III','Plat II','Plat I','Diamond'][i % 8],
+          wins: 12 + i*7
+        });
+      }
+      return players;
+    }
+
+    // -------- Tweaks --------
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "defaultMode": "team",
+      "defaultSize": 12,
+      "defaultTime": 60,
+      "defaultMaxPlayers": 6,
+      "botSpeed": "normal",
+      "showGridBg": true,
+      "cornerBlobs": false
+    }/*EDITMODE-END*/;
+
+    // -------- App --------
+    // -------- Mock stats for Profile --------
+    const MOCK_STATS = {
+      matches: 87, wins: 54, blocks: 3420, streak: 5,
+      history: [
+        { won:true,  mode:'team',  size:12, code:'ZX7K4P', blocks:18, xp:240, ago:'2h ago' },
+        { won:true,  mode:'solo',  size:10, code:'QW3M9N', blocks:14, xp:180, ago:'5h ago' },
+        { won:false, mode:'team',  size:14, code:'BT2F8L', blocks: 9, xp: 60, ago:'1d ago' },
+        { won:true,  mode:'team',  size:12, code:'HV6R1C', blocks:22, xp:280, ago:'1d ago' },
+        { won:false, mode:'solo',  size:8,  code:'MK4X7D', blocks: 7, xp: 40, ago:'2d ago' },
+        { won:true,  mode:'team',  size:16, code:'PL9A3E', blocks:31, xp:360, ago:'3d ago' }
+      ]
+    };
+
+    // -------- App --------
+    function App() {
+      // Auth / user
+      const [user, setUser] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('zonite-user')) || null; } catch { return null; }
+      });
+      const [onboarded, setOnboarded] = useState(() => localStorage.getItem('zonite-onboarded') === '1');
+      // Default unauth screen: 'onboarding' if not onboarded, else 'login'
+      const savedScreen = localStorage.getItem('zonite-screen');
+      const [screen, setScreen] = useState(() => {
+        if (!user) return onboarded ? (savedScreen && ['login','signup','forgot','reset'].includes(savedScreen) ? savedScreen : 'login') : 'onboarding';
+        return savedScreen || 'home';
+      });
+      const [resetEmail, setResetEmail] = useState('');
+
+      const [room, setRoom] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('zonite-room')) || null; } catch { return null; }
+      });
+      const [result, setResult] = useState(null);
+      const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+      const [tweaksOpen, setTweaksOpen] = useState(false);
+
+      useEffect(()=>{ if (user) localStorage.setItem('zonite-user', JSON.stringify(user)); }, [user]);
+      useEffect(()=>{ localStorage.setItem('zonite-onboarded', onboarded ? '1' : '0'); }, [onboarded]);
+
+      useEffect(()=>{ localStorage.setItem('zonite-screen', screen); }, [screen]);
+      useEffect(()=>{ if (room) localStorage.setItem('zonite-room', JSON.stringify(room)); }, [room]);
+
+      // Edit-mode protocol
+      useEffect(() => {
+        const handler = (e) => {
+          if (!e.data || typeof e.data !== 'object') return;
+          if (e.data.type === '__activate_edit_mode') setTweaksOpen(true);
+          if (e.data.type === '__deactivate_edit_mode') setTweaksOpen(false);
+        };
+        window.addEventListener('message', handler);
+        window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+        return () => window.removeEventListener('message', handler);
+      }, []);
+
+      const updateTweak = (key, val) => {
+        setTweaks(t => {
+          const nt = { ...t, [key]: val };
+          window.parent.postMessage({ type:'__edit_mode_set_keys', edits: { [key]: val } }, '*');
+          return nt;
+        });
+      };
+
+      const go = (s) => setScreen(s);
+
+      // Flow handlers
+      const startCreate = () => go('create');
+      const joinByCode = (code) => {
+        // Mock: fabricate a room with that code
+        const r = {
+          code,
+          width: tweaks.defaultWidth, height: tweaks.defaultHeight, mode: tweaks.defaultMode,
+          time: tweaks.defaultTime, maxPlayers: tweaks.defaultMaxPlayers,
+          players: makePlayers(Math.min(4, tweaks.defaultMaxPlayers), tweaks.defaultMode),
+          spectators: 3
+        };
+        setRoom(r); go('lobby');
+      };
+      const onCreateDone = (cfg) => {
+        const r = {
+          code: cfg.code, width: cfg.width, height: cfg.height, mode: cfg.mode, time: cfg.time, maxPlayers: cfg.maxPlayers,
+          players: makePlayers(Math.min(3, cfg.maxPlayers), cfg.mode),
+          spectators: 0
+        };
+        setRoom(r); go('lobby');
+      };
+      const startGame = () => go('game');
+      const endGame = (r) => { setResult(r); go('results'); };
+      const playAgain = () => {
+        // reset readies in same room, return to lobby
+        setRoom(r => ({...r, players: r.players.map(p => ({...p, ready: p.isYou ? false : true }))}));
+        go('lobby');
+      };
+      const backToHome = () => { setRoom(null); localStorage.removeItem('zonite-room'); go('home'); };
+
+      // Auth handlers
+      const handleLogin = (u) => {
+        setUser({ name:u.name||'KairosX', email:u.email, xp:2480, joined:'Apr 2026', social:u.social });
+        go('home');
+      };
+      const handleSignup = (u) => { handleLogin(u); };
+      const handleLogout = () => {
+        setUser(null);
+        setRoom(null);
+        localStorage.removeItem('zonite-user');
+        localStorage.removeItem('zonite-room');
+        go('login');
+      };
+
+      // Unauthenticated flow
+      if (!user) {
+        let authView;
+        if (screen === 'onboarding') authView = <Onboarding onDone={()=>{ setOnboarded(true); go('login'); }}/>;
+        else if (screen === 'signup') authView = <Signup onSignup={handleSignup} onSwitch={()=>go('login')}/>;
+        else if (screen === 'forgot') authView = <Forgot onSent={(email)=>{ setResetEmail(email); go('reset'); }} onBack={()=>go('login')}/>;
+        else if (screen === 'reset') authView = <Reset email={resetEmail} onDone={()=>go('login')} onBack={()=>go('forgot')}/>;
+        else authView = <Login onLogin={handleLogin} onSwitch={()=>go('signup')} onForgot={()=>go('forgot')}/>;
+
+        return (
+          <Shell onHome={()=>go(onboarded?'login':'onboarding')} right={<AuthNav screen={screen} setScreen={setScreen}/>}
+                 showGrid={tweaks.showGridBg} blobIntensity={tweaks.cornerBlobs?1:0}>
+            <div className="fade-in" key={screen}>{authView}</div>
+            {tweaksOpen && <TweaksPanel tweaks={tweaks} update={updateTweak} close={()=>setTweaksOpen(false)}/>}
+          </Shell>
+        );
+      }
+
+      let view;
+      if (screen === 'home') view = <Home onCreate={startCreate} onJoin={joinByCode}/>;
+      else if (screen === 'create') view = <CreateRoom onBack={()=>go('home')} onCreate={onCreateDone}
+        defaults={{width:tweaks.defaultWidth,height:tweaks.defaultHeight,mode:tweaks.defaultMode,time:tweaks.defaultTime,maxPlayers:tweaks.defaultMaxPlayers}}/>;
+      else if (screen === 'lobby' && room) view = <Lobby room={room} setRoom={setRoom} onStart={startGame} onLeave={backToHome}/>;
+      else if (screen === 'game' && room) view = <Game room={room} setRoom={setRoom} onEnd={endGame}/>;
+      else if (screen === 'results' && result) view = <Results result={result} onPlayAgain={playAgain} onBackToLobby={()=>go('lobby')}/>;
+      else if (screen === 'profile') view = <Profile user={user} stats={MOCK_STATS} onLogout={handleLogout} onEdit={()=>{}}/>;
+      else { view = <Home onCreate={startCreate} onJoin={joinByCode}/>; }
+
+      const playerChip = <PlayerChip player={user.name} xp={user.xp||2480} onClick={()=>go('profile')}/>;
+      const rightChrome = screen === 'home' ? playerChip : (
+        <div style={{display:'flex',alignItems:'center',gap:12}}>
+          <DevNav screen={screen} setScreen={setScreen}/>
+          {playerChip}
+        </div>
+      );
+
+      return (
+        <Shell onHome={backToHome} right={rightChrome} showGrid={tweaks.showGridBg} blobIntensity={tweaks.cornerBlobs?1:0}>
+          <div className="fade-in" key={screen}>{view}</div>
+          {tweaksOpen && <TweaksPanel tweaks={tweaks} update={updateTweak} close={()=>setTweaksOpen(false)}/>}
+        </Shell>
+      );
+    }
+
+    function AuthNav({ screen, setScreen }) {
+      const steps = [
+        { k:'onboarding', label:'Intro' },
+        { k:'login', label:'Sign In' },
+        { k:'signup', label:'Sign Up' },
+        { k:'forgot', label:'Forgot' },
+        { k:'reset', label:'Reset' }
+      ];
+      return (
+        <div style={{display:'flex',gap:2,padding:3,background:'rgba(255,255,255,0.03)',border:'1px solid var(--border-subtle)',borderRadius:100}}>
+          {steps.map(s => (
+            <button key={s.k} onClick={()=>setScreen(s.k)} style={{
+              padding:'6px 12px',fontSize:10,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.12em',
+              background: screen===s.k ? 'rgba(253,235,86,0.12)' : 'transparent',
+              color: screen===s.k ? 'var(--accent-yellow)' : 'var(--fg-tertiary)',
+              border: 'none', borderRadius:100, cursor:'pointer', fontFamily:'var(--font-ui)'
+            }}>{s.label}</button>
+          ))}
+        </div>
+      );
+    }
+
+    function DevNav({ screen, setScreen }) {
+      const steps = [
+        { k:'home', label:'Home' },
+        { k:'create', label:'Create' },
+        { k:'lobby', label:'Lobby' },
+        { k:'game', label:'Game' },
+        { k:'results', label:'Results' },
+        { k:'profile', label:'Profile' }
+      ];
+      return (
+        <div style={{display:'flex',gap:2,padding:3,background:'rgba(255,255,255,0.03)',border:'1px solid var(--border-subtle)',borderRadius:100}}>
+          {steps.map(s => (
+            <button key={s.k} onClick={()=>setScreen(s.k)} style={{
+              padding:'6px 12px',fontSize:10,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.12em',
+              background: screen===s.k ? 'rgba(253,235,86,0.12)' : 'transparent',
+              color: screen===s.k ? 'var(--accent-yellow)' : 'var(--fg-tertiary)',
+              border: 'none', borderRadius:100, cursor:'pointer', fontFamily:'var(--font-ui)'
+            }}>{s.label}</button>
+          ))}
+        </div>
+      );
+    }
+
+    function TweaksPanel({ tweaks, update, close }) {
+      return (
+        <div style={{position:'fixed',right:20,bottom:20,width:300,background:'rgba(23,14,27,0.95)',backdropFilter:'blur(30px)',border:'1px solid var(--border-default)',borderRadius:14,padding:16,zIndex:1000,boxShadow:'var(--shadow-lift)'}}>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              <IconSettings size={14} stroke="var(--accent-yellow)"/>
+              <span style={{fontSize:11,fontWeight:700,color:'#fff',textTransform:'uppercase',letterSpacing:'0.15em'}}>Tweaks</span>
+            </div>
+            <button onClick={close} style={{background:'none',border:'none',color:'var(--fg-tertiary)',cursor:'pointer',display:'flex'}}><IconX size={14}/></button>
+          </div>
+          <TweakField label="Default Mode">
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:4}}>
+              {['solo','team'].map(m=>(
+                <button key={m} onClick={()=>update('defaultMode',m)} style={segBtn(tweaks.defaultMode===m)}>{m==='team'?'Red vs Blue':'Solo'}</button>
+              ))}
+            </div>
+          </TweakField>
+          <TweakField label={`Board Size · ${tweaks.defaultSize} × ${tweaks.defaultSize}`}>
+            <input type="range" min={5} max={50} value={tweaks.defaultSize} onChange={e=>update('defaultSize',parseInt(e.target.value))} style={{width:'100%'}}/>
+          </TweakField>
+          <TweakField label="Time Limit">
+            <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:4}}>
+              {[30,60,90,120].map(t=><button key={t} onClick={()=>update('defaultTime',t)} style={segBtn(tweaks.defaultTime===t)}>{t}s</button>)}
+            </div>
+          </TweakField>
+          <TweakField label={`Max Players · ${tweaks.defaultMaxPlayers}`}>
+            <input type="range" min={2} max={10} value={tweaks.defaultMaxPlayers} onChange={e=>update('defaultMaxPlayers',parseInt(e.target.value))} style={{width:'100%'}}/>
+          </TweakField>
+          <TweakField label="Background">
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:4}}>
+              <button onClick={()=>update('showGridBg',!tweaks.showGridBg)} style={segBtn(tweaks.showGridBg)}>Grid {tweaks.showGridBg?'On':'Off'}</button>
+              <button onClick={()=>update('cornerBlobs',!tweaks.cornerBlobs)} style={segBtn(tweaks.cornerBlobs)}>Blobs {tweaks.cornerBlobs?'On':'Off'}</button>
+            </div>
+          </TweakField>
+        </div>
+      );
+    }
+    const segBtn = (active) => ({
+      padding:'8px 6px',fontSize:10,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.1em',
+      background: active ? 'rgba(253,235,86,0.12)' : 'rgba(255,255,255,0.03)',
+      color: active ? 'var(--accent-yellow)' : 'var(--fg-tertiary)',
+      border: `1px solid ${active?'var(--accent-yellow)':'var(--border-subtle)'}`,
+      borderRadius:6, cursor:'pointer', fontFamily:'var(--font-ui)'
+    });
+    function TweakField({ label, children }) {
+      return (
+        <div style={{marginBottom:12}}>
+          <div style={{fontSize:9,color:'var(--fg-tertiary)',textTransform:'uppercase',letterSpacing:'0.15em',marginBottom:6}}>{label}</div>
+          {children}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>

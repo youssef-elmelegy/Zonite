@@ -1,0 +1,72 @@
+/* Primitive: Input
+   Documented surface: --bg-card
+   Consumed tokens: --fg-primary, --border-default, --fire-red, --radius-md, --sp-2, --sp-3
+   Keyboard: Tab reaches; native focus; Esc clears if clear button rendered
+*/
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+}
+
+.label {
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.input {
+  flex: 1;
+  padding: var(--sp-3);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--fg-primary);
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  transition: all 200ms var(--ease-out);
+}
+
+.input::placeholder {
+  color: var(--fg-muted);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent-yellow);
+  box-shadow: 0 0 0 2px var(--yellow-ring-15);
+}
+
+.input.error {
+  border-color: var(--fire-red);
+}
+
+.input.error:focus {
+  box-shadow: 0 0 0 2px var(--fire-red-ring-15);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-muted);
+}
+
+.errorText {
+  font-size: var(--fs-sm);
+  color: var(--fire-red);
+  font-weight: var(--fw-medium);
+}

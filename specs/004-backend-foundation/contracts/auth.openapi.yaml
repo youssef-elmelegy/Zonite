@@ -1,0 +1,317 @@
+openapi: 3.0.3
+info:
+  title: Zonite Auth API (Phase 2)
+  version: "0.1.0"
+  description: >
+    Auth endpoints live at Phase 2 exit. Mirrors Sikka's auth controller surface verbatim.
+    All responses conform to the shared envelope (see contracts/http-envelope.md).
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local dev
+
+tags:
+  - name: auth
+    description: Authentication and account lifecycle
+
+paths:
+  /auth/signup:
+    post:
+      tags: [auth]
+      summary: Register a new user
+      description: >
+        Creates a user with a bcrypt-hashed password. Rate-limited under the auth tier
+        (THROTTLE_AUTH_TTL / _LIMIT env). Returns access token + sets refresh cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SignupBody" }
+      responses:
+        "201":
+          description: User created
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+              description: "refresh_token=...; HttpOnly; Path=/api/auth"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeAuthTokens" }
+        "409":
+          description: Email already registered
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeError" }
+        "422":
+          description: Validation failed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeError" }
+        "429":
+          description: Rate limit exceeded
+          headers:
+            Retry-After:
+              schema: { type: integer }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeError" }
+
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Log in with email + password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LoginBody" }
+      responses:
+        "200":
+          description: Logged in
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeAuthTokens" }
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeError" }
+        "422": { description: Validation failed, content: { application/json: { schema: { $ref: "#/components/schemas/EnvelopeError" } } } }
+        "429": { description: Rate limit exceeded, content: { application/json: { schema: { $ref: "#/components/schemas/EnvelopeError" } } } }
+
+  /auth/refresh:
+    post:
+      tags: [auth]
+      summary: Issue a new access token from a refresh token
+      description: >
+        Accepts the refresh token either from the `refresh_token` cookie (browser clients)
+        or from the request body (tests, mobile). The `jti` claim must match the user's
+        current `refresh_token_nonce`.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RefreshBody" }
+      responses:
+        "200":
+          description: New access token issued
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeAuthTokens" }
+        "401":
+          description: Refresh token missing, expired, or revoked
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeError" }
+
+  /auth/logout:
+    post:
+      tags: [auth]
+      summary: Clear the refresh cookie
+      description: >
+        Server-side does not revoke the refresh nonce in Phase 2 — see research §16.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logged out
+          headers:
+            Set-Cookie:
+              schema: { type: string }
+              description: "refresh_token=; Max-Age=0"
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
+
+  /auth/send-otp:
+    post:
+      tags: [auth]
+      summary: Request a password-reset OTP by email
+      description: >
+        Responds identically whether or not the email is registered, per research §13
+        (account-enumeration mitigation). An email is dispatched only if the user exists.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SendOtpBody" }
+      responses:
+        "200":
+          description: Request accepted (always; reveals nothing about account existence)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
+        "429": { description: Rate limit exceeded, content: { application/json: { schema: { $ref: "#/components/schemas/EnvelopeError" } } } }
+
+  /auth/verify-otp:
+    post:
+      tags: [auth]
+      summary: Verify a password-reset OTP (optional step before reset-password)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/VerifyOtpBody" }
+      responses:
+        "200":
+          description: OTP valid
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
+        "400":
+          description: OTP invalid or expired
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeError" }
+
+  /auth/reset-password:
+    post:
+      tags: [auth]
+      summary: Complete a password reset with OTP
+      description: >
+        On success, rotates the user's refresh_token_nonce — all outstanding refresh
+        tokens are invalidated (FR-011e).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ResetPasswordBody" }
+      responses:
+        "200":
+          description: Password updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
+        "400":
+          description: OTP invalid or expired
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeError" }
+        "422":
+          description: New-password validation failed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeError" }
+
+  /auth/change-password:
+    post:
+      tags: [auth]
+      summary: Change password while logged in
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ChangePasswordBody" }
+      responses:
+        "200":
+          description: Password updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
+        "401": { description: Current password incorrect, content: { application/json: { schema: { $ref: "#/components/schemas/EnvelopeError" } } } }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SignupBody:
+      type: object
+      required: [email, password]
+      properties:
+        email:    { type: string, format: email, maxLength: 254 }
+        password: { type: string, minLength: 8, maxLength: 128 }
+
+    LoginBody:
+      type: object
+      required: [email, password]
+      properties:
+        email:    { type: string, format: email }
+        password: { type: string }
+
+    RefreshBody:
+      type: object
+      properties:
+        refreshToken: { type: string, description: "Optional when using the refresh_token cookie" }
+
+    SendOtpBody:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, format: email }
+
+    VerifyOtpBody:
+      type: object
+      required: [email, otp]
+      properties:
+        email: { type: string, format: email }
+        otp:   { type: string, pattern: "^[0-9]{6}$" }
+
+    ResetPasswordBody:
+      type: object
+      required: [email, otp, newPassword]
+      properties:
+        email:       { type: string, format: email }
+        otp:         { type: string, pattern: "^[0-9]{6}$" }
+        newPassword: { type: string, minLength: 8, maxLength: 128 }
+
+    ChangePasswordBody:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword: { type: string }
+        newPassword:     { type: string, minLength: 8, maxLength: 128 }
+
+    AuthTokens:
+      type: object
+      required: [accessToken, accessTokenExpiresIn, refreshTokenExpiresIn]
+      properties:
+        accessToken:            { type: string }
+        refreshToken:           { type: string, description: "Only present for body-based clients; browser receives via Set-Cookie" }
+        accessTokenExpiresIn:   { type: integer }
+        refreshTokenExpiresIn:  { type: integer }
+
+    SuccessEnvelopeBase:
+      type: object
+      required: [code, success, message, timestamp]
+      properties:
+        code:      { type: integer }
+        success:   { type: boolean, enum: [true] }
+        message:   { type: string }
+        timestamp: { type: string, format: date-time }
+
+    EnvelopeAuthTokens:
+      allOf:
+        - $ref: "#/components/schemas/SuccessEnvelopeBase"
+        - type: object
+          required: [data]
+          properties:
+            data: { $ref: "#/components/schemas/AuthTokens" }
+
+    EnvelopeEmpty:
+      allOf:
+        - $ref: "#/components/schemas/SuccessEnvelopeBase"
+        - type: object
+          properties:
+            data: { type: "null", nullable: true }
+
+    EnvelopeError:
+      type: object
+      required: [code, success, message, error, timestamp]
+      properties:
+        code:      { type: integer }
+        success:   { type: boolean, enum: [false] }
+        message:   { type: string }
+        error:
+          type: string
+          enum: [validation_failed, unauthorized, forbidden, not_found, conflict, rate_limited, server_error]
+        data:      { type: object, additionalProperties: true }
+        timestamp: { type: string, format: date-time }

@@ -1,0 +1,83 @@
+/* Primitive: SegButton (Segmented Button / Pill Buttons)
+   Documented surface: --bg-card (outline variant), --accent-yellow (solid variant)
+   Consumed tokens: --accent-yellow, --bg-card, --fg-primary, --border-default, --radius-full, --sp-2, --sp-3
+   Keyboard: Arrow Left/Right cycles through options; Tab reaches group focus
+*/
+
+.root {
+  display: inline-flex;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+}
+
+.button {
+  padding: var(--sp-2) var(--sp-3);
+  border: none;
+  border-radius: calc(var(--radius-full) - 2px);
+  background: transparent;
+  color: var(--fg-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  font-family: var(--font-ui);
+  cursor: pointer;
+  transition: all 200ms var(--ease-out);
+  white-space: nowrap;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--accent-yellow);
+  outline-offset: 2px;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--yellow-wash-10);
+  color: var(--fg-primary);
+}
+
+.button.active {
+  background: var(--accent-yellow);
+  color: var(--ink-900);
+  font-weight: var(--fw-bold);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Variant: outline */
+.variant-outline .button.active {
+  background: var(--accent-yellow);
+  color: var(--ink-900);
+  border: none;
+}
+
+/* Variant: solid */
+.variant-solid {
+  background: transparent;
+  border: 1px solid var(--border-default);
+}
+
+.variant-solid .button.active {
+  background: var(--accent-yellow);
+  color: var(--ink-900);
+}
+
+/* Size variants */
+.size-sm .button {
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-xs);
+}
+
+.size-md .button {
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-sm);
+}
+
+.size-lg .button {
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-md);
+}

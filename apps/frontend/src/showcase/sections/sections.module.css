@@ -1,0 +1,182 @@
+/* Showcase sections — local layout only; no brand values.
+   Consumed tokens: --bg-card, --bg-elevated, --fg-primary, --fg-tertiary,
+     --border-default, --radius-md, --sp-*
+*/
+
+.section {
+  padding: var(--sp-8) 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  color: var(--fg-primary);
+  margin: 0 0 var(--sp-4) 0;
+}
+
+.subTitle {
+  font-size: var(--fs-md);
+  color: var(--fg-secondary);
+  margin: var(--sp-6) 0 var(--sp-3) 0;
+}
+
+.row {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: var(--sp-3);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.swatchCard {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-2);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+}
+
+.swatchChip {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+
+.swatchMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dim {
+  color: var(--fg-tertiary);
+  font-size: var(--fs-xs);
+}
+
+.radiusCard {
+  height: 48px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-2);
+}
+
+.spacingRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.spacingBar {
+  height: 8px;
+  background: var(--accent-yellow);
+  border-radius: var(--radius-xs);
+  display: inline-block;
+}
+
+.demoSurface {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--sp-3);
+  position: relative;
+}
+
+.canvas {
+  height: 200px;
+  background: var(--bg-page);
+  position: relative;
+}
+
+.canvasContent {
+  position: relative;
+  z-index: 5;
+  padding: var(--sp-6);
+  color: var(--fg-primary);
+}
+
+.iconTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  min-width: 96px;
+  color: var(--fg-primary);
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.gridGame {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+
+.gameTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+}
+
+.gameTile > button {
+  width: 64px;
+  height: 64px;
+}
+
+.animRow {
+  display: grid;
+  grid-template-columns: 140px 70px 80px 1fr;
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+}
+
+.animTarget {
+  height: 32px;
+  min-width: 32px;
+  max-width: 120px;
+  background: var(--accent-yellow);
+  border-radius: var(--radius-sm);
+}
+
+.caption {
+  color: var(--fg-tertiary);
+  font-size: var(--fs-sm);
+  margin: 0 0 var(--sp-4) 0;
+}

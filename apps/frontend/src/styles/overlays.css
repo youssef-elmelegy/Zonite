@@ -1,0 +1,47 @@
+/* Zonite Design System — Overlay tokens
+   Phase 1 Override Policy — see docs/design/OVERRIDE_POLICY.md
+   These tokens exist because stylelint's `color-no-hex` rule does not catch
+   raw rgb()/rgba() literals. The handoff's `colors_and_type.css` covers the
+   canonical palette; translucent derivations used across primitive CSS
+   files are named and centralized here. Every raw `rgb(x y z / x%)` in
+   components/**.module.css must resolve to one of these or to a token from
+   tokens.css.
+
+   Loaded AFTER tokens.css so references like var(--accent-yellow) resolve.
+*/
+
+:root {
+  /* ===== White-on-dark overlays (glass, hover surfaces) ===== */
+  --overlay-white-02: rgb(255 255 255 / 2%);
+  --overlay-white-04: rgb(255 255 255 / 4%);
+  --overlay-white-05: rgb(255 255 255 / 5%);
+  --overlay-white-08: rgb(255 255 255 / 8%);
+  --overlay-white-10: rgb(255 255 255 / 10%);
+  --overlay-white-15: rgb(255 255 255 / 15%);
+
+  /* ===== Black overlays (stamps on light surfaces) ===== */
+  --overlay-black-08: rgb(0 0 0 / 8%);
+
+  /* ===== Accent yellow rings / washes ===== */
+  --yellow-wash-10: rgb(253 235 86 / 10%);
+  --yellow-ring-15: rgb(253 235 86 / 15%);
+  --yellow-ring-20: rgb(253 235 86 / 20%);
+  --yellow-ring-30: rgb(253 235 86 / 30%);
+
+  /* ===== Alert / variant washes keyed to brand colors ===== */
+  --sky-wash-10: rgb(142 201 237 / 10%);
+  --sky-border-30: rgb(142 201 237 / 30%);
+  --lime-wash-10: rgb(31 208 49 / 10%);
+  --lime-border-30: rgb(31 208 49 / 30%);
+  --orange-wash-10: rgb(240 133 25 / 10%);
+  --orange-border-30: rgb(240 133 25 / 30%);
+
+  /* ===== Team red / fire ===== */
+  --fire-red-wash-10: rgb(247 23 86 / 10%);
+  --fire-red-border-30: rgb(247 23 86 / 30%);
+  --fire-red-ring-15: rgb(247 23 86 / 15%);
+  --fire-red-glow-30: rgb(247 23 86 / 30%);
+
+  /* ===== Team blue (now the handoff cyan rgb(55,234,246)) ===== */
+  --team-blue-glow-30: rgb(55 234 246 / 30%);
+}

@@ -1,0 +1,258 @@
+/* =========================================================================
+   Yalgamers / Zonite — Design Tokens
+   Extracted from the YalGamers Esports Figma file + Zonite product notes.
+   Fonts: Gilroy (primary), Clash Display (hero display), Inter (UI fallback).
+   ========================================================================= */
+
+/* ---------- Fonts (Gilroy is proprietary — substituted with Mulish on
+   Google Fonts as the closest geometric-humanist match. Replace @font-face
+   rules with real Gilroy .woff2 files when available.) ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&display=swap'); /* Clash Display stand-in */
+
+:root {
+  /* ============== BRAND COLORS ============== */
+  /* Core surface — deep purple-black, the dark esports canvas */
+  --ink-900: rgb(16, 6, 19);        /* page background */
+  --ink-850: rgb(23, 14, 27);       /* elevated surface (sidebar, navbar) */
+  --ink-800: rgb(27, 20, 39);
+  --ink-700: rgb(39, 29, 39);       /* card surface */
+  --ink-veil-93: rgba(16, 6, 19, 0.93);
+  --ink-veil-96: rgba(16, 6, 19, 0.96);
+
+  /* Primary accent — electric yellow (CTA text, hot accents, winners) */
+  --accent-yellow: rgb(253, 235, 86);
+  --accent-yellow-deep: rgb(240, 194, 12);
+  --accent-yellow-mustard: rgb(253, 212, 0);
+  --accent-yellow-dim: rgb(171, 158, 58);
+
+  /* Secondary accent — royal magenta (team Red / hot tags / gradients) */
+  --magenta-500: rgb(188, 90, 215);
+  --magenta-300: rgb(238, 176, 254);
+  --magenta-700: rgb(99, 47, 113);
+  --magenta-soft: rgba(188, 90, 215, 0.50);
+
+  /* Hot/fire — used on the Yalgamers logo sweep and danger/hot states */
+  --fire-red: rgb(247, 23, 86);
+  --fire-pink: rgb(248, 29, 74);
+
+  /* Sky — info / money / highlight numeric (prizemoney, stats) */
+  --sky-300: rgb(142, 201, 237);
+  --sky-glow: rgba(142, 201, 237, 0.30);
+
+  /* Cyan — "LIVE" / neon accents */
+  --cyan-400: rgb(55, 234, 246);
+  --cyan-300: rgb(112, 255, 248);
+  --cyan-200: rgb(126, 255, 236);
+
+  /* Success — bright lime (tournament UPCOMING / wins) */
+  --lime-500: rgb(31, 208, 49);
+  --lime-400: rgb(119, 255, 92);
+  --lime-300: rgb(75, 255, 84);
+  --lime-700: rgb(28, 169, 42);
+  --lime-900: rgb(11, 67, 17);
+
+  /* Warning */
+  --orange-500: rgb(240, 133, 25);
+  --peach-300: rgb(234, 179, 139);
+
+  /* Text neutrals on dark */
+  --fg-primary: rgb(255, 255, 255);
+  --fg-secondary: rgba(255, 255, 255, 0.90);
+  --fg-tertiary: rgba(255, 255, 255, 0.60);
+  --fg-muted: rgba(255, 255, 255, 0.30);
+  --fg-faint: rgba(255, 255, 255, 0.10);
+  --fg-softgray: rgb(233, 230, 234);
+  --fg-steel: rgb(148, 135, 152);
+
+  /* Zonite team colors — Red vs Blue */
+  --team-red: rgb(247, 23, 86);
+  --team-red-soft: rgba(247, 23, 86, 0.18);
+  --team-red-deep: rgb(170, 12, 55);
+  --team-blue: rgb(55, 234, 246);
+  --team-blue-soft: rgba(55, 234, 246, 0.18);
+  --team-blue-deep: rgb(14, 120, 170);
+  --team-neutral: rgba(255, 255, 255, 0.06);
+
+  /* Zonite grid-cell states */
+  --cell-empty: rgba(255, 255, 255, 0.04);
+  --cell-empty-border: rgba(255, 255, 255, 0.08);
+  --cell-hover: rgba(253, 235, 86, 0.12);
+  --cell-hover-border: rgb(253, 235, 86);
+  --cell-own: var(--team-blue);
+  --cell-opponent: var(--team-red);
+  --cell-disabled: rgba(255, 255, 255, 0.02);
+
+  /* ============== SEMANTIC ============== */
+  --bg-page: var(--ink-900);
+  --bg-elevated: var(--ink-850);
+  --bg-card: rgba(39, 29, 39, 0.40);     /* glass card, pair with blur */
+  --bg-card-solid: var(--ink-700);
+  --bg-overlay: rgba(16, 6, 19, 0.80);
+
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.30);
+  --border-accent: var(--accent-yellow);
+
+  --focus-ring: var(--accent-yellow);
+
+  /* Signature gradients */
+  --grad-fire: linear-gradient(135deg, var(--fire-red) 0%, var(--accent-yellow) 100%);
+  --grad-magenta-glass: linear-gradient(180deg, rgba(188,90,215,0.50) 0%, rgba(99,47,113,0) 100%);
+  --grad-magenta-solid: linear-gradient(180deg, var(--magenta-300) 0%, var(--magenta-700) 100%);
+  --grad-lime: linear-gradient(180deg, var(--lime-700) 0%, var(--lime-900) 100%);
+  --grad-page-veil: linear-gradient(180deg, var(--ink-veil-93) 0%, var(--ink-veil-96) 48%);
+
+  /* Shadows / glows */
+  --glow-sky: 0 0 24px var(--sky-glow);
+  --glow-yellow: 0 0 24px rgba(253, 235, 86, 0.35);
+  --glow-magenta: 0 0 40px rgba(188, 90, 215, 0.35);
+  --glow-red: 0 0 20px rgba(247, 23, 86, 0.45);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-lift: 0 16px 40px rgba(0, 0, 0, 0.55);
+
+  /* ============== RADII ============== */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;   /* buttons, inputs */
+  --radius-lg: 12px;  /* cards */
+  --radius-xl: 16px;  /* hero panels */
+  --radius-2xl: 20px; /* tournament sliders */
+  --radius-3xl: 40px; /* cover frames */
+  --radius-pill: 100px; /* tags, chips */
+  --radius-full: 9999px;
+
+  /* ============== SPACING (4pt) ============== */
+  --sp-0: 0;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* ============== TYPE ============== */
+  --font-ui: 'Mulish', 'Gilroy', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Bruno Ace SC', 'Clash Display', 'Mulish', sans-serif;
+  --font-mono: ui-monospace, 'JetBrains Mono', 'SFMono-Regular', Menlo, monospace;
+
+  /* Weights (Gilroy: Regular 400, Medium 500, SemiBold 600, Bold 700) */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Type scale — in Figma Gilroy-Medium 12px dominates body UI. */
+  --fs-xs: 10px;
+  --fs-sm: 11px;
+  --fs-body: 12px;    /* workhorse UI size */
+  --fs-body-lg: 14px;
+  --fs-base: 16px;
+  --fs-md: 18px;
+  --fs-lg: 20px;
+  --fs-xl: 24px;
+  --fs-2xl: 32px;
+  --fs-3xl: 40px;
+
+  --lh-tight: 1.0;    /* headings / labels */
+  --lh-snug: 1.2;
+  --lh-normal: 1.4;
+  --lh-loose: 1.6;
+
+  /* ============== MOTION ============== */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 360ms;
+
+  /* ============== BREAKPOINTS ============== */
+  --bp-mobile: 375px;
+  --bp-tablet: 768px;
+  --bp-desktop: 1280px;
+  --bp-wide: 1920px;
+
+  /* ============== BLUR (glass surfaces) ============== */
+  --blur-sm: blur(20px);
+  --blur-md: blur(40px);
+  --blur-lg: blur(62px);
+}
+
+/* ============== SEMANTIC TYPE ROLES ============== */
+body, .p {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: var(--fg-secondary);
+  background: var(--bg-page);
+}
+
+.h1, h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-3xl);
+  line-height: var(--lh-tight);
+  color: var(--fg-primary);
+  letter-spacing: -0.01em;
+}
+.h2, h2 {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-tight);
+  color: var(--fg-primary);
+}
+.h3, h3 {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-md);
+  line-height: var(--lh-snug);
+  color: var(--fg-secondary);
+}
+.eyebrow {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-tight);
+  letter-spacing: 0.58em;  /* signature wide-tracked brand label */
+  text-transform: uppercase;
+  color: var(--fire-pink);
+}
+.label {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body);
+  line-height: var(--lh-tight);
+  color: var(--fg-secondary);
+}
+.caption {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-regular);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-normal);
+  color: var(--fg-tertiary);
+}
+.stat {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-base);
+  color: var(--sky-300);
+}
+.hot-tag {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-body);
+  color: rgba(16, 6, 19, 0.8);
+  background: var(--fg-primary);
+  border-radius: var(--radius-pill);
+  padding: 6px 10px;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}

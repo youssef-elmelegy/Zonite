@@ -1,0 +1,55 @@
+/* Primitive: Avatar
+   Documented surface: --bg-card
+   Consumed tokens: --bg-card, --fg-primary, --radius-full
+*/
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  color: var(--fg-primary);
+  font-weight: var(--fw-bold);
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 1px solid var(--overlay-white-10);
+  transition: transform 200ms var(--ease-out);
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+.sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--fs-sm);
+}
+
+.md {
+  width: 48px;
+  height: 48px;
+  font-size: var(--fs-base);
+}
+
+.lg {
+  width: 64px;
+  height: 64px;
+  font-size: var(--fs-lg);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}

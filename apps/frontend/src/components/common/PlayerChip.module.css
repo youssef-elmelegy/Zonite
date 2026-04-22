@@ -1,0 +1,41 @@
+/* Primitive: PlayerChip
+   Documented surface: --bg-card
+   Consumed tokens: --team-red, --team-blue, --team-neutral, --fg-primary, --border-default, --radius-pill
+   Keyboard: Tab reaches; Enter/Space triggers onClick
+*/
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  background: var(--overlay-white-04);
+  color: var(--fg-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: all 200ms var(--ease-out);
+}
+
+.root:hover {
+  background: var(--overlay-white-08);
+  border-color: var(--border-accent);
+}
+
+.root:focus {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 2px var(--yellow-ring-20);
+}
+
+.indicator {
+  font-size: var(--fs-xs);
+  line-height: 1;
+  font-weight: var(--fw-bold);
+}
+
+.name {
+  font-family: var(--font-ui);
+}

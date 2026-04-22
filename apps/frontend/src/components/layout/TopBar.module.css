@@ -1,0 +1,68 @@
+/* Primitive: TopBar
+   Documented surface: --bg-elevated
+   Consumed tokens: --bg-elevated, --border-subtle, --fg-primary, --focus-ring,
+     --sp-2, --sp-3, --sp-4, --sp-6, --fs-body, --fw-bold, --radius-sm, --radius-md
+   Keyboard: Tab reaches the logo/home button, then the right slot's children.
+*/
+
+.root {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-6);
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--sp-3) var(--sp-6);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  background: transparent;
+  border: none;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: inherit;
+}
+
+.brand:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.logo {
+  background: var(--fg-primary);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.08em;
+  color: var(--fg-primary);
+  line-height: 1;
+}
+
+.eyebrow {
+  font-size: 9px;
+  line-height: 1;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}

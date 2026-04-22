@@ -1,0 +1,50 @@
+/* Primitive: Slider
+   Documented surface: --bg-card
+   Consumed tokens: --accent-yellow, --ink-900, --radius-md
+   Note: range input thumb styling defined in animations.css (global)
+   Keyboard: Arrow Left/Right ±step; Home/End min/max; Page Up/Down ±10×step
+*/
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  width: 100%;
+}
+
+.label {
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.slider {
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--overlay-white-08);
+  outline: none;
+  cursor: pointer;
+}
+
+.slider:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
+}
+
+.value {
+  min-width: 48px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-weight: var(--fw-bold);
+  color: var(--fg-secondary);
+}

@@ -1,0 +1,137 @@
+/* Primitive: Chip (Dismissible Tag / Badge with Close)
+   Documented surface: --bg-card (with color variant accents)
+   Consumed tokens: --accent-yellow, --lime-500, --orange-500, --fire-red, --sky-300, --radius-full, --sp-2, --sp-3, --fg-primary
+   Keyboard: Tab reaches dismiss button; Enter/Space triggers dismiss
+*/
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  font-family: var(--font-ui);
+  color: var(--fg-primary);
+  transition: all 200ms var(--ease-out);
+  white-space: nowrap;
+}
+
+.label {
+  flex: 1;
+  display: inline;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.dismissButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transition: all 100ms var(--ease-out);
+  flex-shrink: 0;
+}
+
+.dismissButton:hover:not(:disabled) {
+  background: var(--overlay-black-08);
+}
+
+.dismissButton:focus-visible {
+  outline: 2px solid var(--accent-yellow);
+  outline-offset: 1px;
+}
+
+.dismissButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Variant: accent (yellow) */
+.variant-accent {
+  border-color: var(--accent-yellow);
+  color: var(--accent-yellow);
+  background: var(--yellow-wash-10);
+}
+
+/* Variant: success (lime) */
+.variant-success {
+  border-color: var(--lime-500);
+  color: var(--lime-500);
+  background: var(--lime-wash-10);
+}
+
+/* Variant: warning (orange) */
+.variant-warning {
+  border-color: var(--orange-500);
+  color: var(--orange-500);
+  background: var(--orange-wash-10);
+}
+
+/* Variant: error (red) */
+.variant-error {
+  border-color: var(--fire-red);
+  color: var(--fire-red);
+  background: var(--fire-red-wash-10);
+}
+
+/* Variant: info (sky) */
+.variant-info {
+  border-color: var(--sky-300);
+  color: var(--sky-300);
+  background: var(--sky-wash-10);
+}
+
+/* Size variants */
+.size-sm {
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-xs);
+}
+
+.size-sm .dismissButton {
+  width: 16px;
+  height: 16px;
+}
+
+.size-md {
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--fs-sm);
+}
+
+.size-md .dismissButton {
+  width: 20px;
+  height: 20px;
+}
+
+.size-lg {
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-md);
+}
+
+.size-lg .dismissButton {
+  width: 24px;
+  height: 24px;
+}

@@ -1,0 +1,95 @@
+/* Primitive: Modal
+   Documented surface: --bg-elevated (modal background)
+   Consumed tokens: --bg-overlay, --shadow-lift, --radius-lg
+   Keyboard: Focus-trap inside modal; Esc closes
+*/
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-overlay);
+  z-index: 100;
+  padding: var(--sp-4);
+}
+
+.modal {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lift);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-6);
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeUp 300ms var(--ease-out);
+}
+
+.sm {
+  width: 100%;
+  max-width: 400px;
+}
+
+.md {
+  width: 100%;
+  max-width: 600px;
+}
+
+.lg {
+  width: 100%;
+  max-width: 800px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+.title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--fg-primary);
+  margin: 0;
+}
+
+.close {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: var(--fg-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: all 200ms var(--ease-out);
+}
+
+.close:hover {
+  background: var(--overlay-white-10);
+  color: var(--fg-primary);
+}
+
+.close:focus {
+  outline: 2px solid var(--focus-ring);
+}
+
+.content {
+  color: var(--fg-secondary);
+  line-height: var(--lh-normal);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--border-default);
+}

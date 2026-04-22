@@ -1,0 +1,114 @@
+/* animations.css — global keyframes + reduced-motion guards + range-input thumb */
+
+/* Contract: specs/003-design-handoff/data-model.md §Animation */
+
+/* =========================================================================
+   KEYFRAMES — safe to define at top level; do not animate until a consumer
+   rule references them inside a prefers-reduced-motion: no-preference block.
+   ========================================================================= */
+
+/* Cell flips to claimed: scale pop + brightness pulse.
+   Reduced-motion fallback: cell flips color only (color change is immediate). */
+@keyframes claimPulse {
+  0%   { transform: scale(0.6); filter: brightness(2.2); }
+  60%  { transform: scale(1.12); filter: brightness(1.4); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* Subtle idle cell pulse (decorative background).
+   Reduced-motion fallback: static cell. */
+@keyframes cellPulse {
+  0%, 100% { opacity: 0.9; }
+  50%      { opacity: 0.5; }
+}
+
+/* Timer critical-state glow.
+   Reduced-motion fallback: static glow at peak intensity (info preserved). */
+@keyframes timerPulse {
+  0%, 100% { box-shadow: 0 0 24px rgb(247 23 86 / 50%); }
+  50%      { box-shadow: 0 0 40px rgb(247 23 86 / 80%); }
+}
+
+/* Decorative backdrop drift.
+   Reduced-motion fallback: static backdrop. */
+@keyframes gridDrift {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 48px 48px, 48px 48px; }
+}
+
+/* Loading-indicator opacity pulse.
+   Reduced-motion fallback: static full-opacity dot (info preserved: loading). */
+@keyframes zpulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* Page/section enter: tiny translate+fade.
+   Reduced-motion fallback: element is immediately at final position+opacity. */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================================
+   CONSUMER RULES — guarded so the default is the reduced-motion path.
+   Animations apply ONLY when the user has NO reduced-motion preference AND
+   the showcase override attribute is not set.
+   ========================================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-reduced-motion='true']) .cell-just-claimed {
+    animation: claimPulse 400ms var(--ease-out) 1;
+  }
+
+  html:not([data-reduced-motion='true']) .cell-idle-pulse {
+    animation: cellPulse 2400ms var(--ease-in-out) infinite;
+  }
+
+  html:not([data-reduced-motion='true']) .timer-critical {
+    animation: timerPulse 800ms var(--ease-in-out) infinite;
+  }
+
+  html:not([data-reduced-motion='true']) .grid-bg-drift {
+    animation: gridDrift 40s linear infinite;
+  }
+
+  html:not([data-reduced-motion='true']) .z-loading-pulse {
+    animation: zpulse 1200ms var(--ease-in-out) infinite;
+  }
+
+  html:not([data-reduced-motion='true']) .fade-in {
+    animation: fadeUp 300ms var(--ease-out) 1;
+  }
+}
+
+/* =========================================================================
+   Global range-input (slider) thumb — FR-015. Ships once; every Slider
+   primitive inherits it without per-component restyling.
+   ========================================================================= */
+input[type='range'] {
+  appearance: none;
+  height: 4px;
+  background: rgb(255 255 255 / 8%);
+  border-radius: 4px;
+  outline: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--accent-yellow);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgb(253 235 86 / 55%);
+  border: 2px solid var(--ink-900);
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--accent-yellow);
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--ink-900);
+}

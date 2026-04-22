@@ -1,0 +1,108 @@
+/* Primitive: Button
+   Documented surface: --bg-page, --bg-card, --bg-elevated
+   Consumed tokens: --accent-yellow, --ink-900, --fg-primary, --radius-md, --sp-3
+   Keyboard: Enter / Space activates; Tab reaches; focus-ring visible
+*/
+
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  cursor: pointer;
+  transition: all 200ms var(--ease-out);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Size variants */
+.sm {
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--fs-sm);
+}
+
+.lg {
+  padding: var(--sp-4) var(--sp-6);
+  font-size: var(--fs-base);
+}
+
+/* Color variants */
+.primary {
+  background: var(--accent-yellow);
+  color: var(--ink-900);
+  border-color: var(--accent-yellow);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--accent-yellow-deep);
+  border-color: var(--accent-yellow-deep);
+}
+
+.primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--yellow-ring-30);
+}
+
+.secondary {
+  background: var(--overlay-white-10);
+  color: var(--fg-primary);
+  border-color: var(--border-default);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--overlay-white-15);
+  border-color: var(--border-strong);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--fg-primary);
+  border-color: transparent;
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--overlay-white-05);
+}
+
+.link {
+  background: transparent;
+  color: var(--accent-yellow);
+  border: none;
+  padding: 0;
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+}
+
+.link:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+/* States */
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button[aria-busy='true'] {
+  opacity: 0.7;
+}
+
+/* Full width */
+.fullWidth {
+  width: 100%;
+}
+
+/* Icon spacing */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

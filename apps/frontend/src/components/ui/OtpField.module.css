@@ -1,0 +1,61 @@
+/* Primitive: OtpField
+   Documented surface: --bg-card
+   Consumed tokens: --border-default, --radius-md, --sp-2
+   Keyboard: Tab moves between digits; Backspace on empty slot auto-reverses; arrow keys move between slots
+*/
+
+.root {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.legend {
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0;
+  margin: 0;
+}
+
+.inputs {
+  display: flex;
+  gap: var(--sp-2);
+  justify-content: center;
+}
+
+.input {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--fg-primary);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  text-align: center;
+  font-family: var(--font-mono);
+  transition: all 200ms var(--ease-out);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent-yellow);
+  box-shadow: 0 0 0 2px var(--yellow-ring-20);
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.input[type='number'] {
+  appearance: textfield;
+}

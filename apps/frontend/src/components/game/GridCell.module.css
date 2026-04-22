@@ -1,0 +1,62 @@
+/* Primitive: GridCell
+   Documented surface: --bg-page (part of game grid)
+   Consumed tokens: --cell-empty, --cell-own, --cell-opponent, --cell-disabled, --radius-md
+   Animation: claimPulse (when justClaimed=true, reduced-motion guarded)
+   Keyboard: Tab reaches; Space/Enter claims (if onClick provided)
+*/
+
+.cell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid;
+  border-radius: var(--radius-md);
+  background: var(--cell-empty);
+  border-color: var(--cell-empty-border);
+  cursor: pointer;
+  transition: all 200ms var(--ease-out);
+  font-size: 0;
+  padding: 0;
+}
+
+.cell:hover:not(:disabled) {
+  background: var(--cell-hover);
+  border-color: var(--cell-hover-border);
+}
+
+.cell:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* State variants */
+.own {
+  background: var(--cell-own);
+  border-color: var(--team-blue);
+  box-shadow: inset 0 0 12px var(--team-blue-glow-30);
+}
+
+.opponent {
+  background: var(--cell-opponent);
+  border-color: var(--team-red);
+  box-shadow: inset 0 0 12px var(--fire-red-glow-30);
+}
+
+.disabled {
+  background: var(--cell-disabled);
+  border-color: transparent;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Animation: cell just flipped to claimed state */
+.justClaimed {
+  animation: claimPulse 400ms var(--ease-out) 1;
+}
+
+/* Reduced motion: static state without pop */
+@media (prefers-reduced-motion: reduce) {
+  .justClaimed {
+    animation: none;
+  }
+}
