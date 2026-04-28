@@ -74,4 +74,8 @@ export default tseslint.config(
       'zonite-local/no-hex-in-jsx': 'error',
     },
   },
+  {
+    files: ['apps/frontend/server.js'],
+    languageOptions: { globals: { ...globals.node } },
+  },
 );
