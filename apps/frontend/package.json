@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.x",
+    "npm": "10.x || 11.x"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,7 +18,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.100.1",
-    "@zonite/shared": "workspace:*",
+    "@zonite/shared": "github:youssef-elmelegy/Zonite#main:packages/shared",
     "autoprefixer": "^10.4.0",
     "axios": "^1.15.2",
     "clsx": "^2.0.0",
