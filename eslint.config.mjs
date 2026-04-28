@@ -9,13 +9,7 @@ import noHexInJsx from './eslint-rules/no-hex-in-jsx.js';
 
 export default tseslint.config(
   {
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/build/**',
-      '**/.turbo/**',
-      '**/coverage/**',
-    ],
+    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.turbo/**', '**/coverage/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -54,11 +48,7 @@ export default tseslint.config(
     languageOptions: { globals: {} },
   },
   {
-    files: [
-      'scripts/**/*.{js,mjs,cjs,ts}',
-      '**/*.config.{js,mjs,cjs,ts}',
-      '**/*.cjs',
-    ],
+    files: ['scripts/**/*.{js,mjs,cjs,ts}', '**/*.config.{js,mjs,cjs,ts}', '**/*.cjs'],
     languageOptions: { globals: { ...globals.node } },
   },
   {
