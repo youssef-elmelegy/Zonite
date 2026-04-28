@@ -22,6 +22,7 @@ expected_sha256: <64 lowercase hex characters>
 ## Refresh workflow
 
 When the design team publishes a new bundle:
+
 1. Extract the new tarball over `docs/design/zonite-game/`, replacing every file.
 2. Run `node scripts/verify-handoff.mjs --record` to update `expected_sha256` above.
 3. Diff the new `colors_and_type.css` into `apps/frontend/src/styles/tokens.css` — preserve the self-hosted `@font-face` rewire from Phase 1.

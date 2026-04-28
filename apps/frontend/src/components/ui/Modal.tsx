@@ -31,35 +31,35 @@ export const Modal = ({
   const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation();
-        onClose();
-        return;
-      }
-      if (e.key !== 'Tab' || !dialogRef.current) return;
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
-      const focusables = dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-      if (focusables.length === 0) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      const active = document.activeElement as HTMLElement | null;
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.stopPropagation();
+      onCloseRef.current();
+      return;
+    }
+    if (e.key !== 'Tab' || !dialogRef.current) return;
 
-      if (e.shiftKey) {
-        if (active === first || !dialogRef.current.contains(active)) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        if (active === last || !dialogRef.current.contains(active)) {
-          e.preventDefault();
-          first.focus();
-        }
+    const focusables = dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+
+    if (e.shiftKey) {
+      if (active === first || !dialogRef.current.contains(active)) {
+        e.preventDefault();
+        last.focus();
       }
-    },
-    [onClose],
-  );
+    } else {
+      if (active === last || !dialogRef.current.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -69,7 +69,9 @@ export const Modal = ({
     document.addEventListener('keydown', handleKeyDown, true);
 
     const focusTarget =
-      dialogRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR) ?? dialogRef.current;
+      dialogRef.current?.querySelector<HTMLElement>('[autofocus]') ??
+      dialogRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR) ??
+      dialogRef.current;
     focusTarget?.focus();
 
     return () => {

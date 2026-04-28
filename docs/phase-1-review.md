@@ -21,20 +21,20 @@ primitive matches its contract. The two remaining items (11 screenshots, 3
 Spek publications) require human steps — a browser to capture the shots and
 Spekit workspace access to publish. Everything inside the repo is shippable.
 
-| Gate                                                                | Result                                                                 |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `pnpm install`                                                      | ✅ completed                                                            |
-| `node scripts/verify-handoff.mjs`                                   | ✅ `080efe2e…` matches 19-file bundle                                   |
-| `pnpm type-check`                                                   | ✅ all 3 packages Done                                                  |
-| `pnpm lint`                                                         | ✅ no errors                                                            |
-| `pnpm --filter @zonite/frontend exec stylelint "src/**/*.css"`      | ✅ no errors                                                            |
-| `pnpm --filter @zonite/frontend build`                              | ✅ built in 5s, 143 kB JS / 12 kB CSS                                   |
-| Showcase tree-shaken from production                                | ✅ 0 references to `Showcase` / `axe-core` in `dist/assets/*.js`        |
-| Design handoff bundle verbatim                                      | ✅ 19 of 19 files committed (SHA recorded by verify-handoff)            |
-| `tokens.css` verbatim copy of handoff                               | ✅ only the `@import` → self-hosted `@font-face` rewire applied         |
-| Raw hex or `rgba()` in `apps/frontend/src/components/`              | ✅ 0 occurrences (swap to tokens + new `overlays.css`)                  |
-| Primitive contracts                                                 | ✅ all 19 primitives match `primitives.contract.md`                     |
-| CLAUDE.md `## Recent Changes`                                       | ✅ human-written Phase 1 summary                                        |
+| Gate                                                           | Result                                                           |
+| -------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `pnpm install`                                                 | ✅ completed                                                     |
+| `node scripts/verify-handoff.mjs`                              | ✅ `080efe2e…` matches 19-file bundle                            |
+| `pnpm type-check`                                              | ✅ all 3 packages Done                                           |
+| `pnpm lint`                                                    | ✅ no errors                                                     |
+| `pnpm --filter @zonite/frontend exec stylelint "src/**/*.css"` | ✅ no errors                                                     |
+| `pnpm --filter @zonite/frontend build`                         | ✅ built in 5s, 143 kB JS / 12 kB CSS                            |
+| Showcase tree-shaken from production                           | ✅ 0 references to `Showcase` / `axe-core` in `dist/assets/*.js` |
+| Design handoff bundle verbatim                                 | ✅ 19 of 19 files committed (SHA recorded by verify-handoff)     |
+| `tokens.css` verbatim copy of handoff                          | ✅ only the `@import` → self-hosted `@font-face` rewire applied  |
+| Raw hex or `rgba()` in `apps/frontend/src/components/`         | ✅ 0 occurrences (swap to tokens + new `overlays.css`)           |
+| Primitive contracts                                            | ✅ all 19 primitives match `primitives.contract.md`              |
+| CLAUDE.md `## Recent Changes`                                  | ✅ human-written Phase 1 summary                                 |
 
 **What changed in the third pass (list of edits made by the auto-fix)**:
 
@@ -128,20 +128,20 @@ unchanged. The fix pass also introduced three new regressions (Alert.tsx
 syntax garbage, stylelint/script configs fail ESLint, ~94 new stylelint
 rule violations). Phase 1 could not be declared complete at that point.
 
-| Gate                                            | Result                                                                                  | Δ vs 1st review            |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------- |
-| `pnpm install`                                  | ✅ completed (1m 22s)                                                                   | **FIXED**                  |
-| `pnpm type-check`                               | 🚨 **FAIL** — 4 errors, all in `ui/Alert.tsx` lines 43–45 (new dangling JSX, see §4.3)  | NEW regression             |
-| `pnpm lint`                                     | 🚨 **FAIL** — 79 errors (Prettier line-wrap + no-undef in configs, see §4.10)           | NEW regression             |
-| `pnpm --filter @zonite/frontend exec stylelint` | 🚨 **FAIL** — 135 errors (`color-function-notation`, `alpha-value-notation`, …, §4.11)  | NEW regression             |
-| `pnpm --filter @zonite/frontend build`          | 🚨 **FAIL** — blocked by Alert.tsx parse errors                                         | Still fails, new root-cause |
-| `node scripts/verify-handoff.mjs`               | ✅ matches the committed tree — but the committed tree is still an incomplete subset    | unchanged                  |
-| Design handoff bundle is verbatim               | 🚨 **FAIL** — still 3 of 18 files committed                                             | unchanged                  |
-| `tokens.css` is a verbatim copy                 | 🚨 **FAIL** — MD5 `ddcce69f…` unchanged; RGB values still drift                         | unchanged                  |
-| Showcase route (`/_showcase`)                   | 🚨 still not implemented                                                                | unchanged                  |
-| Screenshots (11 handoff screens)                | 🚨 still not captured                                                                   | unchanged                  |
-| Three Speks published                           | 🚨 still not done (README has no Spek links)                                            | unchanged                  |
-| Primitive contracts                             | 🟡 partial — 5 primitives now FIXED (Field, OtpField, Alert role, SegButton, icon barrel); 3 still broken (Countdown, Modal, Shell/TopBar) | **partial fix**            |
+| Gate                                            | Result                                                                                                                                     | Δ vs 1st review             |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| `pnpm install`                                  | ✅ completed (1m 22s)                                                                                                                      | **FIXED**                   |
+| `pnpm type-check`                               | 🚨 **FAIL** — 4 errors, all in `ui/Alert.tsx` lines 43–45 (new dangling JSX, see §4.3)                                                     | NEW regression              |
+| `pnpm lint`                                     | 🚨 **FAIL** — 79 errors (Prettier line-wrap + no-undef in configs, see §4.10)                                                              | NEW regression              |
+| `pnpm --filter @zonite/frontend exec stylelint` | 🚨 **FAIL** — 135 errors (`color-function-notation`, `alpha-value-notation`, …, §4.11)                                                     | NEW regression              |
+| `pnpm --filter @zonite/frontend build`          | 🚨 **FAIL** — blocked by Alert.tsx parse errors                                                                                            | Still fails, new root-cause |
+| `node scripts/verify-handoff.mjs`               | ✅ matches the committed tree — but the committed tree is still an incomplete subset                                                       | unchanged                   |
+| Design handoff bundle is verbatim               | 🚨 **FAIL** — still 3 of 18 files committed                                                                                                | unchanged                   |
+| `tokens.css` is a verbatim copy                 | 🚨 **FAIL** — MD5 `ddcce69f…` unchanged; RGB values still drift                                                                            | unchanged                   |
+| Showcase route (`/_showcase`)                   | 🚨 still not implemented                                                                                                                   | unchanged                   |
+| Screenshots (11 handoff screens)                | 🚨 still not captured                                                                                                                      | unchanged                   |
+| Three Speks published                           | 🚨 still not done (README has no Spek links)                                                                                               | unchanged                   |
+| Primitive contracts                             | 🟡 partial — 5 primitives now FIXED (Field, OtpField, Alert role, SegButton, icon barrel); 3 still broken (Countdown, Modal, Shell/TopBar) | **partial fix**             |
 
 ---
 
@@ -520,7 +520,8 @@ US5 acceptance (FR-023, FR-024, FR-025, FR-026) unmet.
 
 Still the `update-agent-context.sh` placeholder. T063 wanted a hand-written
 summary of what Phase 1 actually landed (tokens + animations + 19 primitives
-+ showcase + lint rules + Speks + screenshots).
+
+- showcase + lint rules + Speks + screenshots).
 
 **Fix**: replace the line per the T063 template.
 
@@ -654,10 +655,12 @@ export {
   Search as IconSearch,
   Info as IconInfo,
   AlertTriangle as IconWarn,
-  Eye as IconEye, EyeOff as IconEyeOff,
+  Eye as IconEye,
+  EyeOff as IconEyeOff,
   Settings as IconSettings,
   Menu as IconMenu,
-  ArrowRight as IconArrowRight, ArrowLeft as IconArrowLeft,
+  ArrowRight as IconArrowRight,
+  ArrowLeft as IconArrowLeft,
   Loader as IconLoader,
   User as IconUser,
 } from 'lucide-react';
@@ -806,65 +809,65 @@ separately.
 Δ columns flag rows whose status changed between the first and second review.
 "Task ID" references [`tasks.md`](../specs/003-design-handoff/tasks.md).
 
-| Task ID   | Phase | Story | Description                                    | Status                                                                    | Δ        |
-| --------- | ----- | ----- | ---------------------------------------------- | ------------------------------------------------------------------------- | -------- |
-| T001      | 1     | —     | Copy handoff bundle                            | 🚨 **FAIL** — only 3/18 files (§4.1)                                      | —        |
-| T002      | 1     | —     | HANDOFF_VERSION.md                             | ✅                                                                         | —        |
-| T003      | 1     | —     | `verify-handoff.mjs`                           | ✅ (verifies an incomplete tree — §4.1); lint no-undef (§4.10)             | ⚠️       |
-| T004      | 1     | —     | Record SHA                                     | ✅ mechanically; hash of incomplete tree                                   | —        |
-| T005      | 1     | —     | CI verify-handoff step                         | ✅                                                                         | —        |
-| T006      | 1     | —     | Self-host web fonts                            | ✅                                                                         | —        |
-| T007      | 1     | —     | Install runtime deps                           | ✅ (§3.3)                                                                  | **✅ fixed** |
-| T008      | 1     | —     | Install dev deps                               | ✅ (§3.3)                                                                  | **✅ fixed** |
-| T009      | 1     | —     | `tailwind.config.ts`                           | ⚠️ content ✅ but Prettier fails (§4.10)                                   | ⚠️       |
-| T010      | 1     | —     | `postcss.config.js`                            | ✅                                                                         | —        |
-| T011      | 1     | —     | `stylelint.config.cjs`                         | ⚠️ content ✅ but ESLint no-undef (§4.10)                                  | ⚠️       |
-| T012      | 1     | —     | Custom ESLint rule source                      | ✅                                                                         | —        |
-| T013      | 1     | —     | Register rule in flat config                   | ✅                                                                         | —        |
-| T014      | 1     | —     | `OVERRIDE_POLICY.md`                           | ✅                                                                         | —        |
-| T015      | 1     | —     | README "Design system" section                 | ⚠️ core 4 links ✅; missing 3 Spek links (T054)                            | —        |
-| T016      | 2     | —     | Create `tokens.css`                            | 🚨 **FAIL** — values drift (§4.1)                                         | —        |
-| T017      | 2     | —     | Create `animations.css`                        | ✅                                                                         | —        |
-| T018      | 2     | —     | Create `tokens.d.ts`                           | ⚠️ content ✅ but Prettier fails (§4.10)                                   | ⚠️       |
-| T019      | 2     | —     | `main.tsx` imports 3 style files               | ✅                                                                         | —        |
-| T020      | 2     | —     | `App.tsx` uses tokens                          | ✅                                                                         | —        |
-| T021      | 3     | US2   | `lint:css` green on clean tree                 | 🚨 135 rule violations (§4.11)                                            | —        |
-| T022      | 3     | US2   | Stylelint catches hex                          | ✅ (rule active — 0 hex errors; but see §4.8 for rgba gap)                 | ✨       |
-| T023      | 3     | US2   | ESLint rule catches hex in JSX                 | ✅ (rule registered, file iteration works)                                 | ✨       |
-| T024      | 3     | US2   | Full quality-gate sweep                        | 🚨 blocked by §4.3 / §4.10 / §4.11                                        | —        |
-| T025      | 4     | US1   | Dev-server inspection                          | Not re-run; would render with drifted colors (§4.1)                       | —        |
-| T026      | 4     | US1   | Token-change propagation                       | Mechanically works; but tokens are wrong                                   | —        |
-| T027–T030 | 5     | US3   | Layout primitives                              | ⚠️ built; Shell API diverges (§4.7e)                                       | —        |
-| T031      | 5     | US3   | Brand icons (one .tsx per icon)                | ⚠️ extension fixed; still single-file; inventory wrong (§4.3 + §4.7h)     | **partial** |
-| T032      | 5     | US3   | Icon barrel                                    | ✅ **Lucide ✨**; brand inventory still wrong (§4.7h)                       | **partial** |
-| T033      | 5     | US3   | `PlayerChip`                                   | ⚠️ built; raw rgba (§4.8)                                                  | —        |
-| T034      | 5     | US3   | `Countdown`                                    | 🚨 wrong component (§4.7a)                                                | —        |
-| T035      | 5     | US3   | `Button`                                       | ⚠️ raw rgba (§4.8)                                                         | —        |
-| T036      | 5     | US3   | `Input`                                        | ⚠️ raw rgba (§4.8)                                                         | —        |
-| T037      | 5     | US3   | `Field`                                        | ✅ **FIXED** — useId + htmlFor (§4.7d)                                     | **✨ fixed** |
-| T038      | 5     | US3   | `OtpField`                                     | ✅ **FIXED** — full keyboard (§4.7c)                                       | **✨ fixed** |
-| T039      | 5     | US3   | `Badge`                                        | ✅                                                                         | —        |
-| T040      | 5     | US3   | `Modal`                                        | 🚨 still no focus trap / Esc / restore (§4.7b)                             | —        |
-| T041      | 5     | US3   | `Alert`                                        | 🚨 role+variants FIXED, but syntax-bug in same file (§4.3 NEW, §4.7f)    | **partial + NEW blocker** |
-| T042      | 5     | US3   | `Avatar`                                       | ⚠️ raw rgba (§4.8)                                                         | —        |
-| T043      | 5     | US3   | `Slider`                                       | ⚠️ built; passes contract basics                                           | —        |
-| T044      | 5     | US3   | `SegButton`                                    | ✅ **FIXED** — radiogroup + radio + aria-checked (§4.7g)                   | **✨ fixed** |
-| T045      | 5     | US3   | `Chip`                                         | ⚠️ 6 raw rgba (§4.8)                                                       | —        |
-| T046      | 5     | US3   | `GridCell`                                     | ⚠️ 2 raw rgba (§4.8); otherwise contract-compliant                        | —        |
-| T047–T049 | 6     | US4   | Reduced-motion manual verify                   | 🚨 cannot execute without showcase (§4.4)                                 | —        |
-| T050      | 7     | US5   | 11 screenshots                                 | 🚨 directory empty                                                         | —        |
-| T051–T053 | 7     | US5   | 3 Speks                                        | ⏳ external — unverifiable from repo                                       | —        |
-| T054      | 7     | US5   | README links to 3 Speks                        | 🚨 missing                                                                 | —        |
-| T055      | 8     | —     | `main.tsx` `/_showcase` gate                   | 🚨 not implemented                                                         | —        |
-| T056      | 8     | —     | `ReducedMotionToggle.tsx`                      | 🚨 file does not exist                                                     | —        |
-| T057      | 8     | —     | `AxePanel.tsx`                                 | 🚨 file does not exist                                                     | —        |
-| T058      | 8     | —     | 6 showcase section files                       | 🚨 folder does not exist                                                   | —        |
-| T059      | 8     | —     | `Showcase.tsx`                                 | 🚨 file does not exist                                                     | —        |
-| T060      | 8     | —     | Axe-core contrast pass                         | 🚨 blocked by §4.4                                                         | —        |
-| T061      | 8     | —     | Prod build + tree-shake check                  | 🚨 build fails (§4.3)                                                      | —        |
-| T062      | 8     | —     | Full quality-gate sweep                        | 🚨 blocked by §4.3 / §4.10 / §4.11                                         | —        |
-| T063      | 8     | —     | Update CLAUDE.md "Recent Changes"              | 🚨 generic placeholder (§4.6)                                              | —        |
-| T064      | 8     | —     | Exit checklist ticked in PR                    | 🚨 premature — no PR, no commits on branch                                 | —        |
+| Task ID   | Phase | Story | Description                       | Status                                                                | Δ                         |
+| --------- | ----- | ----- | --------------------------------- | --------------------------------------------------------------------- | ------------------------- |
+| T001      | 1     | —     | Copy handoff bundle               | 🚨 **FAIL** — only 3/18 files (§4.1)                                  | —                         |
+| T002      | 1     | —     | HANDOFF_VERSION.md                | ✅                                                                    | —                         |
+| T003      | 1     | —     | `verify-handoff.mjs`              | ✅ (verifies an incomplete tree — §4.1); lint no-undef (§4.10)        | ⚠️                        |
+| T004      | 1     | —     | Record SHA                        | ✅ mechanically; hash of incomplete tree                              | —                         |
+| T005      | 1     | —     | CI verify-handoff step            | ✅                                                                    | —                         |
+| T006      | 1     | —     | Self-host web fonts               | ✅                                                                    | —                         |
+| T007      | 1     | —     | Install runtime deps              | ✅ (§3.3)                                                             | **✅ fixed**              |
+| T008      | 1     | —     | Install dev deps                  | ✅ (§3.3)                                                             | **✅ fixed**              |
+| T009      | 1     | —     | `tailwind.config.ts`              | ⚠️ content ✅ but Prettier fails (§4.10)                              | ⚠️                        |
+| T010      | 1     | —     | `postcss.config.js`               | ✅                                                                    | —                         |
+| T011      | 1     | —     | `stylelint.config.cjs`            | ⚠️ content ✅ but ESLint no-undef (§4.10)                             | ⚠️                        |
+| T012      | 1     | —     | Custom ESLint rule source         | ✅                                                                    | —                         |
+| T013      | 1     | —     | Register rule in flat config      | ✅                                                                    | —                         |
+| T014      | 1     | —     | `OVERRIDE_POLICY.md`              | ✅                                                                    | —                         |
+| T015      | 1     | —     | README "Design system" section    | ⚠️ core 4 links ✅; missing 3 Spek links (T054)                       | —                         |
+| T016      | 2     | —     | Create `tokens.css`               | 🚨 **FAIL** — values drift (§4.1)                                     | —                         |
+| T017      | 2     | —     | Create `animations.css`           | ✅                                                                    | —                         |
+| T018      | 2     | —     | Create `tokens.d.ts`              | ⚠️ content ✅ but Prettier fails (§4.10)                              | ⚠️                        |
+| T019      | 2     | —     | `main.tsx` imports 3 style files  | ✅                                                                    | —                         |
+| T020      | 2     | —     | `App.tsx` uses tokens             | ✅                                                                    | —                         |
+| T021      | 3     | US2   | `lint:css` green on clean tree    | 🚨 135 rule violations (§4.11)                                        | —                         |
+| T022      | 3     | US2   | Stylelint catches hex             | ✅ (rule active — 0 hex errors; but see §4.8 for rgba gap)            | ✨                        |
+| T023      | 3     | US2   | ESLint rule catches hex in JSX    | ✅ (rule registered, file iteration works)                            | ✨                        |
+| T024      | 3     | US2   | Full quality-gate sweep           | 🚨 blocked by §4.3 / §4.10 / §4.11                                    | —                         |
+| T025      | 4     | US1   | Dev-server inspection             | Not re-run; would render with drifted colors (§4.1)                   | —                         |
+| T026      | 4     | US1   | Token-change propagation          | Mechanically works; but tokens are wrong                              | —                         |
+| T027–T030 | 5     | US3   | Layout primitives                 | ⚠️ built; Shell API diverges (§4.7e)                                  | —                         |
+| T031      | 5     | US3   | Brand icons (one .tsx per icon)   | ⚠️ extension fixed; still single-file; inventory wrong (§4.3 + §4.7h) | **partial**               |
+| T032      | 5     | US3   | Icon barrel                       | ✅ **Lucide ✨**; brand inventory still wrong (§4.7h)                 | **partial**               |
+| T033      | 5     | US3   | `PlayerChip`                      | ⚠️ built; raw rgba (§4.8)                                             | —                         |
+| T034      | 5     | US3   | `Countdown`                       | 🚨 wrong component (§4.7a)                                            | —                         |
+| T035      | 5     | US3   | `Button`                          | ⚠️ raw rgba (§4.8)                                                    | —                         |
+| T036      | 5     | US3   | `Input`                           | ⚠️ raw rgba (§4.8)                                                    | —                         |
+| T037      | 5     | US3   | `Field`                           | ✅ **FIXED** — useId + htmlFor (§4.7d)                                | **✨ fixed**              |
+| T038      | 5     | US3   | `OtpField`                        | ✅ **FIXED** — full keyboard (§4.7c)                                  | **✨ fixed**              |
+| T039      | 5     | US3   | `Badge`                           | ✅                                                                    | —                         |
+| T040      | 5     | US3   | `Modal`                           | 🚨 still no focus trap / Esc / restore (§4.7b)                        | —                         |
+| T041      | 5     | US3   | `Alert`                           | 🚨 role+variants FIXED, but syntax-bug in same file (§4.3 NEW, §4.7f) | **partial + NEW blocker** |
+| T042      | 5     | US3   | `Avatar`                          | ⚠️ raw rgba (§4.8)                                                    | —                         |
+| T043      | 5     | US3   | `Slider`                          | ⚠️ built; passes contract basics                                      | —                         |
+| T044      | 5     | US3   | `SegButton`                       | ✅ **FIXED** — radiogroup + radio + aria-checked (§4.7g)              | **✨ fixed**              |
+| T045      | 5     | US3   | `Chip`                            | ⚠️ 6 raw rgba (§4.8)                                                  | —                         |
+| T046      | 5     | US3   | `GridCell`                        | ⚠️ 2 raw rgba (§4.8); otherwise contract-compliant                    | —                         |
+| T047–T049 | 6     | US4   | Reduced-motion manual verify      | 🚨 cannot execute without showcase (§4.4)                             | —                         |
+| T050      | 7     | US5   | 11 screenshots                    | 🚨 directory empty                                                    | —                         |
+| T051–T053 | 7     | US5   | 3 Speks                           | ⏳ external — unverifiable from repo                                  | —                         |
+| T054      | 7     | US5   | README links to 3 Speks           | 🚨 missing                                                            | —                         |
+| T055      | 8     | —     | `main.tsx` `/_showcase` gate      | 🚨 not implemented                                                    | —                         |
+| T056      | 8     | —     | `ReducedMotionToggle.tsx`         | 🚨 file does not exist                                                | —                         |
+| T057      | 8     | —     | `AxePanel.tsx`                    | 🚨 file does not exist                                                | —                         |
+| T058      | 8     | —     | 6 showcase section files          | 🚨 folder does not exist                                              | —                         |
+| T059      | 8     | —     | `Showcase.tsx`                    | 🚨 file does not exist                                                | —                         |
+| T060      | 8     | —     | Axe-core contrast pass            | 🚨 blocked by §4.4                                                    | —                         |
+| T061      | 8     | —     | Prod build + tree-shake check     | 🚨 build fails (§4.3)                                                 | —                         |
+| T062      | 8     | —     | Full quality-gate sweep           | 🚨 blocked by §4.3 / §4.10 / §4.11                                    | —                         |
+| T063      | 8     | —     | Update CLAUDE.md "Recent Changes" | 🚨 generic placeholder (§4.6)                                         | —                         |
+| T064      | 8     | —     | Exit checklist ticked in PR       | 🚨 premature — no PR, no commits on branch                            | —                         |
 
 **Δ legend**: **✅ fixed** = was a failure, now passing. **✨ fixed** = was a
 contract-level failure, now contract-compliant. **⚠️** = new downstream
@@ -876,13 +879,13 @@ introduced by the fix pass. **—** = unchanged.
 
 ## 6. Constitution compliance
 
-| Principle                           | Result                                                                                                                                         | Δ |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | - |
-| I — Shared contract source of truth | ✅ `packages/shared` untouched; no cross-wire changes in Phase 1.                                                                              | — |
-| II — Sikka backend parity           | ✅ vacuous — Phase 1 is frontend-only.                                                                                                        | — |
-| III — Yalgamers design fidelity     | 🚨 **STILL VIOLATED** — `tokens.css` values drift from the handoff (§4.1). Fix pass did not touch tokens.css.                                | — |
-| IV — Authoritative real-time server | ✅ vacuous — no realtime surface touched.                                                                                                      | — |
-| V — Spekit-documented decisions     | 🚨 No Speks are linked from the repo (§4.5); no screenshots. README `## Design system` is still missing Spek links.                           | — |
+| Principle                           | Result                                                                                                              | Δ   |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --- |
+| I — Shared contract source of truth | ✅ `packages/shared` untouched; no cross-wire changes in Phase 1.                                                   | —   |
+| II — Sikka backend parity           | ✅ vacuous — Phase 1 is frontend-only.                                                                              | —   |
+| III — Yalgamers design fidelity     | 🚨 **STILL VIOLATED** — `tokens.css` values drift from the handoff (§4.1). Fix pass did not touch tokens.css.       | —   |
+| IV — Authoritative real-time server | ✅ vacuous — no realtime surface touched.                                                                           | —   |
+| V — Spekit-documented decisions     | 🚨 No Speks are linked from the repo (§4.5); no screenshots. README `## Design system` is still missing Spek links. | —   |
 
 Principle III is still the headline failure. Nothing in the fix pass moved
 this needle because the root-cause step (re-extract tarball, replace

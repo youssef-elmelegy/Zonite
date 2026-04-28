@@ -7,11 +7,11 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   background: var(--bg-page);
   color: var(--fg-primary);
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .main {
@@ -20,17 +20,27 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: var(--sp-6);
+  padding: var(--sp-3);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 @media (width >= 768px) {
   .content {
+    padding: var(--sp-6);
+  }
+}
+
+@media (width >= 1024px) {
+  .content {
     padding: var(--sp-8) var(--sp-12);
+    overflow: hidden;
   }
 }

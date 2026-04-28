@@ -15,13 +15,13 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute  | Type          | Example                                                     |
-| ---------- | ------------- | ----------------------------------------------------------- |
-| name       | string        | `--accent-yellow`                                           |
-| category   | enum          | `brand` \| `semantic` \| `team-cell` \| `gradient` \| `radius` \| `spacing` \| `typography` \| `motion` \| `breakpoint` \| `blur` \| `weight` \| `font-size` \| `line-height` |
-| value      | string        | `rgb(253, 235, 86)`                                         |
-| alias_of   | string \| null | `--cell-own` aliases `--team-blue`; brand tokens are `null` |
-| surface_use | string \| null | For color tokens: a short note like "body background" or "hot CTA text"; null for non-color tokens |
+| Attribute   | Type           | Example                                                                                                                                                                       |
+| ----------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name        | string         | `--accent-yellow`                                                                                                                                                             |
+| category    | enum           | `brand` \| `semantic` \| `team-cell` \| `gradient` \| `radius` \| `spacing` \| `typography` \| `motion` \| `breakpoint` \| `blur` \| `weight` \| `font-size` \| `line-height` |
+| value       | string         | `rgb(253, 235, 86)`                                                                                                                                                           |
+| alias_of    | string \| null | `--cell-own` aliases `--team-blue`; brand tokens are `null`                                                                                                                   |
+| surface_use | string \| null | For color tokens: a short note like "body background" or "hot CTA text"; null for non-color tokens                                                                            |
 
 **Identity**: the CSS variable name is unique across the file.
 
@@ -42,15 +42,15 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute     | Type           | Example                         |
-| ------------- | -------------- | ------------------------------- |
-| family        | string         | `Mulish`                        |
-| weight        | int            | 400, 500, 600, 700, 800         |
-| style         | enum           | `normal` (Phase 1 uses normal only) |
-| subset        | string         | `latin`                         |
-| source_file   | string         | `/fonts/mulish-v14-latin-400.woff2` |
-| font_display  | string         | `swap`                          |
-| role          | enum           | `ui` \| `display` \| `mono` \| `ui-fallback` |
+| Attribute    | Type   | Example                                      |
+| ------------ | ------ | -------------------------------------------- |
+| family       | string | `Mulish`                                     |
+| weight       | int    | 400, 500, 600, 700, 800                      |
+| style        | enum   | `normal` (Phase 1 uses normal only)          |
+| subset       | string | `latin`                                      |
+| source_file  | string | `/fonts/mulish-v14-latin-400.woff2`          |
+| font_display | string | `swap`                                       |
+| role         | enum   | `ui` \| `display` \| `mono` \| `ui-fallback` |
 
 **Identity**: (family, weight, style) is unique.
 
@@ -71,26 +71,26 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute       | Type     | Example                                                                             |
-| --------------- | -------- | ----------------------------------------------------------------------------------- |
-| name            | string   | `claimPulse`                                                                        |
-| duration        | string   | `400ms`                                                                             |
-| easing          | string   | `var(--ease-out)`                                                                   |
-| iteration       | string   | `1`                                                                                 |
-| purpose         | string   | "Plays once when a grid cell flips to claimed"                                      |
-| reduced_motion_fallback | string | "Cell still flips color; scale/brightness pop is suppressed"                  |
-| consumers       | string[] | `["GridCell"]` (Phase 1); grows as later phases add consumers                       |
+| Attribute               | Type     | Example                                                       |
+| ----------------------- | -------- | ------------------------------------------------------------- |
+| name                    | string   | `claimPulse`                                                  |
+| duration                | string   | `400ms`                                                       |
+| easing                  | string   | `var(--ease-out)`                                             |
+| iteration               | string   | `1`                                                           |
+| purpose                 | string   | "Plays once when a grid cell flips to claimed"                |
+| reduced_motion_fallback | string   | "Cell still flips color; scale/brightness pop is suppressed"  |
+| consumers               | string[] | `["GridCell"]` (Phase 1); grows as later phases add consumers |
 
 **Phase 1 animation set**:
 
-| Name         | Purpose                                     | Phase 1 consumers         |
-| ------------ | ------------------------------------------- | ------------------------- |
-| `claimPulse` | Cell claim "pop"                            | `GridCell`                |
-| `cellPulse`  | Subtle idle pulse on the Home mini-grid     | `GridBg` (showcase)       |
-| `timerPulse` | Countdown critical state (≤ 10s)            | `Countdown`               |
-| `gridDrift`  | Slow backdrop drift                         | `GridBg`                  |
-| `zpulse`     | Loading-indicator dot pulse                 | (reserved, no Phase 1 consumer) |
-| `fadeUp`     | Route / section transition                  | `Shell` / `Showcase`      |
+| Name         | Purpose                                 | Phase 1 consumers               |
+| ------------ | --------------------------------------- | ------------------------------- |
+| `claimPulse` | Cell claim "pop"                        | `GridCell`                      |
+| `cellPulse`  | Subtle idle pulse on the Home mini-grid | `GridBg` (showcase)             |
+| `timerPulse` | Countdown critical state (≤ 10s)        | `Countdown`                     |
+| `gridDrift`  | Slow backdrop drift                     | `GridBg`                        |
+| `zpulse`     | Loading-indicator dot pulse             | (reserved, no Phase 1 consumer) |
+| `fadeUp`     | Route / section transition              | `Shell` / `Showcase`            |
 
 **Invariants**:
 
@@ -105,20 +105,20 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute              | Type     | Example                                            |
-| ---------------------- | -------- | -------------------------------------------------- |
-| name                   | string   | `Button`                                           |
-| category               | enum     | `layout` \| `ui` \| `common` \| `game`             |
-| variants               | string[] | `["primary", "secondary", "ghost", "link"]`        |
-| states                 | string[] | `["default", "hover", "focus", "active", "disabled", "loading"]` |
-| documented_surface     | string[] | `["--bg-page", "--bg-card", "--bg-elevated"]` (background tokens the primitive is tested against) |
-| text_contrast_ratios   | object   | `{ "primary on bg-page": "14.1:1" }` (WCAG AA minimum 4.5:1 for body; auto-fail review if below) |
-| consumed_tokens        | string[] | `["--accent-yellow", "--ink-900", "--radius-md", "--sp-2"]` |
-| consumed_animations    | string[] | `[]` (Button has no keyframe animations — transitions only) |
-| keyboard_behavior      | string   | "Enter / Space activates; Tab reaches; Esc not bound" |
-| a11y_role              | string   | `button` (native `<button>` ships the role)        |
-| props_sketch           | object   | `{ variant: Variant; size?: Size; disabled?: boolean; loading?: boolean; onClick: () => void }` (conceptual, not TS) |
-| source_prototype_file  | string   | `docs/design/zonite-game/project/components/Auth.jsx::Button` |
+| Attribute             | Type     | Example                                                                                                              |
+| --------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| name                  | string   | `Button`                                                                                                             |
+| category              | enum     | `layout` \| `ui` \| `common` \| `game`                                                                               |
+| variants              | string[] | `["primary", "secondary", "ghost", "link"]`                                                                          |
+| states                | string[] | `["default", "hover", "focus", "active", "disabled", "loading"]`                                                     |
+| documented_surface    | string[] | `["--bg-page", "--bg-card", "--bg-elevated"]` (background tokens the primitive is tested against)                    |
+| text_contrast_ratios  | object   | `{ "primary on bg-page": "14.1:1" }` (WCAG AA minimum 4.5:1 for body; auto-fail review if below)                     |
+| consumed_tokens       | string[] | `["--accent-yellow", "--ink-900", "--radius-md", "--sp-2"]`                                                          |
+| consumed_animations   | string[] | `[]` (Button has no keyframe animations — transitions only)                                                          |
+| keyboard_behavior     | string   | "Enter / Space activates; Tab reaches; Esc not bound"                                                                |
+| a11y_role             | string   | `button` (native `<button>` ships the role)                                                                          |
+| props_sketch          | object   | `{ variant: Variant; size?: Size; disabled?: boolean; loading?: boolean; onClick: () => void }` (conceptual, not TS) |
+| source_prototype_file | string   | `docs/design/zonite-game/project/components/Auth.jsx::Button`                                                        |
 
 **Phase 1 primitive set** (pinned in `primitives.contract.md`):
 
@@ -144,12 +144,12 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute  | Type      | Example                                      |
-| ---------- | --------- | -------------------------------------------- |
-| name       | string    | `IconCopy`                                   |
-| source     | enum      | `brand` \| `lucide`                          |
-| sizing     | string    | "viewBox 24×24; inherits current color"      |
-| a11y       | string    | "Decorative by default (`aria-hidden=true`); pass `title` prop to expose to AT" |
+| Attribute | Type   | Example                                                                         |
+| --------- | ------ | ------------------------------------------------------------------------------- |
+| name      | string | `IconCopy`                                                                      |
+| source    | enum   | `brand` \| `lucide`                                                             |
+| sizing    | string | "viewBox 24×24; inherits current color"                                         |
+| a11y      | string | "Decorative by default (`aria-hidden=true`); pass `title` prop to expose to AT" |
 
 **Phase 1 icon set** (pinned in `primitives.contract.md`):
 
@@ -169,13 +169,13 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute       | Type    | Example                                                |
-| --------------- | ------- | ------------------------------------------------------ |
-| root_path       | string  | `docs/design/zonite-game`                              |
-| files           | string[] | 20-ish paths; see plan's Project Structure            |
-| adopted_at      | ISO-date | `2026-04-20`                                          |
-| bundle_source   | string  | `Claude Design (claude.ai/design) export 53AOn…`       |
-| expected_sha256 | hex-string | 64 chars                                             |
+| Attribute       | Type       | Example                                          |
+| --------------- | ---------- | ------------------------------------------------ |
+| root_path       | string     | `docs/design/zonite-game`                        |
+| files           | string[]   | 20-ish paths; see plan's Project Structure       |
+| adopted_at      | ISO-date   | `2026-04-20`                                     |
+| bundle_source   | string     | `Claude Design (claude.ai/design) export 53AOn…` |
+| expected_sha256 | hex-string | 64 chars                                         |
 
 **Invariants**:
 
@@ -190,11 +190,11 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute       | Type       | Example                                            |
-| --------------- | ---------- | -------------------------------------------------- |
-| adopted_at      | ISO-date   | `2026-04-20`                                       |
-| bundle_source   | string     | `Claude Design export …`                           |
-| expected_sha256 | hex-string | 64 chars                                           |
+| Attribute       | Type       | Example                  |
+| --------------- | ---------- | ------------------------ |
+| adopted_at      | ISO-date   | `2026-04-20`             |
+| bundle_source   | string     | `Claude Design export …` |
+| expected_sha256 | hex-string | 64 chars                 |
 
 **Invariants**:
 
@@ -210,10 +210,10 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute | Type     | Example                                                                                |
-| --------- | -------- | -------------------------------------------------------------------------------------- |
-| sections  | string[] | `["When to add a new token", "When a local style exception is permissible", "What reviewers block"]` |
-| mirror_url | string  | Spekit URL (filled when the Spek is published; recorded in the MD)                     |
+| Attribute  | Type     | Example                                                                                              |
+| ---------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| sections   | string[] | `["When to add a new token", "When a local style exception is permissible", "What reviewers block"]` |
+| mirror_url | string   | Spekit URL (filled when the Spek is published; recorded in the MD)                                   |
 
 **Invariants**:
 
@@ -228,12 +228,12 @@ Phase 1 is frontend-only and ships no wire-crossing payloads. The "data" modeled
 
 **Attributes**:
 
-| Attribute         | Type     | Example                                                          |
-| ----------------- | -------- | ---------------------------------------------------------------- |
-| title             | string   | `Zonite Design System — token sources and override policy`       |
+| Attribute         | Type     | Example                                                                               |
+| ----------------- | -------- | ------------------------------------------------------------------------------------- |
+| title             | string   | `Zonite Design System — token sources and override policy`                            |
 | required_sections | string[] | `["Where tokens come from", "Override policy", "Lint enforcement", "How to refresh"]` |
-| attachments       | string[] | screenshot filenames                                             |
-| last_updated      | ISO-date | `2026-04-20`                                                     |
+| attachments       | string[] | screenshot filenames                                                                  |
+| last_updated      | ISO-date | `2026-04-20`                                                                          |
 
 **Phase 1 required Speks** (all three must exist before Phase 1 is declared complete):
 

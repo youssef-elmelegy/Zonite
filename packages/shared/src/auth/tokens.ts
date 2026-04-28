@@ -8,7 +8,8 @@ export type AuthTokens = {
 export type AccessTokenPayload = {
   sub: string;
   email: string;
-  role: "user" | "admin";
+  role: 'user' | 'admin';
+  fullName: string;
   iat: number;
   exp: number;
 };

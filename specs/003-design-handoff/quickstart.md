@@ -129,10 +129,25 @@ Create `apps/frontend/src/types/tokens.d.ts` as a typed handle on the variable n
 
 ```ts
 export type TokenName =
-  | '--ink-900' | '--ink-850' | '--ink-800' | '--ink-700'
-  | '--accent-yellow' | '--accent-yellow-deep' | '--accent-yellow-mustard' | '--accent-yellow-dim'
+  | '--ink-900'
+  | '--ink-850'
+  | '--ink-800'
+  | '--ink-700'
+  | '--accent-yellow'
+  | '--accent-yellow-deep'
+  | '--accent-yellow-mustard'
+  | '--accent-yellow-dim'
   // ... every variable name from tokens.css ...
-  | '--fs-xs' | '--fs-sm' | '--fs-body' | '--fs-body-lg' | '--fs-base' | '--fs-md' | '--fs-lg' | '--fs-xl' | '--fs-2xl' | '--fs-3xl';
+  | '--fs-xs'
+  | '--fs-sm'
+  | '--fs-body'
+  | '--fs-body-lg'
+  | '--fs-base'
+  | '--fs-md'
+  | '--fs-lg'
+  | '--fs-xl'
+  | '--fs-2xl'
+  | '--fs-3xl';
 
 export const cssVar = <T extends TokenName>(name: T): `var(${T})` => `var(${name})` as const;
 ```
@@ -141,10 +156,11 @@ Import `tokens.css` from `apps/frontend/src/main.tsx`:
 
 ```ts
 import './styles/tokens.css';
-import './styles/animations.css';  // created in step 5
+import './styles/animations.css'; // created in step 5
 ```
 
 **Verify**: start the dev server, open the existing Phase 0 placeholder page, and check that:
+
 - The page background matches `--ink-900` exactly (not the old inline `#100613`).
 - The body font is Mulish (inspect an element; `font-family` resolves to `Mulish`).
 - Browser devtools Network panel shows zero requests to `fonts.googleapis.com` or `fonts.gstatic.com` when the page loads.
@@ -160,16 +176,69 @@ Template pattern:
 ```css
 /* ===== Keyframe definitions — safe at top-level ===== */
 @keyframes claimPulse {
-  0%   { transform: scale(0.6); filter: brightness(2.2); }
-  60%  { transform: scale(1.12); filter: brightness(1.4); }
-  100% { transform: scale(1); filter: brightness(1); }
+  0% {
+    transform: scale(0.6);
+    filter: brightness(2.2);
+  }
+  60% {
+    transform: scale(1.12);
+    filter: brightness(1.4);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
 }
 
-@keyframes cellPulse { 0%,100% { opacity: 0.9; } 50% { opacity: 0.5; } }
-@keyframes timerPulse { 0%,100% { box-shadow: 0 0 24px rgba(247,23,86,0.5); } 50% { box-shadow: 0 0 40px rgba(247,23,86,0.8); } }
-@keyframes gridDrift { from { background-position: 0 0, 0 0; } to { background-position: 48px 48px, 48px 48px; } }
-@keyframes zpulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cellPulse {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+@keyframes timerPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 24px rgba(247, 23, 86, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(247, 23, 86, 0.8);
+  }
+}
+@keyframes gridDrift {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      48px 48px,
+      48px 48px;
+  }
+}
+@keyframes zpulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* ===== Consumer rules — guarded so the reduced-motion default is no-motion ===== */
 /* Animations only apply when the user has NO reduced-motion preference AND the showcase's override flag is not set. */
@@ -250,19 +319,33 @@ export default {
         // Tokens not listed here are still reachable via arbitrary values: bg-[var(--fire-pink)]
       },
       fontFamily: {
-        ui:     ['var(--font-ui)'],
-        display:['var(--font-display)'],
-        mono:   ['var(--font-mono)'],
+        ui: ['var(--font-ui)'],
+        display: ['var(--font-display)'],
+        mono: ['var(--font-mono)'],
       },
       borderRadius: {
-        xs: 'var(--radius-xs)', sm: 'var(--radius-sm)', md: 'var(--radius-md)',
-        lg: 'var(--radius-lg)', xl: 'var(--radius-xl)', '2xl': 'var(--radius-2xl)',
-        '3xl': 'var(--radius-3xl)', pill: 'var(--radius-pill)', full: 'var(--radius-full)',
+        xs: 'var(--radius-xs)',
+        sm: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
+        '2xl': 'var(--radius-2xl)',
+        '3xl': 'var(--radius-3xl)',
+        pill: 'var(--radius-pill)',
+        full: 'var(--radius-full)',
       },
       spacing: {
-        0: 'var(--sp-0)', 1: 'var(--sp-1)', 2: 'var(--sp-2)', 3: 'var(--sp-3)',
-        4: 'var(--sp-4)', 5: 'var(--sp-5)', 6: 'var(--sp-6)', 8: 'var(--sp-8)',
-        10: 'var(--sp-10)', 12: 'var(--sp-12)', 16: 'var(--sp-16)',
+        0: 'var(--sp-0)',
+        1: 'var(--sp-1)',
+        2: 'var(--sp-2)',
+        3: 'var(--sp-3)',
+        4: 'var(--sp-4)',
+        5: 'var(--sp-5)',
+        6: 'var(--sp-6)',
+        8: 'var(--sp-8)',
+        10: 'var(--sp-10)',
+        12: 'var(--sp-12)',
+        16: 'var(--sp-16)',
       },
     },
   },
@@ -314,7 +397,9 @@ const VALID_FONT_FAMILY = /^var\(--font-(ui|display|mono)\)$/;
 module.exports = {
   meta: {
     type: 'problem',
-    docs: { description: 'Forbid hard-coded hex colors and raw font-family strings in JSX inline styles.' },
+    docs: {
+      description: 'Forbid hard-coded hex colors and raw font-family strings in JSX inline styles.',
+    },
     schema: [],
     messages: {
       hex: 'Hard-coded hex color "{{value}}" in inline style. Use a token from tokens.css (e.g., var(--accent-yellow)).',
@@ -328,7 +413,12 @@ module.exports = {
         if (!node.value || node.value.type !== 'JSXExpressionContainer') return;
         if (node.value.expression.type !== 'ObjectExpression') return;
         for (const prop of node.value.expression.properties) {
-          if (prop.type !== 'Property' || prop.value.type !== 'Literal' || typeof prop.value.value !== 'string') continue;
+          if (
+            prop.type !== 'Property' ||
+            prop.value.type !== 'Literal' ||
+            typeof prop.value.value !== 'string'
+          )
+            continue;
           const value = prop.value.value;
           const key = prop.key.name ?? prop.key.value;
           if (HEX.test(value)) {
@@ -405,10 +495,18 @@ const root = createRoot(rootEl);
 
 if (import.meta.env.DEV && window.location.pathname === '/_showcase') {
   import('./showcase/Showcase').then(({ Showcase }) => {
-    root.render(<StrictMode><Showcase /></StrictMode>);
+    root.render(
+      <StrictMode>
+        <Showcase />
+      </StrictMode>,
+    );
   });
 } else {
-  root.render(<StrictMode><App /></StrictMode>);
+  root.render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
 }
 ```
 
@@ -444,7 +542,9 @@ Each section:
 import { useEffect, useState } from 'react';
 
 export function AxePanel(): JSX.Element | null {
-  const [violations, setViolations] = useState<Array<{ id: string; help: string; nodes: number }>>([]);
+  const [violations, setViolations] = useState<Array<{ id: string; help: string; nodes: number }>>(
+    [],
+  );
   useEffect(() => {
     if (!import.meta.env.DEV) return;
     (async () => {
@@ -455,16 +555,14 @@ export function AxePanel(): JSX.Element | null {
         runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] },
       });
     })();
-    const handler = (e: CustomEvent<{ violations: any[] }>) => { /* populate setViolations */ };
+    const handler = (e: CustomEvent<{ violations: any[] }>) => {
+      /* populate setViolations */
+    };
     window.addEventListener('axe-results', handler as EventListener);
     return () => window.removeEventListener('axe-results', handler as EventListener);
   }, []);
   if (!import.meta.env.DEV) return null;
-  return (
-    <aside aria-label="Axe-core report">
-      {/* render violations list */}
-    </aside>
-  );
+  return <aside aria-label="Axe-core report">{/* render violations list */}</aside>;
 }
 ```
 

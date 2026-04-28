@@ -6,6 +6,7 @@ export const RoomEvents = {
   PLAYER_LEFT: 'player_left',
   ROOM_STATE: 'room_state',
   ROOM_UPDATED: 'room_updated',
+  UPDATE_ROOM: 'update_room',
 } as const;
 
 export type RoomEventName = (typeof RoomEvents)[keyof typeof RoomEvents];

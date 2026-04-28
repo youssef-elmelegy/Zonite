@@ -1,0 +1,50 @@
+/* Home page — responsive layout classes */
+
+.hero {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  /* cancel Shell's mobile padding, add our own */
+  margin: calc(-1 * var(--sp-3));
+  padding: var(--sp-6) var(--sp-4);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* isometric grid — hidden on mobile */
+.isoGrid {
+  display: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (width >= 768px) {
+  .hero {
+    /* cancel Shell's tablet padding (sp-6 all sides) */
+    margin: calc(-1 * var(--sp-6));
+    padding: var(--sp-8) var(--sp-8);
+  }
+}
+
+@media (width >= 1024px) {
+  .hero {
+    /* cancel Shell's desktop padding (32px top/bottom, 48px sides) */
+    margin: calc(-1 * var(--sp-8)) calc(-1 * var(--sp-12));
+    padding: var(--sp-12) var(--sp-12);
+    padding-left: clamp(var(--sp-12), 8vw, 120px);
+  }
+
+  .isoGrid {
+    position: absolute;
+    right: 8%;
+    top: 50%;
+    transform: translateY(-50%) rotate(18deg);
+    width: 420px;
+    height: 420px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    opacity: 0.42;
+  }
+}

@@ -29,7 +29,7 @@ This document records the decisions made to convert the spec's Assumptions and C
 
 - Sikka isn't published; carving out a shared package would require Sikka-side coordination Phase 2 doesn't have budget for.
 - A live dep (submodule or npm-link) couples Zonite to Sikka's release cadence, which violates "Zonite is deployable on its own" from the spec's Assumptions.
-- Principle II's intent is *pattern parity*, not *runtime coupling*. Vendoring satisfies the letter and spirit.
+- Principle II's intent is _pattern parity_, not _runtime coupling_. Vendoring satisfies the letter and spirit.
 
 **Operational note**: the Spek "Claude Design handoff bundle — what it is and how to update" (Phase 1 Spekit) is analogous here — we'll add a sibling Spek "Sikka backend patterns — sourcing and upgrades" in Phase 2 that names a Sikka commit SHA and the diff process when Sikka updates.
 
@@ -58,8 +58,8 @@ type ErrorResponse = {
   code: number;
   success: false;
   message: string;
-  error?: string;    // error category/name
-  data?: object;     // optional extra (e.g., field-level errors)
+  error?: string; // error category/name
+  data?: object; // optional extra (e.g., field-level errors)
   timestamp: string;
 };
 
@@ -68,7 +68,7 @@ type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
 **Rationale**: Principle II's response-envelope clause is literal — "every HTTP response MUST flow through `successResponse()` / `errorResponse()`". Paraphrasing introduces drift.
 
-**Mapping for paginated payloads**: the pagination shape lives *inside* `data`, not at top-level `meta`. Sikka's `PaginationQueryDto` is the request half; the response wraps a `{ items: T[]; page, pageSize, total, totalPages }` object inside the envelope's `data`. The Zonite shared package declares this as `PaginatedData<T>` and `type PaginatedResponse<T> = SuccessResponse<PaginatedData<T>>`.
+**Mapping for paginated payloads**: the pagination shape lives _inside_ `data`, not at top-level `meta`. Sikka's `PaginationQueryDto` is the request half; the response wraps a `{ items: T[]; page, pageSize, total, totalPages }` object inside the envelope's `data`. The Zonite shared package declares this as `PaginatedData<T>` and `type PaginatedResponse<T> = SuccessResponse<PaginatedData<T>>`.
 
 **Alternatives considered**:
 
@@ -123,10 +123,10 @@ type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
 **Proposed default limits** (all env-driven; these are the plan's defaults, not hard-coded):
 
-| Tier | Env var | Default | Applies to |
-| ---- | ------- | ------- | ---------- |
-| Global | `THROTTLE_GLOBAL_TTL` / `_LIMIT` | 60 s / 100 req | all routes |
-| Auth | `THROTTLE_AUTH_TTL` / `_LIMIT` | 60 s / 5 req | signup, login, send-otp, reset-password |
+| Tier   | Env var                          | Default        | Applies to                              |
+| ------ | -------------------------------- | -------------- | --------------------------------------- |
+| Global | `THROTTLE_GLOBAL_TTL` / `_LIMIT` | 60 s / 100 req | all routes                              |
+| Auth   | `THROTTLE_AUTH_TTL` / `_LIMIT`   | 60 s / 5 req   | signup, login, send-otp, reset-password |
 
 **Rationale**: Clarification 3 (Option C user-modified to "all modules"). Aligned with Sikka's `@nestjs/throttler` dep.
 
@@ -222,17 +222,17 @@ Guards wire to those strategies: `JwtAuthGuard`, `RefreshTokenGuard`, `RefreshTo
 
 **Decision**: The `users` table columns required by Sikka's `AuthService` + sufficient for Phase 2:
 
-| Column | Type | Constraints | Notes |
-| ------ | ---- | ----------- | ----- |
-| `id` | `uuid` | PK, default `gen_random_uuid()` | |
-| `email` | `text` | NOT NULL, UNIQUE, lowercased on insert | |
-| `password_hash` | `text` | NOT NULL | bcrypt output; never NULL even for OAuth later (placeholder) |
-| `role` | `text` | NOT NULL, default `'user'` | Enum at app layer: `'user' \| 'admin'` |
-| `refresh_token_nonce` | `text` | NULLABLE | Rotated on password reset; participates in `jti` comparison |
-| `reset_otp_hash` | `text` | NULLABLE | Hashed OTP for password reset |
-| `reset_otp_expires_at` | `timestamptz` | NULLABLE | |
-| `created_at` | `timestamptz` | NOT NULL, default `now()` | |
-| `updated_at` | `timestamptz` | NOT NULL, default `now()` | Updated via trigger or app-layer |
+| Column                 | Type          | Constraints                            | Notes                                                        |
+| ---------------------- | ------------- | -------------------------------------- | ------------------------------------------------------------ |
+| `id`                   | `uuid`        | PK, default `gen_random_uuid()`        |                                                              |
+| `email`                | `text`        | NOT NULL, UNIQUE, lowercased on insert |                                                              |
+| `password_hash`        | `text`        | NOT NULL                               | bcrypt output; never NULL even for OAuth later (placeholder) |
+| `role`                 | `text`        | NOT NULL, default `'user'`             | Enum at app layer: `'user' \| 'admin'`                       |
+| `refresh_token_nonce`  | `text`        | NULLABLE                               | Rotated on password reset; participates in `jti` comparison  |
+| `reset_otp_hash`       | `text`        | NULLABLE                               | Hashed OTP for password reset                                |
+| `reset_otp_expires_at` | `timestamptz` | NULLABLE                               |                                                              |
+| `created_at`           | `timestamptz` | NOT NULL, default `now()`              |                                                              |
+| `updated_at`           | `timestamptz` | NOT NULL, default `now()`              | Updated via trigger or app-layer                             |
 
 **Rationale**: Matches Sikka's query surface. Richer profile columns (display name, avatar, XP, rank) are Phase 7's scope (FR-011b); adding them in Phase 2 would be a speculative addition forbidden by the task-scope rule.
 

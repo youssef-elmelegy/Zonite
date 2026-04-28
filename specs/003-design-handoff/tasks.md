@@ -62,6 +62,7 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
   ## Refresh workflow
 
   When the design team publishes a new bundle:
+
   1. Extract the new tarball over `docs/design/zonite-game/`, replacing every file.
   2. Run `node scripts/verify-handoff.mjs --record` to update `expected_sha256` above.
   3. Diff the new `colors_and_type.css` into `apps/frontend/src/styles/tokens.css` — preserve the self-hosted `@font-face` rewire from Phase 1.
@@ -123,7 +124,9 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
   }
 
   try {
-    try { await stat(BUNDLE_DIR); } catch {
+    try {
+      await stat(BUNDLE_DIR);
+    } catch {
       console.error(`✗ Bundle directory missing: ${BUNDLE_DIR}`);
       exit(1);
     }
@@ -295,8 +298,11 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
           sky: { 300: 'var(--sky-300)' },
           cyan: { 400: 'var(--cyan-400)', 300: 'var(--cyan-300)', 200: 'var(--cyan-200)' },
           lime: {
-            500: 'var(--lime-500)', 400: 'var(--lime-400)', 300: 'var(--lime-300)',
-            700: 'var(--lime-700)', 900: 'var(--lime-900)',
+            500: 'var(--lime-500)',
+            400: 'var(--lime-400)',
+            300: 'var(--lime-300)',
+            700: 'var(--lime-700)',
+            900: 'var(--lime-900)',
           },
           orange: { 500: 'var(--orange-500)' },
           peach: { 300: 'var(--peach-300)' },
@@ -329,19 +335,40 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
           mono: ['var(--font-mono)'],
         },
         fontSize: {
-          xs: 'var(--fs-xs)', sm: 'var(--fs-sm)', body: 'var(--fs-body)',
-          'body-lg': 'var(--fs-body-lg)', base: 'var(--fs-base)', md: 'var(--fs-md)',
-          lg: 'var(--fs-lg)', xl: 'var(--fs-xl)', '2xl': 'var(--fs-2xl)', '3xl': 'var(--fs-3xl)',
+          xs: 'var(--fs-xs)',
+          sm: 'var(--fs-sm)',
+          body: 'var(--fs-body)',
+          'body-lg': 'var(--fs-body-lg)',
+          base: 'var(--fs-base)',
+          md: 'var(--fs-md)',
+          lg: 'var(--fs-lg)',
+          xl: 'var(--fs-xl)',
+          '2xl': 'var(--fs-2xl)',
+          '3xl': 'var(--fs-3xl)',
         },
         borderRadius: {
-          xs: 'var(--radius-xs)', sm: 'var(--radius-sm)', md: 'var(--radius-md)',
-          lg: 'var(--radius-lg)', xl: 'var(--radius-xl)', '2xl': 'var(--radius-2xl)',
-          '3xl': 'var(--radius-3xl)', pill: 'var(--radius-pill)', full: 'var(--radius-full)',
+          xs: 'var(--radius-xs)',
+          sm: 'var(--radius-sm)',
+          md: 'var(--radius-md)',
+          lg: 'var(--radius-lg)',
+          xl: 'var(--radius-xl)',
+          '2xl': 'var(--radius-2xl)',
+          '3xl': 'var(--radius-3xl)',
+          pill: 'var(--radius-pill)',
+          full: 'var(--radius-full)',
         },
         spacing: {
-          0: 'var(--sp-0)', 1: 'var(--sp-1)', 2: 'var(--sp-2)', 3: 'var(--sp-3)',
-          4: 'var(--sp-4)', 5: 'var(--sp-5)', 6: 'var(--sp-6)', 8: 'var(--sp-8)',
-          10: 'var(--sp-10)', 12: 'var(--sp-12)', 16: 'var(--sp-16)',
+          0: 'var(--sp-0)',
+          1: 'var(--sp-1)',
+          2: 'var(--sp-2)',
+          3: 'var(--sp-3)',
+          4: 'var(--sp-4)',
+          5: 'var(--sp-5)',
+          6: 'var(--sp-6)',
+          8: 'var(--sp-8)',
+          10: 'var(--sp-10)',
+          12: 'var(--sp-12)',
+          16: 'var(--sp-16)',
         },
         boxShadow: {
           card: 'var(--shadow-card)',
@@ -584,16 +611,76 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
 
   ```css
   /* Self-hosted web fonts. Do NOT add third-party font CDN URLs here. */
-  @font-face { font-family: 'Mulish'; src: url('/fonts/mulish-v14-latin-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Mulish'; src: url('/fonts/mulish-v14-latin-500.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Mulish'; src: url('/fonts/mulish-v14-latin-600.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Mulish'; src: url('/fonts/mulish-v14-latin-700.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Mulish'; src: url('/fonts/mulish-v14-latin-800.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Inter'; src: url('/fonts/inter-v13-latin-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Inter'; src: url('/fonts/inter-v13-latin-500.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Inter'; src: url('/fonts/inter-v13-latin-600.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Inter'; src: url('/fonts/inter-v13-latin-700.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
-  @font-face { font-family: 'Bruno Ace SC'; src: url('/fonts/bruno-ace-sc-v9-latin-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face {
+    font-family: 'Mulish';
+    src: url('/fonts/mulish-v14-latin-400.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Mulish';
+    src: url('/fonts/mulish-v14-latin-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Mulish';
+    src: url('/fonts/mulish-v14-latin-600.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Mulish';
+    src: url('/fonts/mulish-v14-latin-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Mulish';
+    src: url('/fonts/mulish-v14-latin-800.woff2') format('woff2');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/inter-v13-latin-400.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/inter-v13-latin-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/inter-v13-latin-600.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/inter-v13-latin-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Bruno Ace SC';
+    src: url('/fonts/bruno-ace-sc-v9-latin-400.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
   ```
 
   Do NOT change anything else: `:root` variables, `body`, `.p`, `.h1`, `.eyebrow`, `.label`, `.caption`, `.stat`, `.hot-tag`, and `::-webkit-scrollbar*` rules are copied verbatim.
@@ -616,44 +703,82 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
   /* Cell flips to claimed: scale pop + brightness pulse.
      Reduced-motion fallback: cell flips color only (color change is immediate). */
   @keyframes claimPulse {
-    0%   { transform: scale(0.6); filter: brightness(2.2); }
-    60%  { transform: scale(1.12); filter: brightness(1.4); }
-    100% { transform: scale(1); filter: brightness(1); }
+    0% {
+      transform: scale(0.6);
+      filter: brightness(2.2);
+    }
+    60% {
+      transform: scale(1.12);
+      filter: brightness(1.4);
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
   }
 
   /* Subtle idle cell pulse (decorative background).
      Reduced-motion fallback: static cell. */
   @keyframes cellPulse {
-    0%, 100% { opacity: 0.9; }
-    50%      { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 0.9;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   /* Timer critical-state glow.
      Reduced-motion fallback: static glow at peak intensity (info preserved). */
   @keyframes timerPulse {
-    0%, 100% { box-shadow: 0 0 24px rgba(247, 23, 86, 0.5); }
-    50%      { box-shadow: 0 0 40px rgba(247, 23, 86, 0.8); }
+    0%,
+    100% {
+      box-shadow: 0 0 24px rgba(247, 23, 86, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(247, 23, 86, 0.8);
+    }
   }
 
   /* Decorative backdrop drift.
      Reduced-motion fallback: static backdrop. */
   @keyframes gridDrift {
-    from { background-position: 0 0, 0 0; }
-    to   { background-position: 48px 48px, 48px 48px; }
+    from {
+      background-position:
+        0 0,
+        0 0;
+    }
+    to {
+      background-position:
+        48px 48px,
+        48px 48px;
+    }
   }
 
   /* Loading-indicator opacity pulse.
      Reduced-motion fallback: static full-opacity dot (info preserved: loading). */
   @keyframes zpulse {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.3; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
   }
 
   /* Page/section enter: tiny translate+fade.
      Reduced-motion fallback: element is immediately at final position+opacity. */
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* =========================================================================
@@ -726,52 +851,141 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
 
   export type TokenName =
     // Brand — ink surface
-    | '--ink-900' | '--ink-850' | '--ink-800' | '--ink-700'
-    | '--ink-veil-93' | '--ink-veil-96'
+    | '--ink-900'
+    | '--ink-850'
+    | '--ink-800'
+    | '--ink-700'
+    | '--ink-veil-93'
+    | '--ink-veil-96'
     // Brand — accents
-    | '--accent-yellow' | '--accent-yellow-deep' | '--accent-yellow-mustard' | '--accent-yellow-dim'
-    | '--magenta-500' | '--magenta-300' | '--magenta-700' | '--magenta-soft'
-    | '--fire-red' | '--fire-pink'
-    | '--sky-300' | '--sky-glow'
-    | '--cyan-400' | '--cyan-300' | '--cyan-200'
-    | '--lime-500' | '--lime-400' | '--lime-300' | '--lime-700' | '--lime-900'
-    | '--orange-500' | '--peach-300'
+    | '--accent-yellow'
+    | '--accent-yellow-deep'
+    | '--accent-yellow-mustard'
+    | '--accent-yellow-dim'
+    | '--magenta-500'
+    | '--magenta-300'
+    | '--magenta-700'
+    | '--magenta-soft'
+    | '--fire-red'
+    | '--fire-pink'
+    | '--sky-300'
+    | '--sky-glow'
+    | '--cyan-400'
+    | '--cyan-300'
+    | '--cyan-200'
+    | '--lime-500'
+    | '--lime-400'
+    | '--lime-300'
+    | '--lime-700'
+    | '--lime-900'
+    | '--orange-500'
+    | '--peach-300'
     // Text neutrals
-    | '--fg-primary' | '--fg-secondary' | '--fg-tertiary' | '--fg-muted' | '--fg-faint'
-    | '--fg-softgray' | '--fg-steel'
+    | '--fg-primary'
+    | '--fg-secondary'
+    | '--fg-tertiary'
+    | '--fg-muted'
+    | '--fg-faint'
+    | '--fg-softgray'
+    | '--fg-steel'
     // Team / cell state
-    | '--team-red' | '--team-red-soft' | '--team-red-deep'
-    | '--team-blue' | '--team-blue-soft' | '--team-blue-deep'
+    | '--team-red'
+    | '--team-red-soft'
+    | '--team-red-deep'
+    | '--team-blue'
+    | '--team-blue-soft'
+    | '--team-blue-deep'
     | '--team-neutral'
-    | '--cell-empty' | '--cell-empty-border' | '--cell-hover' | '--cell-hover-border'
-    | '--cell-own' | '--cell-opponent' | '--cell-disabled'
+    | '--cell-empty'
+    | '--cell-empty-border'
+    | '--cell-hover'
+    | '--cell-hover-border'
+    | '--cell-own'
+    | '--cell-opponent'
+    | '--cell-disabled'
     // Semantic
-    | '--bg-page' | '--bg-elevated' | '--bg-card' | '--bg-card-solid' | '--bg-overlay'
-    | '--border-subtle' | '--border-default' | '--border-strong' | '--border-accent'
+    | '--bg-page'
+    | '--bg-elevated'
+    | '--bg-card'
+    | '--bg-card-solid'
+    | '--bg-overlay'
+    | '--border-subtle'
+    | '--border-default'
+    | '--border-strong'
+    | '--border-accent'
     | '--focus-ring'
     // Gradients
-    | '--grad-fire' | '--grad-magenta-glass' | '--grad-magenta-solid' | '--grad-lime' | '--grad-page-veil'
+    | '--grad-fire'
+    | '--grad-magenta-glass'
+    | '--grad-magenta-solid'
+    | '--grad-lime'
+    | '--grad-page-veil'
     // Glows / shadows
-    | '--glow-sky' | '--glow-yellow' | '--glow-magenta' | '--glow-red'
-    | '--shadow-card' | '--shadow-lift'
+    | '--glow-sky'
+    | '--glow-yellow'
+    | '--glow-magenta'
+    | '--glow-red'
+    | '--shadow-card'
+    | '--shadow-lift'
     // Radii
-    | '--radius-xs' | '--radius-sm' | '--radius-md' | '--radius-lg'
-    | '--radius-xl' | '--radius-2xl' | '--radius-3xl' | '--radius-pill' | '--radius-full'
+    | '--radius-xs'
+    | '--radius-sm'
+    | '--radius-md'
+    | '--radius-lg'
+    | '--radius-xl'
+    | '--radius-2xl'
+    | '--radius-3xl'
+    | '--radius-pill'
+    | '--radius-full'
     // Spacing
-    | '--sp-0' | '--sp-1' | '--sp-2' | '--sp-3' | '--sp-4' | '--sp-5'
-    | '--sp-6' | '--sp-8' | '--sp-10' | '--sp-12' | '--sp-16'
+    | '--sp-0'
+    | '--sp-1'
+    | '--sp-2'
+    | '--sp-3'
+    | '--sp-4'
+    | '--sp-5'
+    | '--sp-6'
+    | '--sp-8'
+    | '--sp-10'
+    | '--sp-12'
+    | '--sp-16'
     // Typography
-    | '--font-ui' | '--font-display' | '--font-mono'
-    | '--fw-regular' | '--fw-medium' | '--fw-semibold' | '--fw-bold'
-    | '--fs-xs' | '--fs-sm' | '--fs-body' | '--fs-body-lg' | '--fs-base'
-    | '--fs-md' | '--fs-lg' | '--fs-xl' | '--fs-2xl' | '--fs-3xl'
-    | '--lh-tight' | '--lh-snug' | '--lh-normal' | '--lh-loose'
+    | '--font-ui'
+    | '--font-display'
+    | '--font-mono'
+    | '--fw-regular'
+    | '--fw-medium'
+    | '--fw-semibold'
+    | '--fw-bold'
+    | '--fs-xs'
+    | '--fs-sm'
+    | '--fs-body'
+    | '--fs-body-lg'
+    | '--fs-base'
+    | '--fs-md'
+    | '--fs-lg'
+    | '--fs-xl'
+    | '--fs-2xl'
+    | '--fs-3xl'
+    | '--lh-tight'
+    | '--lh-snug'
+    | '--lh-normal'
+    | '--lh-loose'
     // Motion
-    | '--ease-out' | '--ease-in-out' | '--dur-fast' | '--dur-base' | '--dur-slow'
+    | '--ease-out'
+    | '--ease-in-out'
+    | '--dur-fast'
+    | '--dur-base'
+    | '--dur-slow'
     // Breakpoints
-    | '--bp-mobile' | '--bp-tablet' | '--bp-desktop' | '--bp-wide'
+    | '--bp-mobile'
+    | '--bp-tablet'
+    | '--bp-desktop'
+    | '--bp-wide'
     // Blur
-    | '--blur-sm' | '--blur-md' | '--blur-lg';
+    | '--blur-sm'
+    | '--blur-md'
+    | '--blur-lg';
 
   /** Returns `var(--token-name)` with the TokenName narrowed at the type level. */
   export function cssVar<T extends TokenName>(name: T): `var(${T})` {
@@ -812,16 +1026,19 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
 
   export function App(): JSX.Element {
     return (
-      <main className="fade-in" style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 'var(--sp-2)',
-        padding: 'var(--sp-6)',
-        textAlign: 'center',
-      }}>
+      <main
+        className="fade-in"
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 'var(--sp-2)',
+          padding: 'var(--sp-6)',
+          textAlign: 'center',
+        }}
+      >
         <h1 className="h1" style={{ color: 'var(--fg-primary)' }}>
           Zonite
         </h1>
@@ -861,7 +1078,9 @@ Do not skip a verify step. If it fails, stop and fix before moving on.
   Create a temporary file `apps/frontend/src/styles/__lint-test.css` with one line:
 
   ```css
-  .test { color: #ff0000; }
+  .test {
+    color: #ff0000;
+  }
   ```
 
   Run `pnpm --filter @zonite/frontend exec stylelint "src/**/*.css"`.
@@ -1019,12 +1238,7 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
   import styles from './GridBg.module.css';
 
   export function GridBg(): JSX.Element {
-    return (
-      <div
-        aria-hidden="true"
-        className={`${styles.root} grid-bg-drift`}
-      />
-    );
+    return <div aria-hidden="true" className={`${styles.root} grid-bg-drift`} />;
   }
   ```
 
@@ -1046,7 +1260,9 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
     background-image:
       linear-gradient(var(--border-subtle) 1px, transparent 1px),
       linear-gradient(90deg, var(--border-subtle) 1px, transparent 1px);
-    background-size: 48px 48px, 48px 48px;
+    background-size:
+      48px 48px,
+      48px 48px;
     opacity: 0.45;
   }
   ```
@@ -1071,12 +1287,7 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
   export function TopBar({ onHome, right }: TopBarProps): JSX.Element {
     return (
       <header className={styles.root}>
-        <button
-          type="button"
-          className={styles.home}
-          onClick={onHome}
-          aria-label="Home"
-        >
+        <button type="button" className={styles.home} onClick={onHome} aria-label="Home">
           <span className={styles.logoMark}>Z</span>
           <span className={styles.logoText}>Zonite</span>
         </button>
@@ -1116,7 +1327,10 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
     cursor: pointer;
     border-radius: var(--radius-md);
   }
-  .home:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  .home:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
   .logoMark {
     display: inline-grid;
     place-items: center;
@@ -1135,7 +1349,11 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
     letter-spacing: 0.02em;
     color: var(--fg-primary);
   }
-  .right { display: flex; align-items: center; gap: var(--sp-3); }
+  .right {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
   ```
 
   **Verify**: type-check + stylelint pass.
@@ -1162,7 +1380,11 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
   }
 
   export function Shell({
-    onHome, right, showGrid = true, blobIntensity = 1, children,
+    onHome,
+    right,
+    showGrid = true,
+    blobIntensity = 1,
+    children,
   }: ShellProps): JSX.Element {
     return (
       <div className={styles.root}>
@@ -1296,9 +1518,7 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
           {player.slice(0, 1).toUpperCase()}
         </span>
         <span className={styles.name}>{player}</span>
-        {typeof xp === 'number' && (
-          <span className={styles.xp}>{xp.toLocaleString()} XP</span>
-        )}
+        {typeof xp === 'number' && <span className={styles.xp}>{xp.toLocaleString()} XP</span>}
       </Tag>
     );
   }
@@ -1325,9 +1545,16 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
     font-size: var(--fs-body);
     line-height: var(--lh-tight);
   }
-  .interactive { cursor: pointer; }
-  .interactive:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-  .interactive:hover { background: var(--bg-card); }
+  .interactive {
+    cursor: pointer;
+  }
+  .interactive:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  .interactive:hover {
+    background: var(--bg-card);
+  }
   .avatar {
     display: inline-grid;
     place-items: center;
@@ -1339,8 +1566,14 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
     font-weight: var(--fw-bold);
     font-size: var(--fs-xs);
   }
-  .name { color: var(--fg-primary); }
-  .xp { color: var(--sky-300); font-weight: var(--fw-semibold); margin-left: var(--sp-1); }
+  .name {
+    color: var(--fg-primary);
+  }
+  .xp {
+    color: var(--sky-300);
+    font-weight: var(--fw-semibold);
+    margin-left: var(--sp-1);
+  }
   ```
 
   **Verify**: type-check + stylelint pass.
@@ -1364,8 +1597,11 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
     critical?: number;
   }
 
-  function level(seconds: number, warning: number, critical: number):
-    'normal' | 'warning' | 'critical' {
+  function level(
+    seconds: number,
+    warning: number,
+    critical: number,
+  ): 'normal' | 'warning' | 'critical' {
     if (seconds <= critical) return 'critical';
     if (seconds <= warning) return 'warning';
     return 'normal';
@@ -1373,13 +1609,18 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
 
   function formatMmSs(seconds: number): string {
     const s = Math.max(0, Math.floor(seconds));
-    const mm = Math.floor(s / 60).toString().padStart(2, '0');
+    const mm = Math.floor(s / 60)
+      .toString()
+      .padStart(2, '0');
     const ss = (s % 60).toString().padStart(2, '0');
     return `${mm}:${ss}`;
   }
 
   export function Countdown({
-    seconds, compact = false, warning = 20, critical = 10,
+    seconds,
+    compact = false,
+    warning = 20,
+    critical = 10,
   }: CountdownProps): JSX.Element {
     const state = level(seconds, warning, critical);
     return (
@@ -1423,9 +1664,18 @@ Work layer-by-layer: layout → common → ui → game → icons barrel. Within 
     box-shadow: var(--glow-yellow);
     font-variant-numeric: tabular-nums;
   }
-  .compact { font-size: var(--fs-lg); padding: var(--sp-1) var(--sp-3); }
-  .warning { color: var(--orange-500); box-shadow: 0 0 20px rgba(240, 133, 25, 0.4); }
-  .critical { color: var(--team-red); box-shadow: var(--glow-red); }
+  .compact {
+    font-size: var(--fs-lg);
+    padding: var(--sp-1) var(--sp-3);
+  }
+  .warning {
+    color: var(--orange-500);
+    box-shadow: 0 0 20px rgba(240, 133, 25, 0.4);
+  }
+  .critical {
+    color: var(--team-red);
+    box-shadow: var(--glow-red);
+  }
   ```
 
   **Verify**: type-check + stylelint pass. Write a quick throwaway usage in `App.tsx` (e.g., `<Countdown seconds={30} />`, then `seconds={15}`, then `seconds={8}`) and confirm color transitions.
@@ -1564,7 +1814,11 @@ Open [contracts/primitives.contract.md](./contracts/primitives.contract.md) side
   }
 
   export function GridCell({
-    state = 'empty', size = 56, label, onClick, justClaimed = false,
+    state = 'empty',
+    size = 56,
+    label,
+    onClick,
+    justClaimed = false,
   }: GridCellProps): JSX.Element {
     const interactive = state !== 'disabled' && Boolean(onClick);
     const Tag = interactive ? 'button' : 'div';
@@ -1607,12 +1861,29 @@ Open [contracts/primitives.contract.md](./contracts/primitives.contract.md) side
     padding: 0;
     transition: background-color 120ms var(--ease-out);
   }
-  button.cell { cursor: pointer; }
-  button.cell:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-  .empty { background: var(--cell-empty); border-color: var(--cell-empty-border); }
-  .hover { background: var(--cell-hover); border-color: var(--cell-hover-border); }
-  .own { background: var(--cell-own); border-color: transparent; }
-  .opponent { background: var(--cell-opponent); border-color: transparent; }
+  button.cell {
+    cursor: pointer;
+  }
+  button.cell:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+  .empty {
+    background: var(--cell-empty);
+    border-color: var(--cell-empty-border);
+  }
+  .hover {
+    background: var(--cell-hover);
+    border-color: var(--cell-hover-border);
+  }
+  .own {
+    background: var(--cell-own);
+    border-color: transparent;
+  }
+  .opponent {
+    background: var(--cell-opponent);
+    border-color: transparent;
+  }
   .disabled {
     background: var(--cell-disabled);
     border-color: transparent;
@@ -1655,7 +1926,9 @@ Open [contracts/primitives.contract.md](./contracts/primitives.contract.md) side
       <Shell>
         <div style={{ display: 'flex', gap: 'var(--sp-4)', alignItems: 'center' }}>
           <GridCell key={pulseKey} state="own" size={72} justClaimed />
-          <button type="button" onClick={() => setPulseKey((k) => k + 1)}>Trigger claim pulse</button>
+          <button type="button" onClick={() => setPulseKey((k) => k + 1)}>
+            Trigger claim pulse
+          </button>
         </div>
         <div style={{ marginTop: 'var(--sp-6)' }}>
           <Countdown seconds={seconds} critical={10} warning={20} />
@@ -1943,7 +2216,9 @@ Open [contracts/primitives.contract.md](./contracts/primitives.contract.md) side
           runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa'] },
         });
       })();
-      return () => { cancelled = true; };
+      return () => {
+        cancelled = true;
+      };
     }, []);
     if (!import.meta.env.DEV) return null;
     return (
@@ -1959,8 +2234,8 @@ Open [contracts/primitives.contract.md](./contracts/primitives.contract.md) side
           fontSize: 'var(--fs-sm)',
         }}
       >
-        Axe-core runs on every render. Open the browser console to see reported
-        WCAG 2.1 AA violations (if any).
+        Axe-core runs on every render. Open the browser console to see reported WCAG 2.1 AA
+        violations (if any).
       </aside>
     );
   }
@@ -2000,19 +2275,23 @@ Open [contracts/primitives.contract.md](./contracts/primitives.contract.md) side
 
   export function Showcase(): JSX.Element {
     return (
-      <div style={{
-        minHeight: '100vh',
-        background: 'var(--bg-page)',
-        color: 'var(--fg-primary)',
-        fontFamily: 'var(--font-ui)',
-        padding: 'var(--sp-8)',
-      }}>
-        <header style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 'var(--sp-8)',
-        }}>
+      <div
+        style={{
+          minHeight: '100vh',
+          background: 'var(--bg-page)',
+          color: 'var(--fg-primary)',
+          fontFamily: 'var(--font-ui)',
+          padding: 'var(--sp-8)',
+        }}
+      >
+        <header
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 'var(--sp-8)',
+          }}
+        >
           <h1 className="h1">Zonite — Phase 1 Showcase</h1>
           <ReducedMotionToggle />
         </header>
@@ -2100,6 +2379,7 @@ Open [contracts/primitives.contract.md](./contracts/primitives.contract.md) side
 
   ```markdown
   ## Recent Changes
+
   - 003-design-handoff: Adopted Claude Design handoff bundle as the authoritative visual source. Tokens live in `apps/frontend/src/styles/tokens.css`; animations in `apps/frontend/src/styles/animations.css`. Component libraries shipped under `apps/frontend/src/components/{layout,ui,common,game}/`. Dev-only `/_showcase` route for visual + a11y verification. Lint-enforced no-hex / no-raw-font-family in frontend source.
   - 001-foundation-setup: Added TypeScript ^5.7 (pinned at repo root, inherited by all packages).
   ```

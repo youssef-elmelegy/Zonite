@@ -4,9 +4,9 @@
 
 ## Tiers
 
-| Tier name | Env var pair | Default | Scope |
-| --------- | ------------ | ------- | ----- |
-| `global`  | `THROTTLE_GLOBAL_TTL` / `THROTTLE_GLOBAL_LIMIT` | 60 s / 100 req | every route (excluded: none) |
+| Tier name | Env var pair                                    | Default        | Scope                                                                                       |
+| --------- | ----------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------- |
+| `global`  | `THROTTLE_GLOBAL_TTL` / `THROTTLE_GLOBAL_LIMIT` | 60 s / 100 req | every route (excluded: none)                                                                |
 | `auth`    | `THROTTLE_AUTH_TTL` / `THROTTLE_AUTH_LIMIT`     | 60 s / 5 req   | `POST /auth/signup`, `POST /auth/login`, `POST /auth/send-otp`, `POST /auth/reset-password` |
 
 **Invariant** (env parse-time): `THROTTLE_AUTH_LIMIT < THROTTLE_GLOBAL_LIMIT`. Zod's `.superRefine` enforces this at startup; violation exits non-zero.

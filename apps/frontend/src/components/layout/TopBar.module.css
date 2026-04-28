@@ -35,9 +35,6 @@
 }
 
 .logo {
-  background: var(--fg-primary);
-  border-radius: var(--radius-sm);
-  padding: 4px;
 }
 
 .wordmark {

@@ -31,25 +31,31 @@ INDEXES
 ### Drizzle schema (planned; lives at `apps/backend/src/db/schema/users.ts`)
 
 ```ts
-import { pgTable, uuid, text, timestamp, index } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { pgTable, uuid, text, timestamp, index } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 export const users = pgTable(
-  "users",
+  'users',
   {
-    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-    email: text("email").notNull().unique(),
-    passwordHash: text("password_hash").notNull(),
-    role: text("role").notNull().default("user"),
-    refreshTokenNonce: text("refresh_token_nonce"),
-    resetOtpHash: text("reset_otp_hash"),
-    resetOtpExpiresAt: timestamp("reset_otp_expires_at", { withTimezone: true }),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().default(sql`now()`),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().default(sql`now()`),
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    email: text('email').notNull().unique(),
+    passwordHash: text('password_hash').notNull(),
+    role: text('role').notNull().default('user'),
+    refreshTokenNonce: text('refresh_token_nonce'),
+    resetOtpHash: text('reset_otp_hash'),
+    otpExpiresAt: timestamp('reset_otp_expires_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .default(sql`now()`),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .default(sql`now()`),
   },
   (t) => ({
-    resetOtpIdx: index("users_reset_otp_expires_at_idx").on(t.resetOtpExpiresAt),
-  })
+    resetOtpIdx: index('users_reset_otp_expires_at_idx').on(t.otpExpiresAt),
+  }),
 );
 
 export type User = typeof users.$inferSelect;
@@ -58,14 +64,14 @@ export type NewUser = typeof users.$inferInsert;
 
 ### Validation rules (enforced at controller DTOs + service layer)
 
-| Field | Rule | Where enforced |
-| ----- | ---- | -------------- |
-| `email` | RFC 5321 shape, ≤ 254 chars, lowercased before insert | `SignupDto.email` class-validator `@IsEmail()` + service `.toLowerCase()` |
-| `password` (plaintext, request-only) | 8 ≤ len ≤ 128, at least 1 letter + 1 digit | `SignupDto.password`, `ResetPasswordDto.newPassword` |
-| `passwordHash` (stored) | bcrypt with `$2b$` prefix; never logged | `AuthService.hashPassword()` |
-| `role` | `'user'` default on signup; admin role set out-of-band (not exposed via API in Phase 2) | DB default + DTO whitelist (no role in signup body) |
-| `reset_otp_hash` | 6-digit numeric OTP bcrypt-hashed; never stored plaintext | `AuthService.requestPasswordReset()` |
-| `reset_otp_expires_at` | `now() + JWT_RESET_PASSWORD_EXPIRES_IN` (default 1 h) | same service |
+| Field                                | Rule                                                                                    | Where enforced                                                            |
+| ------------------------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `email`                              | RFC 5321 shape, ≤ 254 chars, lowercased before insert                                   | `SignupDto.email` class-validator `@IsEmail()` + service `.toLowerCase()` |
+| `password` (plaintext, request-only) | 8 ≤ len ≤ 128, at least 1 letter + 1 digit                                              | `SignupDto.password`, `ResetPasswordDto.newPassword`                      |
+| `passwordHash` (stored)              | bcrypt with `$2b$` prefix; never logged                                                 | `AuthService.hashPassword()`                                              |
+| `role`                               | `'user'` default on signup; admin role set out-of-band (not exposed via API in Phase 2) | DB default + DTO whitelist (no role in signup body)                       |
+| `reset_otp_hash`                     | 6-digit numeric OTP bcrypt-hashed; never stored plaintext                               | `AuthService.requestPasswordReset()`                                      |
+| `reset_otp_expires_at`               | `now() + JWT_RESET_PASSWORD_EXPIRES_IN` (default 1 h)                                   | same service                                                              |
 
 ### Lifecycle / state transitions
 
@@ -96,18 +102,18 @@ There is **no** soft-delete or deactivate flow in Phase 2.
 
 ```ts
 export type SuccessResponse<T> = {
-  code: number;          // HTTP status mirror (200, 201, etc.)
+  code: number; // HTTP status mirror (200, 201, etc.)
   success: true;
   message: string;
   data: T;
-  timestamp: string;     // ISO-8601
+  timestamp: string; // ISO-8601
 };
 
 export type ErrorResponse = {
   code: number;
   success: false;
   message: string;
-  error?: string;        // category, e.g. "rate_limited", "validation_failed", "unauthorized"
+  error?: string; // category, e.g. "rate_limited", "validation_failed", "unauthorized"
   data?: Record<string, unknown>; // optional field-level errors or extra context
   timestamp: string;
 };
@@ -121,7 +127,7 @@ export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
 ```ts
 export type PaginationQuery = {
-  page?: number;     // 1-indexed; default 1
+  page?: number; // 1-indexed; default 1
   pageSize?: number; // default 20, max 100
 };
 
@@ -147,21 +153,21 @@ export type PaginatedResponse<T> = SuccessResponse<PaginatedData<T>>;
 export type AuthTokens = {
   accessToken: string;
   refreshToken?: string; // present in body for non-browser clients; cookie-based clients receive it via Set-Cookie
-  accessTokenExpiresIn: number;  // seconds
+  accessTokenExpiresIn: number; // seconds
   refreshTokenExpiresIn: number; // seconds
 };
 
 export type AccessTokenPayload = {
-  sub: string;   // user id
+  sub: string; // user id
   email: string;
-  role: "user" | "admin";
+  role: 'user' | 'admin';
   iat: number;
   exp: number;
 };
 
 export type RefreshTokenPayload = {
   sub: string;
-  jti: string;   // matched against users.refresh_token_nonce
+  jti: string; // matched against users.refresh_token_nonce
   iat: number;
   exp: number;
 };
@@ -173,11 +179,11 @@ export type RefreshTokenPayload = {
 export type CurrentUser = {
   id: string;
   email: string;
-  role: "user" | "admin";
+  role: 'user' | 'admin';
 };
 ```
 
-This is the *safe* projection — never carries `passwordHash`, tokens, or OTP state.
+This is the _safe_ projection — never carries `passwordHash`, tokens, or OTP state.
 
 ---
 
@@ -187,29 +193,29 @@ This is the *safe* projection — never carries `passwordHash`, tokens, or OTP s
 
 ```ts
 export type Env = {
-  NODE_ENV: "development" | "production";
+  NODE_ENV: 'development' | 'production';
   PORT: number;
-  LOG_LEVEL: "silent" | "error" | "warn" | "info" | "debug";
+  LOG_LEVEL: 'silent' | 'error' | 'warn' | 'info' | 'debug';
 
   DATABASE_URL: string;
 
   JWT_ACCESS_SECRET: string;
-  JWT_ACCESS_EXPIRES_IN: number;       // seconds
+  JWT_ACCESS_EXPIRES_IN: number; // seconds
   JWT_REFRESH_SECRET: string;
-  JWT_REFRESH_EXPIRES_IN: number;      // seconds
+  JWT_REFRESH_EXPIRES_IN: number; // seconds
   JWT_RESET_PASSWORD_EXPIRES_IN: number;
 
   COOKIE_SECRET: string;
-  CORS_ORIGINS: string[];              // comma-separated → parsed array
+  CORS_ORIGINS: string[]; // comma-separated → parsed array
 
-  BCRYPT_ROUNDS: number;               // default 12
+  BCRYPT_ROUNDS: number; // default 12
 
-  THROTTLE_GLOBAL_TTL: number;         // seconds, default 60
-  THROTTLE_GLOBAL_LIMIT: number;       // default 100
-  THROTTLE_AUTH_TTL: number;           // default 60
-  THROTTLE_AUTH_LIMIT: number;         // default 5
+  THROTTLE_GLOBAL_TTL: number; // seconds, default 60
+  THROTTLE_GLOBAL_LIMIT: number; // default 100
+  THROTTLE_AUTH_TTL: number; // default 60
+  THROTTLE_AUTH_LIMIT: number; // default 5
 
-  MAIL_TRANSPORT: "console" | "smtp" | "stream";
+  MAIL_TRANSPORT: 'console' | 'smtp' | 'stream';
   MAIL_HOST?: string;
   MAIL_PORT?: number;
   MAIL_USER?: string;
@@ -244,16 +250,16 @@ Phase 2's only persisted entity is `users`. No foreign keys, no joins. Later pha
 
 ## 5. State transitions — summary table
 
-| Source state | Event | Target state | Side effects |
-| ------------ | ----- | ------------ | ------------ |
-| (no user) | `POST /auth/signup` | row exists, active | bcrypt hash stored; `201` + access token + refresh cookie |
-| active | `POST /auth/login` | active, tokens issued | no row change; tokens returned |
-| active | `POST /auth/refresh` (with valid refresh + matching `jti`) | active, new access token | no DB write in plan's minimal path; `jti` stays valid until reset |
-| active | `POST /auth/send-otp` (email exists) | active, OTP set | `reset_otp_hash` + `reset_otp_expires_at` populated; email dispatched |
-| active | `POST /auth/send-otp` (email doesn't exist) | no change | no email; response identical (enumeration mitigation) |
-| active, OTP set | `POST /auth/reset-password` | active, password rotated | `password_hash` updated; `refresh_token_nonce` rotated; `reset_otp_*` cleared; all outstanding refresh tokens invalidated |
-| active | `POST /auth/change-password` (authenticated) | active, password rotated | same as reset but initiated by authenticated user |
-| active | `POST /auth/logout` | active | `Set-Cookie: refresh_token=; Max-Age=0`; **no** DB write (see research §16 deferred Q) |
+| Source state    | Event                                                      | Target state             | Side effects                                                                                                              |
+| --------------- | ---------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| (no user)       | `POST /auth/signup`                                        | row exists, active       | bcrypt hash stored; `201` + access token + refresh cookie                                                                 |
+| active          | `POST /auth/login`                                         | active, tokens issued    | no row change; tokens returned                                                                                            |
+| active          | `POST /auth/refresh` (with valid refresh + matching `jti`) | active, new access token | no DB write in plan's minimal path; `jti` stays valid until reset                                                         |
+| active          | `POST /auth/send-otp` (email exists)                       | active, OTP set          | `reset_otp_hash` + `reset_otp_expires_at` populated; email dispatched                                                     |
+| active          | `POST /auth/send-otp` (email doesn't exist)                | no change                | no email; response identical (enumeration mitigation)                                                                     |
+| active, OTP set | `POST /auth/reset-password`                                | active, password rotated | `password_hash` updated; `refresh_token_nonce` rotated; `reset_otp_*` cleared; all outstanding refresh tokens invalidated |
+| active          | `POST /auth/change-password` (authenticated)               | active, password rotated | same as reset but initiated by authenticated user                                                                         |
+| active          | `POST /auth/logout`                                        | active                   | `Set-Cookie: refresh_token=; Max-Age=0`; **no** DB write (see research §16 deferred Q)                                    |
 
 ---
 

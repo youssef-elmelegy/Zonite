@@ -38,19 +38,19 @@ Sections A, B, and C appear in that order. No other content lives in this file.
 
 ## Token category table (canonical category assignment for every variable)
 
-| Category    | Tokens (non-exhaustive example)                                                          | Notes                                        |
-| ----------- | ---------------------------------------------------------------------------------------- | -------------------------------------------- |
-| brand       | `--ink-900/850/800/700`, `--accent-yellow*`, `--magenta-*`, `--fire-red/pink`, `--sky-*`, `--cyan-*`, `--lime-*`, `--orange-500`, `--peach-300`, `--fg-*` | Raw brand palette                            |
-| semantic    | `--bg-page/elevated/card/card-solid/overlay`, `--border-subtle/default/strong/accent`, `--focus-ring` | Named roles; reference brand tokens via `var(...)` |
-| team-cell   | `--team-red*`, `--team-blue*`, `--team-neutral`, `--cell-empty*`, `--cell-hover*`, `--cell-own`, `--cell-opponent`, `--cell-disabled` | Game-specific aliases                        |
-| gradient    | `--grad-fire`, `--grad-magenta-glass/solid`, `--grad-lime`, `--grad-page-veil`           | Multi-stop gradients for signature surfaces  |
-| radius      | `--radius-xs` (4) → `--radius-3xl` (40), `--radius-pill` (100px), `--radius-full` (9999px) | —                                          |
-| spacing     | `--sp-0` … `--sp-16` (4pt scale)                                                         | —                                            |
-| typography  | `--font-ui`, `--font-display`, `--font-mono`, `--fw-regular/medium/semibold/bold`, `--fs-xs` … `--fs-3xl`, `--lh-tight/snug/normal/loose` | Font families resolve to `@font-face`-declared families |
-| motion      | `--ease-out`, `--ease-in-out`, `--dur-fast/base/slow`                                    | Consumed by `animations.css` and primitives  |
-| breakpoint  | `--bp-mobile` (375), `--bp-tablet` (768), `--bp-desktop` (1280), `--bp-wide` (1920)      | Reference values; actual media queries live near consumers |
-| blur        | `--blur-sm/md/lg`                                                                        | For glass surfaces                           |
-| shadow/glow | `--glow-sky/yellow/magenta/red`, `--shadow-card/lift`                                    | —                                           |
+| Category    | Tokens (non-exhaustive example)                                                                                                                           | Notes                                                      |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| brand       | `--ink-900/850/800/700`, `--accent-yellow*`, `--magenta-*`, `--fire-red/pink`, `--sky-*`, `--cyan-*`, `--lime-*`, `--orange-500`, `--peach-300`, `--fg-*` | Raw brand palette                                          |
+| semantic    | `--bg-page/elevated/card/card-solid/overlay`, `--border-subtle/default/strong/accent`, `--focus-ring`                                                     | Named roles; reference brand tokens via `var(...)`         |
+| team-cell   | `--team-red*`, `--team-blue*`, `--team-neutral`, `--cell-empty*`, `--cell-hover*`, `--cell-own`, `--cell-opponent`, `--cell-disabled`                     | Game-specific aliases                                      |
+| gradient    | `--grad-fire`, `--grad-magenta-glass/solid`, `--grad-lime`, `--grad-page-veil`                                                                            | Multi-stop gradients for signature surfaces                |
+| radius      | `--radius-xs` (4) → `--radius-3xl` (40), `--radius-pill` (100px), `--radius-full` (9999px)                                                                | —                                                          |
+| spacing     | `--sp-0` … `--sp-16` (4pt scale)                                                                                                                          | —                                                          |
+| typography  | `--font-ui`, `--font-display`, `--font-mono`, `--fw-regular/medium/semibold/bold`, `--fs-xs` … `--fs-3xl`, `--lh-tight/snug/normal/loose`                 | Font families resolve to `@font-face`-declared families    |
+| motion      | `--ease-out`, `--ease-in-out`, `--dur-fast/base/slow`                                                                                                     | Consumed by `animations.css` and primitives                |
+| breakpoint  | `--bp-mobile` (375), `--bp-tablet` (768), `--bp-desktop` (1280), `--bp-wide` (1920)                                                                       | Reference values; actual media queries live near consumers |
+| blur        | `--blur-sm/md/lg`                                                                                                                                         | For glass surfaces                                         |
+| shadow/glow | `--glow-sky/yellow/magenta/red`, `--shadow-card/lift`                                                                                                     | —                                                          |
 
 The full token list comes verbatim from the handoff's `colors_and_type.css`. This table is the consumer-facing category summary; the source file is the exhaustive list.
 

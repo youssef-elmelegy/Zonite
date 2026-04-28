@@ -1,10 +1,10 @@
-import { ExecutionContext, Injectable } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { AuthGuard } from "@nestjs/passport";
-import { IS_PUBLIC_KEY } from "@/common/decorators";
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { IS_PUBLIC_KEY } from '@/common/decorators';
 
 @Injectable()
-export class FlexibleJwtGuard extends AuthGuard("jwt") {
+export class FlexibleJwtGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
     super();
   }
@@ -22,8 +22,8 @@ export class FlexibleJwtGuard extends AuthGuard("jwt") {
     return super.canActivate(context);
   }
 
-  handleRequest(err: unknown, user: unknown) {
-    // This guard allows requests to proceed even without auth, but sets user if available
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  override handleRequest(_err: any, user: any): any {
     return user || null;
   }
 }

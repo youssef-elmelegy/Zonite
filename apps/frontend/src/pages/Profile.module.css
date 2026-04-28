@@ -1,0 +1,75 @@
+/* Profile page — responsive layout classes */
+
+.matchesScroll {
+  max-height: 480px;
+  overflow-y: auto;
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--magenta-700) rgba(255, 255, 255, 0.04);
+}
+
+.matchesScroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.matchesScroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 100px;
+}
+
+.matchesScroll::-webkit-scrollbar-thumb {
+  background: var(--magenta-700);
+  border-radius: 100px;
+}
+
+.matchesScroll::-webkit-scrollbar-thumb:hover {
+  background: var(--magenta-500);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.matchRow {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.matchRowXp {
+  display: none;
+}
+
+@media (width >= 640px) {
+  .matchRow {
+    grid-template-columns: 48px 1fr auto auto;
+    gap: 16px;
+    padding: 14px 20px;
+  }
+
+  .matchRowXp {
+    display: block;
+    text-align: right;
+  }
+}
+
+@media (width >= 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .settingsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

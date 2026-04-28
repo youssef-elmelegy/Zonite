@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Zonite Auth API (Phase 2)
-  version: "0.1.0"
+  version: '0.1.0'
   description: >
     Auth endpoints live at Phase 2 exit. Mirrors Sikka's auth controller surface verbatim.
     All responses conform to the shared envelope (see contracts/http-envelope.md).
@@ -26,35 +26,35 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/SignupBody" }
+            schema: { $ref: '#/components/schemas/SignupBody' }
       responses:
-        "201":
+        '201':
           description: User created
           headers:
             Set-Cookie:
               schema: { type: string }
-              description: "refresh_token=...; HttpOnly; Path=/api/auth"
+              description: 'refresh_token=...; HttpOnly; Path=/api/auth'
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeAuthTokens" }
-        "409":
+              schema: { $ref: '#/components/schemas/EnvelopeAuthTokens' }
+        '409':
           description: Email already registered
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeError" }
-        "422":
+              schema: { $ref: '#/components/schemas/EnvelopeError' }
+        '422':
           description: Validation failed
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeError" }
-        "429":
+              schema: { $ref: '#/components/schemas/EnvelopeError' }
+        '429':
           description: Rate limit exceeded
           headers:
             Retry-After:
               schema: { type: integer }
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeError" }
+              schema: { $ref: '#/components/schemas/EnvelopeError' }
 
   /auth/login:
     post:
@@ -64,23 +64,33 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/LoginBody" }
+            schema: { $ref: '#/components/schemas/LoginBody' }
       responses:
-        "200":
+        '200':
           description: Logged in
           headers:
             Set-Cookie:
               schema: { type: string }
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeAuthTokens" }
-        "401":
+              schema: { $ref: '#/components/schemas/EnvelopeAuthTokens' }
+        '401':
           description: Invalid credentials
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeError" }
-        "422": { description: Validation failed, content: { application/json: { schema: { $ref: "#/components/schemas/EnvelopeError" } } } }
-        "429": { description: Rate limit exceeded, content: { application/json: { schema: { $ref: "#/components/schemas/EnvelopeError" } } } }
+              schema: { $ref: '#/components/schemas/EnvelopeError' }
+        '422':
+          {
+            description: Validation failed,
+            content:
+              { application/json: { schema: { $ref: '#/components/schemas/EnvelopeError' } } },
+          }
+        '429':
+          {
+            description: Rate limit exceeded,
+            content:
+              { application/json: { schema: { $ref: '#/components/schemas/EnvelopeError' } } },
+          }
 
   /auth/refresh:
     post:
@@ -94,18 +104,18 @@ paths:
         required: false
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/RefreshBody" }
+            schema: { $ref: '#/components/schemas/RefreshBody' }
       responses:
-        "200":
+        '200':
           description: New access token issued
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeAuthTokens" }
-        "401":
+              schema: { $ref: '#/components/schemas/EnvelopeAuthTokens' }
+        '401':
           description: Refresh token missing, expired, or revoked
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeError" }
+              schema: { $ref: '#/components/schemas/EnvelopeError' }
 
   /auth/logout:
     post:
@@ -116,15 +126,15 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: Logged out
           headers:
             Set-Cookie:
               schema: { type: string }
-              description: "refresh_token=; Max-Age=0"
+              description: 'refresh_token=; Max-Age=0'
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
+              schema: { $ref: '#/components/schemas/EnvelopeEmpty' }
 
   /auth/send-otp:
     post:
@@ -137,14 +147,19 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/SendOtpBody" }
+            schema: { $ref: '#/components/schemas/SendOtpBody' }
       responses:
-        "200":
+        '200':
           description: Request accepted (always; reveals nothing about account existence)
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
-        "429": { description: Rate limit exceeded, content: { application/json: { schema: { $ref: "#/components/schemas/EnvelopeError" } } } }
+              schema: { $ref: '#/components/schemas/EnvelopeEmpty' }
+        '429':
+          {
+            description: Rate limit exceeded,
+            content:
+              { application/json: { schema: { $ref: '#/components/schemas/EnvelopeError' } } },
+          }
 
   /auth/verify-otp:
     post:
@@ -154,18 +169,18 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/VerifyOtpBody" }
+            schema: { $ref: '#/components/schemas/VerifyOtpBody' }
       responses:
-        "200":
+        '200':
           description: OTP valid
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
-        "400":
+              schema: { $ref: '#/components/schemas/EnvelopeEmpty' }
+        '400':
           description: OTP invalid or expired
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeError" }
+              schema: { $ref: '#/components/schemas/EnvelopeError' }
 
   /auth/reset-password:
     post:
@@ -178,23 +193,23 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/ResetPasswordBody" }
+            schema: { $ref: '#/components/schemas/ResetPasswordBody' }
       responses:
-        "200":
+        '200':
           description: Password updated
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
-        "400":
+              schema: { $ref: '#/components/schemas/EnvelopeEmpty' }
+        '400':
           description: OTP invalid or expired
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeError" }
-        "422":
+              schema: { $ref: '#/components/schemas/EnvelopeError' }
+        '422':
           description: New-password validation failed
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeError" }
+              schema: { $ref: '#/components/schemas/EnvelopeError' }
 
   /auth/change-password:
     post:
@@ -206,14 +221,19 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: "#/components/schemas/ChangePasswordBody" }
+            schema: { $ref: '#/components/schemas/ChangePasswordBody' }
       responses:
-        "200":
+        '200':
           description: Password updated
           content:
             application/json:
-              schema: { $ref: "#/components/schemas/EnvelopeEmpty" }
-        "401": { description: Current password incorrect, content: { application/json: { schema: { $ref: "#/components/schemas/EnvelopeError" } } } }
+              schema: { $ref: '#/components/schemas/EnvelopeEmpty' }
+        '401':
+          {
+            description: Current password incorrect,
+            content:
+              { application/json: { schema: { $ref: '#/components/schemas/EnvelopeError' } } },
+          }
 
 components:
   securitySchemes:
@@ -227,20 +247,20 @@ components:
       type: object
       required: [email, password]
       properties:
-        email:    { type: string, format: email, maxLength: 254 }
+        email: { type: string, format: email, maxLength: 254 }
         password: { type: string, minLength: 8, maxLength: 128 }
 
     LoginBody:
       type: object
       required: [email, password]
       properties:
-        email:    { type: string, format: email }
+        email: { type: string, format: email }
         password: { type: string }
 
     RefreshBody:
       type: object
       properties:
-        refreshToken: { type: string, description: "Optional when using the refresh_token cookie" }
+        refreshToken: { type: string, description: 'Optional when using the refresh_token cookie' }
 
     SendOtpBody:
       type: object
@@ -253,14 +273,14 @@ components:
       required: [email, otp]
       properties:
         email: { type: string, format: email }
-        otp:   { type: string, pattern: "^[0-9]{6}$" }
+        otp: { type: string, pattern: '^[0-9]{6}$' }
 
     ResetPasswordBody:
       type: object
       required: [email, otp, newPassword]
       properties:
-        email:       { type: string, format: email }
-        otp:         { type: string, pattern: "^[0-9]{6}$" }
+        email: { type: string, format: email }
+        otp: { type: string, pattern: '^[0-9]{6}$' }
         newPassword: { type: string, minLength: 8, maxLength: 128 }
 
     ChangePasswordBody:
@@ -268,50 +288,63 @@ components:
       required: [currentPassword, newPassword]
       properties:
         currentPassword: { type: string }
-        newPassword:     { type: string, minLength: 8, maxLength: 128 }
+        newPassword: { type: string, minLength: 8, maxLength: 128 }
 
     AuthTokens:
       type: object
       required: [accessToken, accessTokenExpiresIn, refreshTokenExpiresIn]
       properties:
-        accessToken:            { type: string }
-        refreshToken:           { type: string, description: "Only present for body-based clients; browser receives via Set-Cookie" }
-        accessTokenExpiresIn:   { type: integer }
-        refreshTokenExpiresIn:  { type: integer }
+        accessToken: { type: string }
+        refreshToken:
+          {
+            type: string,
+            description: 'Only present for body-based clients; browser receives via Set-Cookie',
+          }
+        accessTokenExpiresIn: { type: integer }
+        refreshTokenExpiresIn: { type: integer }
 
     SuccessEnvelopeBase:
       type: object
       required: [code, success, message, timestamp]
       properties:
-        code:      { type: integer }
-        success:   { type: boolean, enum: [true] }
-        message:   { type: string }
+        code: { type: integer }
+        success: { type: boolean, enum: [true] }
+        message: { type: string }
         timestamp: { type: string, format: date-time }
 
     EnvelopeAuthTokens:
       allOf:
-        - $ref: "#/components/schemas/SuccessEnvelopeBase"
+        - $ref: '#/components/schemas/SuccessEnvelopeBase'
         - type: object
           required: [data]
           properties:
-            data: { $ref: "#/components/schemas/AuthTokens" }
+            data: { $ref: '#/components/schemas/AuthTokens' }
 
     EnvelopeEmpty:
       allOf:
-        - $ref: "#/components/schemas/SuccessEnvelopeBase"
+        - $ref: '#/components/schemas/SuccessEnvelopeBase'
         - type: object
           properties:
-            data: { type: "null", nullable: true }
+            data: { type: 'null', nullable: true }
 
     EnvelopeError:
       type: object
       required: [code, success, message, error, timestamp]
       properties:
-        code:      { type: integer }
-        success:   { type: boolean, enum: [false] }
-        message:   { type: string }
+        code: { type: integer }
+        success: { type: boolean, enum: [false] }
+        message: { type: string }
         error:
           type: string
-          enum: [validation_failed, unauthorized, forbidden, not_found, conflict, rate_limited, server_error]
-        data:      { type: object, additionalProperties: true }
+          enum:
+            [
+              validation_failed,
+              unauthorized,
+              forbidden,
+              not_found,
+              conflict,
+              rate_limited,
+              server_error,
+            ]
+        data: { type: object, additionalProperties: true }
         timestamp: { type: string, format: date-time }

@@ -11,7 +11,7 @@
 - [x] Written for non-technical stakeholders
 - [x] All mandatory sections completed
 
-> Note: The spec names concrete technologies (Drizzle, Scalar, Passport JWT, Zod) in the **Assumptions** section only, because "Sikka Parity" is the feature's core constraint and those names identify *what to mirror*. Core requirements (FR-*) and success criteria (SC-*) remain technology-agnostic in wording (e.g., "a declared schema", "an interactive API documentation portal") so they stay verifiable without knowing the stack.
+> Note: The spec names concrete technologies (Drizzle, Scalar, Passport JWT, Zod) in the **Assumptions** section only, because "Sikka Parity" is the feature's core constraint and those names identify _what to mirror_. Core requirements (FR-_) and success criteria (SC-_) remain technology-agnostic in wording (e.g., "a declared schema", "an interactive API documentation portal") so they stay verifiable without knowing the stack.
 
 ## Requirement Completeness
 

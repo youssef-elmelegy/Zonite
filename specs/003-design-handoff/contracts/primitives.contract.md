@@ -15,6 +15,7 @@ For each primitive: `variants`, `states`, `documented_surface` (background token
 ### Layout primitives
 
 #### `Shell`
+
 - **Path**: `components/layout/Shell.tsx`
 - **Source**: `Shell.jsx::Shell`
 - **Variants**: `default` (shell wraps entire app)
@@ -25,6 +26,7 @@ For each primitive: `variants`, `states`, `documented_surface` (background token
 - **Keyboard**: not interactive.
 
 #### `TopBar`
+
 - **Path**: `components/layout/TopBar.tsx`
 - **Source**: `Shell.jsx::TopBar`
 - **Props sketch**: `{ onHome?: () => void; right?: ReactNode }`
@@ -35,6 +37,7 @@ For each primitive: `variants`, `states`, `documented_surface` (background token
 - **Keyboard**: logo link is a native `<a>` or `<button>` — Enter/Space activates.
 
 #### `CornerBlobs`
+
 - **Path**: `components/layout/CornerBlobs.tsx`
 - **Source**: `Shell.jsx::CornerBlobs`
 - **Props sketch**: `{ intensity?: 0 | 1 }`
@@ -45,6 +48,7 @@ For each primitive: `variants`, `states`, `documented_surface` (background token
 - **Keyboard**: `aria-hidden="true"` (purely decorative).
 
 #### `GridBg`
+
 - **Path**: `components/layout/GridBg.tsx`
 - **Source**: `Shell.jsx::GridBg`
 - **Variants**: `default`
@@ -57,6 +61,7 @@ For each primitive: `variants`, `states`, `documented_surface` (background token
 ### Common primitives
 
 #### `PlayerChip`
+
 - **Path**: `components/common/PlayerChip.tsx`
 - **Source**: `Shell.jsx::PlayerChip`
 - **Props sketch**: `{ player: string; xp?: number; onClick?: () => void }`
@@ -68,6 +73,7 @@ For each primitive: `variants`, `states`, `documented_surface` (background token
 - **Keyboard**: when interactive, Enter/Space activates; Tab reaches; focus ring via `--focus-ring`.
 
 #### `Countdown`
+
 - **Path**: `components/common/Countdown.tsx`
 - **Source**: `Countdown.jsx`
 - **Props sketch**: `{ seconds: number; compact?: boolean; warning?: number }`
@@ -80,6 +86,7 @@ For each primitive: `variants`, `states`, `documented_surface` (background token
 - **Contrast check**: critical-red digits on `--bg-card-solid` ≥ 4.5:1.
 
 #### Icons (barrel)
+
 - **Path**: `components/common/icons/index.ts`
 - **Exports**: brand + Lucide (see `data-model.md` entity #5 for the full list).
 - **A11y**: decorative by default (`aria-hidden="true"`); pass `title` to surface to screen readers.
@@ -89,6 +96,7 @@ For each primitive: `variants`, `states`, `documented_surface` (background token
 All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at minimum unless stated. All shipped on the same documented surface set unless specified.
 
 #### `Button`
+
 - **Props sketch**: `{ variant: 'primary' | 'secondary' | 'ghost' | 'link'; size?: 'sm' | 'md' | 'lg'; disabled?: boolean; loading?: boolean; onClick: () => void; leftIcon?: ReactNode; rightIcon?: ReactNode; children: ReactNode }`
 - **Variants**: `primary` (yellow filled), `secondary` (outlined), `ghost` (transparent), `link` (text-like)
 - **States**: `default`, `hover`, `focus`, `active`, `disabled`, `loading`
@@ -99,6 +107,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **Loading state**: includes an inline spinner icon (Lucide `IconLoader2` or a custom one) + `aria-busy="true"`. Disables interaction.
 
 #### `Input`
+
 - **Props sketch**: `{ type?: string; value: string; onChange: (v: string) => void; placeholder?: string; disabled?: boolean }`
 - **States**: `default`, `focus`, `disabled`, `readonly`, `invalid` (pair with `Field` for label + error)
 - **Documented surface**: `--bg-card-solid`, `--bg-elevated`
@@ -107,6 +116,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **Keyboard**: native `<input>`.
 
 #### `Field`
+
 - **Composition of**: label + `Input` + optional hint + optional inline error + optional right slot (icon / action)
 - **Props sketch**: `{ label: string; type?: string; value: string; onChange: (v: string) => void; placeholder?: string; error?: string; hint?: string; right?: ReactNode; autoComplete?: string }`
 - **States**: `default`, `focus`, `error`, `disabled`, `with-hint`, `with-right-slot`
@@ -115,6 +125,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **Keyboard**: label `htmlFor` pairs with input `id`; clicking label focuses input.
 
 #### `OtpField`
+
 - **Props sketch**: `{ value: string; onChange: (v: string) => void; length?: 6 }`
 - **States**: `default`, `focus` (on each slot), `filled`, `error` (optional)
 - **Documented surface**: `--bg-card-solid`
@@ -122,6 +133,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **Keyboard**: **first slot receives Tab**. Typing a digit auto-advances. Backspace on empty slot moves to previous slot. Arrow Left/Right move between slots. Paste distributes across slots. Focus-ring on the currently-active slot.
 
 #### `Badge`
+
 - **Props sketch**: `{ variant: 'red' | 'blue' | 'yellow' | 'neutral' | 'live'; children: ReactNode }`
 - **Variants**: `red` (team red), `blue` (team blue), `yellow` (accent), `neutral` (white on dark), `live` (cyan, pulsing)
 - **States**: `default`
@@ -130,6 +142,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **Keyboard**: not interactive.
 
 #### `Modal`
+
 - **Props sketch**: `{ open: boolean; onClose: () => void; title?: string; children: ReactNode; size?: 'sm' | 'md' | 'lg' }`
 - **Variants**: `sm`, `md`, `lg`
 - **States**: `closed`, `opening`, `open`, `closing`
@@ -140,6 +153,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **A11y**: `role="dialog"`, `aria-modal="true"`, `aria-labelledby` pointing at title.
 
 #### `Alert`
+
 - **Props sketch**: `{ variant: 'info' | 'success' | 'warn' | 'danger'; dismissible?: boolean; onDismiss?: () => void; children: ReactNode }`
 - **Variants**: `info` (sky), `success` (lime), `warn` (orange), `danger` (red)
 - **States**: `default`, `dismissed` (transitions out)
@@ -149,6 +163,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **A11y**: `role="status"` for info/success, `role="alert"` for warn/danger.
 
 #### `Avatar`
+
 - **Props sketch**: `{ src?: string; name: string; size?: 'sm' | 'md' | 'lg' | 'xl'; onClick?: () => void }`
 - **Variants**: `with-image`, `initials-only`, `interactive` (has onClick)
 - **States**: `default`, `hover` (if interactive), `focus`, `loading` (when image is decoding)
@@ -157,6 +172,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **A11y**: `img` with `alt={name}` for image; initials receive `aria-label={name}`.
 
 #### `Slider`
+
 - **Props sketch**: `{ label?: string; value: number; min: number; max: number; step?: number; onChange: (n: number) => void; unit?: string }`
 - **States**: `default`, `focus`, `disabled`, `dragging`
 - **Consumed tokens**: `--accent-yellow`, `--ink-900`, `--fg-muted` (track), `--glow-yellow` (thumb), `--radius-full`, `--sp-1`
@@ -165,6 +181,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **A11y**: native `<input type="range">` with `aria-label` + value annunciation.
 
 #### `SegButton` (segmented button group)
+
 - **Props sketch**: `{ options: Array<{ value: string; label: string }>; value: string; onChange: (v: string) => void; disabled?: boolean }`
 - **States**: per-button: `default`, `hover`, `focus`, `active` (selected), `disabled`
 - **Documented surface**: `--bg-elevated`
@@ -173,6 +190,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 - **A11y**: `role="radiogroup"` on the wrapper, `role="radio"` + `aria-checked` on each button.
 
 #### `Chip`
+
 - **Props sketch**: `{ variant: 'neutral' | 'brand' | 'success' | 'warn'; interactive?: boolean; onClick?: () => void; onClose?: () => void; children: ReactNode }`
 - **Variants**: `neutral`, `brand`, `success`, `warn`, with optional `interactive` and `closable` flags
 - **States**: `default`, `hover` (interactive), `focus`, `closing`
@@ -182,6 +200,7 @@ All UI primitives ship `default` / `hover` / `focus` / `active` / `disabled` at 
 ### Game primitive
 
 #### `GridCell`
+
 - **Path**: `components/game/GridCell.tsx`
 - **Source**: `GridCell.jsx` + `Game.jsx::Cell`
 - **Props sketch**: `{ state: 'empty' | 'own' | 'opponent' | 'hover' | 'disabled'; size?: number; label?: string; idx?: number; onClick?: () => void; justClaimed?: boolean }`

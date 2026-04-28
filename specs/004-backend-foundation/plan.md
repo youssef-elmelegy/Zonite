@@ -71,15 +71,15 @@ Evaluated against Zonite Constitution v1.0.0 (all five principles).
 
 Cross-check of every mandatory reuse clause:
 
-| Sikka mandate | Phase 2 plan |
-| ------------- | ------------ |
-| `successResponse()` / `errorResponse()` envelope | Vendored verbatim into `src/utils/response.handler.ts`; re-exports shape via `packages/shared`. |
-| Pagination helpers | Vendored Sikka `PaginationQueryDto` + response `meta` shape; sits in `src/common/dto/`. |
-| Auth module (JWT strategy, `JwtAuthGuard`, `@Public()`, `@CurrentUser()`, `FlexibleJwtGuard`, `RefreshTokenGuard`) | Full `modules/auth/` tree vendored: controllers, services, DTOs, decorators. No fork. |
-| Module layout (controllers/services/dto/decorators with barrel `index.ts`, `{Module}{Op}Decorator` naming) | Followed in the vendored auth module and in the existing `health` reference module (refactored in this phase). |
-| Env via Zod `env` object (`import { env } from "@/env"`) | Vendored `src/env.ts` schema; `@/*` path alias wired in `tsconfig.json`. |
-| Scalar docs pipeline | Vendored `main.ts` Scalar block at `/api/docs`. |
-| Global `ValidationPipe` + exception filter chain | Same `main.ts` settings (`whitelist`, `forbidNonWhitelisted`, `transform`); global filter normalizes all errors to Sikka envelope. |
+| Sikka mandate                                                                                                      | Phase 2 plan                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `successResponse()` / `errorResponse()` envelope                                                                   | Vendored verbatim into `src/utils/response.handler.ts`; re-exports shape via `packages/shared`.                                    |
+| Pagination helpers                                                                                                 | Vendored Sikka `PaginationQueryDto` + response `meta` shape; sits in `src/common/dto/`.                                            |
+| Auth module (JWT strategy, `JwtAuthGuard`, `@Public()`, `@CurrentUser()`, `FlexibleJwtGuard`, `RefreshTokenGuard`) | Full `modules/auth/` tree vendored: controllers, services, DTOs, decorators. No fork.                                              |
+| Module layout (controllers/services/dto/decorators with barrel `index.ts`, `{Module}{Op}Decorator` naming)         | Followed in the vendored auth module and in the existing `health` reference module (refactored in this phase).                     |
+| Env via Zod `env` object (`import { env } from "@/env"`)                                                           | Vendored `src/env.ts` schema; `@/*` path alias wired in `tsconfig.json`.                                                           |
+| Scalar docs pipeline                                                                                               | Vendored `main.ts` Scalar block at `/api/docs`.                                                                                    |
+| Global `ValidationPipe` + exception filter chain                                                                   | Same `main.ts` settings (`whitelist`, `forbidNonWhitelisted`, `transform`); global filter normalizes all errors to Sikka envelope. |
 
 ### III. Yalgamers Design Fidelity — ✅ N/A for this phase
 
@@ -257,9 +257,9 @@ packages/shared/
 
 One explicit-but-constitutional deviation worth calling out for Phase 2 readers:
 
-| Note | Why | Rejected alternative |
-| ---- | --- | -------------------- |
-| `common/filters/` directory created (Sikka sprinkles filter files without a dedicated folder). | Having one home for the global exception filter plus future WS filter (Phase 5) is cheaper to document in the Spek than tracing scattered files. | Matching Sikka's exact file placement was considered; rejected because the *behavior* is identical and the Spek pins the deviation explicitly — Principle II's "no reinvention" is about patterns, not pixel-identical file locations. |
+| Note                                                                                           | Why                                                                                                                                              | Rejected alternative                                                                                                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `common/filters/` directory created (Sikka sprinkles filter files without a dedicated folder). | Having one home for the global exception filter plus future WS filter (Phase 5) is cheaper to document in the Spek than tracing scattered files. | Matching Sikka's exact file placement was considered; rejected because the _behavior_ is identical and the Spek pins the deviation explicitly — Principle II's "no reinvention" is about patterns, not pixel-identical file locations. |
 
 ---
 

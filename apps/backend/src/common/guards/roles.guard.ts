@@ -1,7 +1,6 @@
-import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { ROLES_KEY } from "@/common/decorators";
-import type { CurrentUser } from "@zonite/shared";
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { ROLES_KEY } from '@/common/decorators';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -17,9 +16,6 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
-    const user = request.user as CurrentUser | undefined;
-
-    return user && requiredRoles.includes(user.role);
+    return false;
   }
 }

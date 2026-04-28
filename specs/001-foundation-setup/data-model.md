@@ -114,7 +114,7 @@ import { TeamColor } from '../enums/team-color.enum';
 
 export interface Player {
   id: string; // user id (UUID); matches backend primary key format
-  displayName: string;
+  fullName: string;
   teamColor: TeamColor; // NONE in solo mode
   score: number;
 }

@@ -37,7 +37,7 @@ A designer, product owner, or brand reviewer opens the Zonite frontend for the f
 
 A frontend engineer working on any later phase needs a color, a spacing step, a font size, a radius, a shadow, or a breakpoint. They find the value in the single authoritative token file that came from the design handoff, import it by name, and use it. They cannot introduce a raw hex color, a raw font-family string, or a second parallel scale — the quality gates block the commit before it can merge.
 
-**Why this priority**: The project's constitution (Principle III — Yalgamers Fidelity) forbids hard-coded hex/fonts outside the token file. That guarantee is only meaningful if (a) the token file is the one delivered by design, (b) it is the *only* token file, and (c) any attempt to bypass it fails a mechanical check.
+**Why this priority**: The project's constitution (Principle III — Yalgamers Fidelity) forbids hard-coded hex/fonts outside the token file. That guarantee is only meaningful if (a) the token file is the one delivered by design, (b) it is the _only_ token file, and (c) any attempt to bypass it fails a mechanical check.
 
 **Independent Test**: An engineer writes a component that references a token by name (e.g., a color like `--accent-yellow`, or a theme key that wraps it) and verifies the style renders as expected. A second engineer opens a pull request that introduces a literal hex color or raw font-family string in frontend source outside the token file; the automated checks fail the PR, naming the offending file and line.
 
@@ -54,7 +54,7 @@ A frontend engineer working on any later phase needs a color, a spacing step, a 
 
 A frontend engineer starting Phase 7 work (home, create room, lobby, game, results, onboarding, login, signup, forgot, reset, profile) needs the primitives the prototype already draws — a button, a text input, a form field with inline error, a six-digit OTP field, a badge, a modal/dialog, an alert, an avatar, a slider, a segmented-button group, a chip, plus the page-level shell (top bar, corner blobs, grid backdrop), the player chip, the animated countdown, the claim-pulse grid cell, and the shared icon set. They find these in the frontend's component library, already styled to the handoff tokens, and compose them into new screens without reinventing or restyling.
 
-**Why this priority**: The prototype is prototype-grade JSX; Phase 7 has to rebuild the screens in the production stack. If the primitives don't exist at Phase 7 start, every screen re-implements the same visual rules inline and drift becomes inevitable. It is P1 — on the same tier as the tokens themselves — because primitives without tokens are useless *and* tokens without primitives leave every screen doing its own styling.
+**Why this priority**: The prototype is prototype-grade JSX; Phase 7 has to rebuild the screens in the production stack. If the primitives don't exist at Phase 7 start, every screen re-implements the same visual rules inline and drift becomes inevitable. It is P1 — on the same tier as the tokens themselves — because primitives without tokens are useless _and_ tokens without primitives leave every screen doing its own styling.
 
 **Independent Test**: An engineer imports each named primitive into a throwaway showcase view and renders a representative example of each visual state (primary / secondary / disabled, empty / focused / error, open / closed, etc.). Each primitive renders with handoff styling applied, without console warnings and without needing any per-usage CSS to look on-brand.
 

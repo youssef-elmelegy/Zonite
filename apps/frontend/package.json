@@ -11,14 +11,19 @@
     "lint:css": "stylelint \"src/**/*.css\""
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.100.1",
     "@zonite/shared": "workspace:*",
     "autoprefixer": "^10.4.0",
+    "axios": "^1.15.2",
     "clsx": "^2.0.0",
     "lucide-react": "^0.460.0",
     "postcss": "^8.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwindcss": "^3.4.0"
+    "react-router-dom": "^7.14.2",
+    "socket.io-client": "^4.8.3",
+    "tailwindcss": "^3.4.0",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@axe-core/react": "^4.10.0",

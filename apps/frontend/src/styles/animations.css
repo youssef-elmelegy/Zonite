@@ -43,6 +43,24 @@
   50%      { opacity: 0.3; }
 }
 
+/* Spinner rotation for MiniSpinner / inline loaders. */
+@keyframes zspin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Horizontal sweep for indeterminate progress bar. */
+@keyframes zsweep {
+  0%   { left: -40%; }
+  100% { left: 140%; }
+}
+
+/* Shimmer for skeleton placeholders. */
+@keyframes zshimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 /* Page/section enter: tiny translate+fade.
    Reduced-motion fallback: element is immediately at final position+opacity. */
 @keyframes fadeUp {

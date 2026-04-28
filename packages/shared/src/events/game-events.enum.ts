@@ -6,6 +6,7 @@ export const GameEvents = {
   CLAIM_BLOCK: 'claim_block',
   START_GAME: 'start_game',
   REQUEST_STATE: 'request_state',
+  RESET_GAME: 'reset_game',
   EXCEPTION: 'exception',
 } as const;
 

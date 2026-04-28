@@ -1,12 +1,14 @@
-import { createParamDecorator, ExecutionContext } from "@nestjs/common";
-import type { CurrentUser } from "@zonite/shared";
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import type { CurrentUser as CurrentUserType } from '@zonite/shared';
 
-export const CurrentUserDecorator = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): CurrentUser => {
+export const CurrentUser = createParamDecorator(
+  (data: string | undefined, ctx: ExecutionContext): CurrentUserType | string => {
     const request = ctx.switchToHttp().getRequest();
-    return request.user;
+    const user = request.user;
+
+    if (data && user) {
+      return user[data];
+    }
+    return user;
   },
 );
-
-// Alias for convenience
-export const CurrentUser = CurrentUserDecorator;

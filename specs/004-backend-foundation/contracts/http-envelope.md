@@ -44,7 +44,7 @@
 7. The envelope is produced by exactly one of:
    - `successResponse<T>(data, message?, code?)` — in controllers
    - `errorResponse(message, code?, error?, data?)` — in the global exception filter
-   No controller may hand-construct the envelope object literal.
+     No controller may hand-construct the envelope object literal.
 
 ## How the envelope reaches the wire
 
@@ -77,9 +77,9 @@ export function assertEnvelope(res: request.Response) {
     timestamp: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/),
   });
   if (res.body.success) {
-    expect(res.body).toHaveProperty("data");
+    expect(res.body).toHaveProperty('data');
   } else {
-    expect(res.body).toHaveProperty("error");
+    expect(res.body).toHaveProperty('error');
   }
 }
 ```

@@ -37,11 +37,11 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
 - [ ] T004 Add backend package scripts — in `ZONITE_BE/package.json` `scripts`, add (keep existing `start`, `start:dev`, `build`, `type-check`): `"db:generate": "drizzle-kit generate"`, `"db:migrate": "drizzle-kit migrate"`, `"db:push": "drizzle-kit push"`, `"db:studio": "drizzle-kit studio"`, `"test": "jest"`, `"test:e2e": "jest --config ./test/jest-e2e.json"`, `"lint": "eslint \"src/**/*.ts\" --fix"`.
 - [ ] T005 [P] Create `ZONITE_BE/drizzle.config.ts` with content mirroring Sikka's:
   ```ts
-  import { defineConfig } from "drizzle-kit";
+  import { defineConfig } from 'drizzle-kit';
   export default defineConfig({
-    schema: "./src/db/schema/index.ts",
-    out: "./src/db/migrations",
-    dialect: "postgresql",
+    schema: './src/db/schema/index.ts',
+    out: './src/db/migrations',
+    dialect: 'postgresql',
     dbCredentials: { url: process.env.DATABASE_URL as string },
   });
   ```
@@ -76,28 +76,57 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
 
 - [ ] T011 [P] Create `ZONITE_SH/src/http/envelope.ts` with the exact shape from `data-model.md` §2.1:
   ```ts
-  export type SuccessResponse<T> = { code: number; success: true; message: string; data: T; timestamp: string };
-  export type ErrorResponse = { code: number; success: false; message: string; error?: string; data?: Record<string, unknown>; timestamp: string };
+  export type SuccessResponse<T> = {
+    code: number;
+    success: true;
+    message: string;
+    data: T;
+    timestamp: string;
+  };
+  export type ErrorResponse = {
+    code: number;
+    success: false;
+    message: string;
+    error?: string;
+    data?: Record<string, unknown>;
+    timestamp: string;
+  };
   export type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
   ```
 - [ ] T012 [P] Create `ZONITE_SH/src/http/pagination.ts` with the shape from `data-model.md` §2.2:
   ```ts
-  import type { SuccessResponse } from "./envelope";
+  import type { SuccessResponse } from './envelope';
   export type PaginationQuery = { page?: number; pageSize?: number };
-  export type PaginationMeta = { page: number; pageSize: number; total: number; totalPages: number };
+  export type PaginationMeta = {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
   export type PaginatedData<T> = { items: T[] } & PaginationMeta;
   export type PaginatedResponse<T> = SuccessResponse<PaginatedData<T>>;
   ```
 - [ ] T013 [P] Create `ZONITE_SH/src/http/index.ts` that re-exports both: `export * from "./envelope"; export * from "./pagination";`
 - [ ] T014 [P] Create `ZONITE_SH/src/auth/tokens.ts` with types from `data-model.md` §2.3:
   ```ts
-  export type AuthTokens = { accessToken: string; refreshToken?: string; accessTokenExpiresIn: number; refreshTokenExpiresIn: number };
-  export type AccessTokenPayload = { sub: string; email: string; role: "user" | "admin"; iat: number; exp: number };
+  export type AuthTokens = {
+    accessToken: string;
+    refreshToken?: string;
+    accessTokenExpiresIn: number;
+    refreshTokenExpiresIn: number;
+  };
+  export type AccessTokenPayload = {
+    sub: string;
+    email: string;
+    role: 'user' | 'admin';
+    iat: number;
+    exp: number;
+  };
   export type RefreshTokenPayload = { sub: string; jti: string; iat: number; exp: number };
   ```
 - [ ] T015 [P] Create `ZONITE_SH/src/auth/user.ts`:
   ```ts
-  export type CurrentUser = { id: string; email: string; role: "user" | "admin" };
+  export type CurrentUser = { id: string; email: string; role: 'user' | 'admin' };
   ```
 - [ ] T016 [P] Create `ZONITE_SH/src/auth/index.ts`: `export * from "./tokens"; export * from "./user";`
 - [ ] T017 Update `ZONITE_SH/src/index.ts` barrel — add `export * from "./http"; export * from "./auth";` alongside the existing `enums`/`events`/`types` exports. Do not remove anything.
@@ -108,30 +137,46 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
 - [ ] T019 Replace `ZONITE_BE/src/env.ts` with the full Zod schema from `data-model.md` §3.1. Preserve the existing vars (`NODE_ENV`, `PORT`, `DATABASE_URL`, `CORS_ORIGINS`) but extend with all JWT/COOKIE/BCRYPT/THROTTLE/MAIL fields. Use `dotenv.config()` at the top. Add a `superRefine` enforcing `THROTTLE_AUTH_LIMIT < THROTTLE_GLOBAL_LIMIT` and requiring MAIL_HOST/PORT/USER/PASS when `MAIL_TRANSPORT === "smtp"`. On parse failure: `console.error("[startup] env validation failed:", parsed.error.flatten().fieldErrors); process.exit(1);`. Export `export const env = Object.freeze(parsed.data); export type Env = typeof env;`. Reference Sikka's `SIKKA_SRC/env.ts` for the general structure.
 - [ ] T020 [P] Create `ZONITE_BE/src/types/http.ts` that re-exports from the shared package:
   ```ts
-  export type { SuccessResponse, ErrorResponse, ApiResponse, PaginationQuery, PaginationMeta, PaginatedData, PaginatedResponse } from "@zonite/shared";
+  export type {
+    SuccessResponse,
+    ErrorResponse,
+    ApiResponse,
+    PaginationQuery,
+    PaginationMeta,
+    PaginatedData,
+    PaginatedResponse,
+  } from '@zonite/shared';
   ```
 - [ ] T021 [P] Create `ZONITE_BE/src/types/index.ts`: `export * from "./http";`
 - [ ] T022 [P] Copy `SIKKA_SRC/utils/response.handler.ts` to `ZONITE_BE/src/utils/response.handler.ts` **verbatim**. Only change: its `import { SuccessResponse, ErrorResponse } from "."` still resolves because of T023 — keep it.
 - [ ] T023 [P] Create `ZONITE_BE/src/utils/index.ts`:
   ```ts
-  export type { SuccessResponse, ErrorResponse, ApiResponse } from "@/types";
-  export { successResponse, errorResponse } from "./response.handler";
+  export type { SuccessResponse, ErrorResponse, ApiResponse } from '@/types';
+  export { successResponse, errorResponse } from './response.handler';
   ```
 - [ ] T024 [P] Create `ZONITE_BE/src/constants/index.ts` with auth + throttler tier constants:
   ```ts
-  export const AUTH_THROTTLE_KEY = "auth" as const;
-  export const ACCESS_TOKEN_COOKIE = "access_token" as const;
-  export const REFRESH_TOKEN_COOKIE = "refresh_token" as const;
+  export const AUTH_THROTTLE_KEY = 'auth' as const;
+  export const ACCESS_TOKEN_COOKIE = 'access_token' as const;
+  export const REFRESH_TOKEN_COOKIE = 'refresh_token' as const;
   ```
 
 ### Backend common primitives — filter, DTOs, decorators, guards-strategies scaffolds (skeletons now; logic wired in US4)
 
 - [ ] T025 Create `ZONITE_BE/src/common/filters/all-exceptions.filter.ts`. The filter catches every thrown error in HTTP context and formats it via `errorResponse()`. Reference Sikka's exception-handling shape (from `SIKKA_SRC/main.ts` behavior + `utils/response.handler.ts`). Skeleton:
+
   ```ts
-  import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from "@nestjs/common";
-  import { HttpAdapterHost } from "@nestjs/core";
-  import { ThrottlerException } from "@nestjs/throttler";
-  import { errorResponse } from "@/utils";
+  import {
+    ArgumentsHost,
+    Catch,
+    ExceptionFilter,
+    HttpException,
+    HttpStatus,
+    Logger,
+  } from '@nestjs/common';
+  import { HttpAdapterHost } from '@nestjs/core';
+  import { ThrottlerException } from '@nestjs/throttler';
+  import { errorResponse } from '@/utils';
 
   @Catch()
   export class AllExceptionsFilter implements ExceptionFilter {
@@ -144,26 +189,26 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
       const response = ctx.getResponse();
 
       let status = HttpStatus.INTERNAL_SERVER_ERROR;
-      let message = "Internal server error";
-      let errorKey: string | undefined = "server_error";
+      let message = 'Internal server error';
+      let errorKey: string | undefined = 'server_error';
       let data: Record<string, unknown> | undefined;
 
       if (exception instanceof ThrottlerException) {
         status = HttpStatus.TOO_MANY_REQUESTS;
-        message = "Too Many Requests";
-        errorKey = "rate_limited";
+        message = 'Too Many Requests';
+        errorKey = 'rate_limited';
       } else if (exception instanceof HttpException) {
         status = exception.getStatus();
         const resp = exception.getResponse() as string | Record<string, unknown>;
-        if (typeof resp === "string") {
+        if (typeof resp === 'string') {
           message = resp;
         } else {
           message = (resp.message as string) ?? exception.message;
           if (Array.isArray(resp.message)) {
             data = { fieldErrors: resp.message };
-            errorKey = "validation_failed";
-          } else if (typeof resp.error === "string") {
-            errorKey = (resp.error as string).toLowerCase().replace(/\s+/g, "_");
+            errorKey = 'validation_failed';
+          } else if (typeof resp.error === 'string') {
+            errorKey = (resp.error as string).toLowerCase().replace(/\s+/g, '_');
           }
         }
       } else if (exception instanceof Error) {
@@ -175,50 +220,51 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
     }
   }
   ```
+
 - [ ] T026 [P] Create `ZONITE_BE/src/common/filters/index.ts`: `export * from "./all-exceptions.filter";`
 - [ ] T027 [P] Copy `SIKKA_SRC/common/dto/pagination-query.dto.ts` to `ZONITE_BE/src/common/dto/pagination-query.dto.ts` verbatim. Imports should remain intact (`class-validator`, `class-transformer`). No edits.
 - [ ] T028 [P] Create `ZONITE_BE/src/common/dto/responses.dto.ts`:
   ```ts
-  export type { SuccessResponse, ErrorResponse, ApiResponse } from "@/types";
+  export type { SuccessResponse, ErrorResponse, ApiResponse } from '@/types';
   ```
   (Sikka's file is the type definition itself; Zonite re-exports from shared via `@/types`.)
 - [ ] T029 [P] Create `ZONITE_BE/src/common/dto/index.ts`:
   ```ts
-  export * from "./pagination-query.dto";
-  export * from "./responses.dto";
+  export * from './pagination-query.dto';
+  export * from './responses.dto';
   ```
 - [ ] T030 [P] Copy `SIKKA_SRC/common/decorators/current-user.decorator.ts` to `ZONITE_BE/src/common/decorators/current-user.decorator.ts` verbatim. If it imports a Sikka-specific `CurrentUser` type, replace with `import type { CurrentUser } from "@zonite/shared";`. The runtime extraction logic from `request.user` stays unchanged.
 - [ ] T031 [P] Copy `SIKKA_SRC/common/decorators/public.decorator.ts` to `ZONITE_BE/src/common/decorators/public.decorator.ts` verbatim (no edits — it's just `SetMetadata("isPublic", true)`).
 - [ ] T032 [P] Copy `SIKKA_SRC/common/decorators/roles.decorator.ts` to `ZONITE_BE/src/common/decorators/roles.decorator.ts` verbatim.
 - [ ] T033 [P] Create `ZONITE_BE/src/common/decorators/index.ts`:
   ```ts
-  export * from "./current-user.decorator";
-  export * from "./public.decorator";
-  export * from "./roles.decorator";
+  export * from './current-user.decorator';
+  export * from './public.decorator';
+  export * from './roles.decorator';
   ```
-- [ ] T034 [P] Copy the five guards from `SIKKA_SRC/common/guards/` to `ZONITE_BE/src/common/guards/` — `jwt-auth.guard.ts`, `flexible-jwt.guard.ts`, `refresh-token.guard.ts`, `refresh-token-cookie.guard.ts`, `roles.guard.ts`. **Edits per file**: (a) if any guard imports a Sikka-specific user schema type (e.g., `@/db/schema/users` as a *type import*), replace with `import type { CurrentUser } from "@zonite/shared";`. (b) Leave Passport/strategy-name imports as-is.
+- [ ] T034 [P] Copy the five guards from `SIKKA_SRC/common/guards/` to `ZONITE_BE/src/common/guards/` — `jwt-auth.guard.ts`, `flexible-jwt.guard.ts`, `refresh-token.guard.ts`, `refresh-token-cookie.guard.ts`, `roles.guard.ts`. **Edits per file**: (a) if any guard imports a Sikka-specific user schema type (e.g., `@/db/schema/users` as a _type import_), replace with `import type { CurrentUser } from "@zonite/shared";`. (b) Leave Passport/strategy-name imports as-is.
 - [ ] T035 [P] Create `ZONITE_BE/src/common/guards/index.ts`:
   ```ts
-  export * from "./jwt-auth.guard";
-  export * from "./flexible-jwt.guard";
-  export * from "./refresh-token.guard";
-  export * from "./refresh-token-cookie.guard";
-  export * from "./roles.guard";
+  export * from './jwt-auth.guard';
+  export * from './flexible-jwt.guard';
+  export * from './refresh-token.guard';
+  export * from './refresh-token-cookie.guard';
+  export * from './roles.guard';
   ```
 - [ ] T036 [P] Copy the three strategies from `SIKKA_SRC/common/strategies/` to `ZONITE_BE/src/common/strategies/` — `access-token.strategy.ts`, `refresh-token.strategy.ts`, `refresh-token-cookie.strategy.ts`. **Edits per file**: every `env.JWT_*_SECRET` reference stays (it now resolves through Zonite's env). If the strategy queries the DB for the user (to attach to `request.user`), ensure it imports `db` from `@/db` (T041) and `users` schema from `@/db/schema` (T039). The `validate()` return shape must match `CurrentUser` from `@zonite/shared`.
 - [ ] T037 [P] Create `ZONITE_BE/src/common/strategies/index.ts`:
   ```ts
-  export * from "./access-token.strategy";
-  export * from "./refresh-token.strategy";
-  export * from "./refresh-token-cookie.strategy";
+  export * from './access-token.strategy';
+  export * from './refresh-token.strategy';
+  export * from './refresh-token-cookie.strategy';
   ```
 - [ ] T038 [P] Create `ZONITE_BE/src/common/index.ts`:
   ```ts
-  export * from "./decorators";
-  export * from "./dto";
-  export * from "./filters";
-  export * from "./guards";
-  export * from "./strategies";
+  export * from './decorators';
+  export * from './dto';
+  export * from './filters';
+  export * from './guards';
+  export * from './strategies';
   ```
 
 ### DB layer — connection, schema, migration
@@ -226,16 +272,18 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
 - [ ] T039 Create `ZONITE_BE/src/db/schema/users.ts` **verbatim from data-model.md §1's Drizzle block** (do not copy from Sikka — Sikka's users table has fields Zonite doesn't need). Columns: `id uuid pk`, `email text unique not null`, `password_hash text not null`, `role text not null default 'user'`, `refresh_token_nonce text`, `reset_otp_hash text`, `reset_otp_expires_at timestamptz`, `created_at timestamptz not null default now()`, `updated_at timestamptz not null default now()`. Index: `users_reset_otp_expires_at_idx` on `reset_otp_expires_at`. Export `User` and `NewUser` inferred types.
 - [ ] T040 [P] Create `ZONITE_BE/src/db/schema/index.ts`: `export * from "./users";`
 - [ ] T041 Create `ZONITE_BE/src/db/index.ts` mirroring Sikka's:
+
   ```ts
   /* eslint-disable @typescript-eslint/no-unsafe-argument */
-  import { drizzle } from "drizzle-orm/node-postgres";
-  import { Pool } from "pg";
-  import { env } from "@/env";
-  import * as schema from "./schema";
+  import { drizzle } from 'drizzle-orm/node-postgres';
+  import { Pool } from 'pg';
+  import { env } from '@/env';
+  import * as schema from './schema';
 
   export const pool = new Pool({ connectionString: env.DATABASE_URL });
   export const db = drizzle(pool, { schema });
   ```
+
 - [ ] T042 Generate the initial migration. From `ZONITE_BE/`, run `pnpm db:generate`. Verify a file like `src/db/migrations/0000_xxxx.sql` appears with `CREATE TABLE users (...)` and the index. Commit both the SQL and the `meta/` journal files produced by drizzle-kit.
 - [ ] T043 Apply the migration to the Phase-0 Postgres. From repo root: `docker compose up -d postgres` then from `ZONITE_BE/` run `pnpm db:push`. Verify via `psql "$DATABASE_URL" -c '\d users'` that all nine columns exist with the correct types (matches data-model.md §1 table). If this is the exit check for SC-011, screenshot the `psql` output for the PR.
 
@@ -265,19 +313,19 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
   11. DB startup probe (FR-016a, research §6): `await pool.query("SELECT 1").catch(err => { console.error(\`[startup] database unreachable: host=${hostFromUrl(env.DATABASE_URL)} database=${dbFromUrl(env.DATABASE_URL)}\`); process.exit(1); });` — helper regex inside the file, not a new module.
   12. `await app.listen(env.PORT, "0.0.0.0");`.
   13. Startup log lines (FR-001): port, resolved environment, log level, docs URL — mirror Sikka's four `console.log` statements.
-  Wrap everything in a `bootstrap()` async function; call `void bootstrap();` at EOF.
+      Wrap everything in a `bootstrap()` async function; call `void bootstrap();` at EOF.
 - [ ] T045 [US1] Rewrite `ZONITE_BE/src/app.module.ts`. Imports in order: `ConfigModule` (from `@nestjs/config`, optional — can skip since env.ts handles parsing; prefer skipping), `ThrottlerModule.forRoot([{ ttl: env.THROTTLE_GLOBAL_TTL * 1000, limit: env.THROTTLE_GLOBAL_LIMIT }])`, a DB module (see T046), `HealthModule`, `AuthModule` (wired in US4 — import is kept commented for now: `// import { AuthModule } from "./modules/auth/auth.module";`). Providers: `{ provide: APP_GUARD, useClass: ThrottlerGuard }`. Do NOT yet register a global `JwtAuthGuard` — US4 will add it.
 - [ ] T046 [US1] Create `ZONITE_BE/src/db/db.module.ts` — a minimal `@Global()` Nest module that exposes the `db` and `pool` from `@/db` as providers so modules can `@Inject("DB")` them. Skeleton:
   ```ts
-  import { Global, Module } from "@nestjs/common";
-  import { db, pool } from ".";
+  import { Global, Module } from '@nestjs/common';
+  import { db, pool } from '.';
   @Global()
   @Module({
     providers: [
-      { provide: "DB", useValue: db },
-      { provide: "DB_POOL", useValue: pool },
+      { provide: 'DB', useValue: db },
+      { provide: 'DB_POOL', useValue: pool },
     ],
-    exports: ["DB", "DB_POOL"],
+    exports: ['DB', 'DB_POOL'],
   })
   export class DbModule {}
   ```
@@ -336,7 +384,7 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
   1. Parses the Swagger JSON from `http://localhost:3000/api-json` (NestJS Swagger default) or from the Scalar endpoint.
   2. Lists every registered route.
   3. Hits each public route (health) and runs `assertEnvelope` on the response.
-  Register it in `ZONITE_BE/package.json` scripts as `"verify:envelope": "ts-node scripts/verify-envelope.ts"`. Run once; expected: 1 route (health) passes. SC-002 gate.
+     Register it in `ZONITE_BE/package.json` scripts as `"verify:envelope": "ts-node scripts/verify-envelope.ts"`. Run once; expected: 1 route (health) passes. SC-002 gate.
 - [ ] T063 [US3] Commit: `feat(backend): US3 — docs portal Bearer-auth, envelope verifier script`.
 
 **Checkpoint**: US3 demonstrated; verifier ready to re-run after US4 lands the auth endpoints.
@@ -355,7 +403,7 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
   - `"console"` → `nodemailer.createTransport({ streamTransport: true, newline: "unix", buffer: true })` and on send, log `[email] To: ${to}  OTP: ${otp}  TTL: ${ttlSeconds}s` via Nest Logger.
   - `"stream"` → same as console but pushes into an exported `capturedEmails: Array<{to, body}>` buffer (for e2e test access, see T084).
   - `"smtp"` → `nodemailer.createTransport({ host, port, auth: { user, pass } })` from env.
-  The service is registered in its own `CommonServicesModule` (create `ZONITE_BE/src/common/services/common-services.module.ts`) and exported, then imported by `AuthModule`.
+    The service is registered in its own `CommonServicesModule` (create `ZONITE_BE/src/common/services/common-services.module.ts`) and exported, then imported by `AuthModule`.
 - [ ] T065 [US4] Create `ZONITE_BE/src/common/services/index.ts`: `export * from "./email.service"; export * from "./common-services.module";`.
 
 ### Auth module — types & DTOs (copy from Sikka, trim)
@@ -382,7 +430,7 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
   - `verify-otp-endpoint.decorator.ts`
   - `reset-password-endpoint.decorator.ts`
   - `change-password-endpoint.decorator.ts`
-  If any decorator references a response DTO renamed in T074 (`AuthResponseDto`), update the `@ApiOkResponse({ type: ... })` reference accordingly.
+    If any decorator references a response DTO renamed in T074 (`AuthResponseDto`), update the `@ApiOkResponse({ type: ... })` reference accordingly.
 - [ ] T077 [P] [US4] Create `ZONITE_BE/src/modules/auth/decorators/index.ts` — barrel re-exporting all 8 decorators.
 
 ### Auth module — service (Zonite-adjusted)
@@ -399,8 +447,8 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
   5. `refresh({ refreshToken })`: verify JWT, look up user, check `payload.jti === user.refreshTokenNonce`. If mismatched → `UnauthorizedException`. Issue new access token (keep same refresh or rotate — Phase 2 keeps same).
   6. `logout()`: no DB write; caller clears the cookie.
   7. `requestPasswordReset({ email })`: look up user. **If not found**, return `{ accepted: true }` silently (enumeration mitigation, research §13). If found: generate a 6-digit OTP (`Math.floor(100000 + Math.random() * 900000).toString()` — use `crypto.randomInt(100000, 1000000)` for cryptographic grade), `bcrypt.hash` it, store in `reset_otp_hash`, set `reset_otp_expires_at = now() + env.JWT_RESET_PASSWORD_EXPIRES_IN sec`, then call `emailService.sendPasswordResetOtp(email, otp, env.JWT_RESET_PASSWORD_EXPIRES_IN)`. Return `{ accepted: true }` either way.
-  8. `verifyOtp({ email, otp })`: look up user, check `bcrypt.compare(otp, user.resetOtpHash)` AND `resetOtpExpiresAt > now()`. Throw `BadRequestException` otherwise.
-  9. `resetPassword({ email, otp, newPassword })`: verify OTP (reuse step 8 logic), then update `passwordHash = bcrypt.hash(newPassword)`, **rotate** `refreshTokenNonce = crypto.randomUUID()` (FR-011e), clear `resetOtpHash` + `resetOtpExpiresAt`. Commit in a single Drizzle transaction.
+  8. `verifyOtp({ email, otp })`: look up user, check `bcrypt.compare(otp, user.resetOtpHash)` AND `otpExpiresAt > now()`. Throw `BadRequestException` otherwise.
+  9. `resetPassword({ email, otp, newPassword })`: verify OTP (reuse step 8 logic), then update `passwordHash = bcrypt.hash(newPassword)`, **rotate** `refreshTokenNonce = crypto.randomUUID()` (FR-011e), clear `resetOtpHash` + `otpExpiresAt`. Commit in a single Drizzle transaction.
   10. `changePassword(userId, { currentPassword, newPassword })`: verify `currentPassword` via `bcrypt.compare`, then same rotation + update as step 9.
   11. `issueTokens(user)`: sign access token with `{ sub, email, role }`, sign refresh token with `{ sub, jti: user.refreshTokenNonce ?? (await rotateNonce()) }`. Return `AuthTokens`.
   12. All throwing paths produce `HttpException` subclasses so the global filter formats them into envelopes.
@@ -445,7 +493,7 @@ description: 'Task list — Phase 2 Backend Foundation (Sikka-vendored, auth-sui
      - POST `/api/auth/reset-password` with `{email, otp, newPassword: "new-hunter2"}`. Expect 200.
      - POST `/api/auth/login` with the new password. Expect 200. POST with the OLD password — expect 401 with envelope.
   4. Every `expect`-style assertion is paired with `assertEnvelope(res)`.
-  5. `beforeAll`: run `db:push` against a *test* DATABASE_URL (document in comment: export `DATABASE_URL=postgres://zonite:zonite@localhost:5432/zonite_test` before the test run). `afterAll`: `TRUNCATE users` or drop the row.
+  5. `beforeAll`: run `db:push` against a _test_ DATABASE_URL (document in comment: export `DATABASE_URL=postgres://zonite:zonite@localhost:5432/zonite_test` before the test run). `afterAll`: `TRUNCATE users` or drop the row.
 - [ ] T085 [US4] Run `pnpm test:e2e` from `ZONITE_BE/`. Expected: 1 test file, 1 test, pass. Fix any failure before T087.
 
 ### Rate-limit verification

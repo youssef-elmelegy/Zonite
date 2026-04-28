@@ -188,9 +188,26 @@
   --blur-sm: blur(20px);
   --blur-md: blur(40px);
   --blur-lg: blur(62px);
+
+  /* ============== FOCUS RINGS ============== */
+  --yellow-ring-15: rgba(253, 235, 86, 0.15);
+  --yellow-ring-20: rgba(253, 235, 86, 0.20);
+  --yellow-ring-30: rgba(253, 235, 86, 0.30);
+  --fire-red-ring-15: rgba(247, 23, 86, 0.15);
+
+  /* ============== OVERLAYS ============== */
+  --overlay-white-05: rgba(255, 255, 255, 0.05);
+  --overlay-white-10: rgba(255, 255, 255, 0.10);
+  --overlay-white-15: rgba(255, 255, 255, 0.15);
 }
 
 /* ============== SEMANTIC TYPE ROLES ============== */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
 body, .p {
   font-family: var(--font-ui);
   font-weight: var(--fw-medium);

@@ -80,10 +80,18 @@ if (!rootEl) throw new Error('#root not found');
 
 if (import.meta.env.DEV && window.location.pathname === '/_showcase') {
   import('./showcase/Showcase').then(({ Showcase }) => {
-    createRoot(rootEl).render(<StrictMode><Showcase /></StrictMode>);
+    createRoot(rootEl).render(
+      <StrictMode>
+        <Showcase />
+      </StrictMode>,
+    );
   });
 } else {
-  createRoot(rootEl).render(<StrictMode><App /></StrictMode>);
+  createRoot(rootEl).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
 }
 ```
 
@@ -218,6 +226,7 @@ expected_sha256: <64-char hex>
 ## Refresh workflow
 
 When the design team publishes a new bundle:
+
 1. Replace `docs/design/zonite-game/` with the new tarball's contents.
 2. Run `node scripts/verify-handoff.mjs --record` to update `expected_sha256` in this file.
 3. Diff `colors_and_type.css` into `apps/frontend/src/styles/tokens.css` — preserve the self-hosted `@font-face` rewire.
@@ -328,17 +337,20 @@ The `primitives.contract.md` pins the full matrix: for every primitive × varian
 # Zonite Frontend Override Policy
 
 ## When to add a new token
+
 - The value will be used in ≥2 places or by a brand-level primitive.
 - You have design sign-off (or the value came from a handoff refresh).
 - Add to `apps/frontend/src/styles/tokens.css` under the right category.
 - Update `tokens.d.ts` and (if used) the Tailwind theme extension.
 
 ## When a local style exception is permissible
+
 - Exactly-one-off and justified in an adjacent comment: `/* exception: … */`.
 - The value is computed at render time (e.g., `style={{ width: `${n}%` }}` for a slider fill).
 - Reviewer explicitly approves in the PR description.
 
 ## What reviewers block
+
 - Raw hex / font-family / pixel-spacing in TSX or CSS outside `tokens.css`.
 - Re-declaring a token value in Tailwind theme (vs. wrapping the CSS variable).
 - Swapping a brand icon for a Lucide equivalent (or vice versa).

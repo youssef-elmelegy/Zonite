@@ -1,14 +1,26 @@
-import { Injectable } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
-import { env } from "@/env";
-import type { AccessTokenPayload, CurrentUser } from "@zonite/shared";
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { env } from '@/env';
+import type { AccessTokenPayload, CurrentUser } from '@zonite/shared';
+import type { Request } from 'express';
 
 @Injectable()
-export class AccessTokenStrategy extends PassportStrategy(Strategy, "jwt") {
+export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: (req: Request) => {
+        // First try cookies (accessToken or tempToken)
+        if (req.cookies?.accessToken) {
+          return req.cookies.accessToken;
+        }
+        if (req.cookies?.tempToken) {
+          return req.cookies.tempToken;
+        }
+
+        // Fall back to Authorization Bearer header
+        return ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+      },
       ignoreExpiration: false,
       secretOrKey: env.JWT_ACCESS_SECRET,
     });
@@ -18,7 +30,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, "jwt") {
     return {
       id: payload.sub,
       email: payload.email,
-      role: payload.role,
+      fullName: payload.fullName ?? '',
     };
   }
 }

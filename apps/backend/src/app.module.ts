@@ -1,10 +1,16 @@
-import { Module } from "@nestjs/common";
-import { APP_GUARD } from "@nestjs/core";
-import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
-import { HealthModule } from "./modules/health/health.module";
-import { DbModule } from "./db/db.module";
-import { env } from "./env";
-// import { AuthModule } from "./modules/auth/auth.module";
+import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { HealthModule } from './modules/health/health.module';
+import { DbModule } from './db/db.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
+import { RoomsModule } from './modules/rooms/rooms.module';
+import { GameModule } from './modules/game/game.module';
+import { GatewayModule } from './modules/gateway/gateway.module';
+import { ProfileModule } from './modules/profile/profile.module';
+import { env } from './env';
 
 @Module({
   imports: [
@@ -15,10 +21,16 @@ import { env } from "./env";
       },
     ]),
     DbModule,
+    AuthModule,
     HealthModule,
-    // AuthModule,
+    RoomsModule,
+    GameModule,
+    GatewayModule,
+    ProfileModule,
   ],
+  controllers: [AppController],
   providers: [
+    AppService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

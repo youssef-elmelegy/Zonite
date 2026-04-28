@@ -1,0 +1,12 @@
+export * from './register.dto';
+export * from './register-response.dto';
+export * from './login.dto';
+export * from './forgot-password.dto';
+export * from './reset-password.dto';
+export * from './verify-otp.dto';
+export * from './response-wrapper.dto';
+export * from './auth-response.interface';
+export * from './setup-profile.dto';
+export * from './send-otp.dto';
+export * from './change-password.dto';
+export { ErrorResponseDto } from '@/common/dto/responses.dto';

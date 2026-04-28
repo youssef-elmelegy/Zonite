@@ -1,29 +1,36 @@
-import { GameStatus } from '@zonite/shared';
+import { useEffect } from 'react';
+import { RouterProvider } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { router } from './router';
+import { useAuthStore } from './store/auth.store';
+import { authService } from './services/auth.service';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: 1, staleTime: 30_000 },
+  },
+});
+
+function AuthInitializer() {
+  useEffect(() => {
+    void authService.checkAuth().catch(() => {
+      // 401 → server said not authenticated; clearAuth already called inside checkAuth's
+      // error path via the axios 401 interceptor → clearAuth() + redirect only if _retry fails.
+      // Here we just suppress the unhandled rejection.
+      const { clearAuth, setServerVerified } = useAuthStore.getState();
+      clearAuth();
+      // Mark verification as complete even on failure so routes unblock
+      setServerVerified(true);
+    });
+  }, []);
+  return null;
+}
 
 export function App(): JSX.Element {
   return (
-    <main
-      className="fade-in"
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 'var(--sp-2)',
-        padding: 'var(--sp-6)',
-        textAlign: 'center',
-      }}
-    >
-      <h1 className="h1" style={{ color: 'var(--fg-primary)' }}>
-        Zonite
-      </h1>
-      <p className="eyebrow" style={{ color: 'var(--fire-pink)' }}>
-        Phase&nbsp;1 — Design Handoff Adopted
-      </p>
-      <p className="caption" style={{ color: 'var(--fg-tertiary)' }}>
-        Shared contract boundary: {GameStatus.LOBBY}
-      </p>
-    </main>
+    <QueryClientProvider client={queryClient}>
+      <AuthInitializer />
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }

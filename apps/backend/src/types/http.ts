@@ -6,4 +6,4 @@ export type {
   PaginationMeta,
   PaginatedData,
   PaginatedResponse,
-} from "@zonite/shared";
+} from '@zonite/shared';

@@ -456,7 +456,7 @@ phase is done.
   export interface Player {
     /** Stable user id (UUID). */
     id: string;
-    displayName: string;
+    fullName: string;
     /** NONE in solo mode. */
     teamColor: TeamColor;
     score: number;

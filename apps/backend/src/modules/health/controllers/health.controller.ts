@@ -1,19 +1,19 @@
-import { Controller, Get } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
-import { Public } from "@/common/decorators";
-import { successResponse } from "@/utils";
-import { HealthService } from "../services/health.service";
-import { HealthCheckEndpoint } from "../decorators/health-check-endpoint.decorator";
-import type { SuccessResponse } from "@/types";
+import { Controller, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { Public } from '@/common/decorators';
+import { successResponse } from '@/utils';
+import { HealthService } from '../services/health.service';
+import { HealthCheckEndpoint } from '../decorators/health-check-endpoint.decorator';
+import type { SuccessResponse } from '@/types';
 
 interface HealthCheckResult {
-  status: "ok";
+  status: 'ok';
   uptime: number;
-  environment: "development" | "production";
+  environment: 'development' | 'production';
 }
 
-@Controller("health")
-@ApiTags("health")
+@Controller('health')
+@ApiTags('health')
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
@@ -22,7 +22,6 @@ export class HealthController {
   @HealthCheckEndpoint()
   getHealth(): SuccessResponse<HealthCheckResult> {
     const result = this.healthService.getStatus();
-    return successResponse(result, "Health OK", 200);
+    return successResponse(result, 'Health OK', 200);
   }
 }
-

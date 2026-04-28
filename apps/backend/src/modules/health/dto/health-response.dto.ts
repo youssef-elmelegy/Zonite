@@ -1,6 +1,5 @@
 export class HealthResponseDto {
-  status!: "ok";
+  status!: 'ok';
   uptime!: number;
-  environment!: "development" | "production";
+  environment!: 'development' | 'production';
 }
-

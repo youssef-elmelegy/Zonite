@@ -1,8 +1,4 @@
-/* Primitive: OtpField
-   Documented surface: --bg-card
-   Consumed tokens: --border-default, --radius-md, --sp-2
-   Keyboard: Tab moves between digits; Backspace on empty slot auto-reverses; arrow keys move between slots
-*/
+/* Primitive: OtpField — yellow digit boxes matching auth design */
 
 .root {
   border: none;
@@ -15,39 +11,39 @@
 
 .legend {
   font-family: var(--font-ui);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--fg-secondary);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--fg-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.18em;
   padding: 0;
   margin: 0;
 }
 
 .inputs {
   display: flex;
-  gap: var(--sp-2);
-  justify-content: center;
+  gap: 8px;
+  justify-content: flex-start;
 }
 
 .input {
   width: 48px;
-  height: 48px;
+  height: 58px;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  background: var(--bg-card);
-  color: var(--fg-primary);
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-bold);
+  border-radius: 10px;
+  background: rgba(23, 14, 27, 0.8);
+  color: var(--accent-yellow);
+  font-size: 24px;
+  font-weight: 800;
   text-align: center;
-  font-family: var(--font-mono);
-  transition: all 200ms var(--ease-out);
+  font-family: var(--font-display);
+  transition: all 140ms var(--ease-out);
 }
 
 .input:focus {
   outline: none;
   border-color: var(--accent-yellow);
-  box-shadow: 0 0 0 2px var(--yellow-ring-20);
+  box-shadow: 0 0 0 3px var(--yellow-ring-15);
 }
 
 .input::-webkit-outer-spin-button,
