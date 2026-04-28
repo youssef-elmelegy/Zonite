@@ -1,0 +1,16 @@
+node_modules
+.git
+.env.local
+.env.*.local
+dist
+build
+coverage
+.DS_Store
+*.log
+.vscode
+.idea
+apps/backend
+packages
+!packages/shared
+.specify
+.husky
