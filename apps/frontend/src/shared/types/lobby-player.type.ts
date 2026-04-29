@@ -1,0 +1,11 @@
+import { TeamColor } from '../enums/team-color.enum';
+
+export interface LobbyPlayer {
+  id: string;
+  fullName: string;
+  teamColor: TeamColor;
+  /** Hex color (solo mode). Empty string in team mode. */
+  color: string;
+  isReady: boolean;
+  isHost: boolean;
+}
