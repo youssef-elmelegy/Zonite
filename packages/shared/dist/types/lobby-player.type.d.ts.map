@@ -1,0 +1,1 @@
+{"version":3,"file":"lobby-player.type.d.ts","sourceRoot":"","sources":["../../src/types/lobby-player.type.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,0BAA0B,CAAC;AAErD,MAAM,WAAW,WAAW;IAC1B,EAAE,EAAE,MAAM,CAAC;IACX,QAAQ,EAAE,MAAM,CAAC;IACjB,SAAS,EAAE,SAAS,CAAC;IACrB,wDAAwD;IACxD,KAAK,EAAE,MAAM,CAAC;IACd,OAAO,EAAE,OAAO,CAAC;IACjB,MAAM,EAAE,OAAO,CAAC;CACjB"}

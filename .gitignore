@@ -9,6 +9,7 @@ build/
 .vite/
 .turbo/
 coverage/
+!packages/shared/dist/
 
 # env
 .env
