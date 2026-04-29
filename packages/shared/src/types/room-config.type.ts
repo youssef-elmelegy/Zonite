@@ -1,4 +1,4 @@
-import { GameMode } from '../enums/game-mode.enum';
+import { GameMode } from '../enums/game-mode.enum.js';
 
 export interface RoomConfig {
   gameMode: GameMode;

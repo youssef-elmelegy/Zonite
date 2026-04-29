@@ -1,4 +1,4 @@
-import type { SuccessResponse } from './envelope';
+import type { SuccessResponse } from './envelope.js';
 
 export type PaginationQuery = { page?: number; pageSize?: number };
 
