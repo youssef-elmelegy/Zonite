@@ -1,4 +1,4 @@
-import type { Player } from '@zonite/shared';
+import type { Player } from '../shared';
 
 const SOLO_FALLBACK_COLORS = [
   '#FF6B6B',

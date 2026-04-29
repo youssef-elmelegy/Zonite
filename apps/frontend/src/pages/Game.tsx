@@ -9,8 +9,8 @@ import { useRoomStore } from '../store/room.store';
 import { useSocket } from '../hooks/useSocket';
 import { useGameState } from '../hooks/useGameState';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { GameEvents, GameMode, TeamColor } from '@zonite/shared';
-import type { Block } from '@zonite/shared';
+import { GameEvents, GameMode, TeamColor } from '../shared';
+import type { Block } from '../shared';
 import { resolveSoloColor } from '../utils/playerColor';
 
 interface LiveClaim {

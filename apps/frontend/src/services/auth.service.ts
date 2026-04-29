@@ -1,6 +1,6 @@
 import { api } from './api';
 import { useAuthStore } from '../store/auth.store';
-import type { CurrentUser } from '@zonite/shared';
+import type { CurrentUser } from '../shared';
 
 export type OtpPurpose = 'verify_email' | 'reset_password';
 

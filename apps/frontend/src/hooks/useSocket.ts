@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { RoomEvents } from '@zonite/shared';
+import { RoomEvents } from '../shared';
 
 export interface UseSocketReturn {
   isConnected: boolean;

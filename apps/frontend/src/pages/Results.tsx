@@ -7,7 +7,7 @@ import { useSocket } from '../hooks/useSocket';
 import { useGameState } from '../hooks/useGameState';
 import { useAuth } from '../hooks/useAuth';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { GameEvents, GameMode, TeamColor } from '@zonite/shared';
+import { GameEvents, GameMode, TeamColor } from '../shared';
 import { resolveSoloColor } from '../utils/playerColor';
 
 export default function Results(): JSX.Element {

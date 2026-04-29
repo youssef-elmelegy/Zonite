@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { GameEvents, GameStatus, RoomEvents, TeamColor } from '@zonite/shared';
-import type { GameState, Block, LobbyPlayer, RoomState, Results } from '@zonite/shared';
+import { GameEvents, GameStatus, RoomEvents, TeamColor } from '../shared';
+import type { GameState, Block, LobbyPlayer, RoomState, Results } from '../shared';
 import { useGameStore } from '../store/game.store';
 import { useRoomStore } from '../store/room.store';
 import { useAuthStore } from '../store/auth.store';

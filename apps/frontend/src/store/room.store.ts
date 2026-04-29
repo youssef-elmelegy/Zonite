@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { TeamColor, GameMode } from '@zonite/shared';
-import type { LobbyPlayer } from '@zonite/shared';
+import { TeamColor, GameMode } from '../shared';
+import type { LobbyPlayer } from '../shared';
 
 interface RoomStore {
   roomCode: string | null;

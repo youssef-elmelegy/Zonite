@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { GameStatus } from '@zonite/shared';
-import type { Block, GameState, Player } from '@zonite/shared';
+import { GameStatus } from '../shared';
+import type { Block, GameState, Player } from '../shared';
 
 interface GameStore {
   grid: Block[][];

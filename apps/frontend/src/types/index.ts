@@ -1,1 +1,1 @@
-export * from '@zonite/shared';
+export * from '../shared';

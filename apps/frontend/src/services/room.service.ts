@@ -1,5 +1,5 @@
 import { api } from './api';
-import { GameMode } from '@zonite/shared';
+import { GameMode } from '../shared';
 
 export interface CreateRoomDto {
   gameMode: GameMode;

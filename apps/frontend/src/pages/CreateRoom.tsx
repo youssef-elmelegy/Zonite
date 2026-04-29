@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GameMode } from '@zonite/shared';
+import { GameMode } from '../shared';
 import {
   LayoutGrid,
   Swords,

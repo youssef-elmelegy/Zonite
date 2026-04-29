@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { CurrentUser } from '@zonite/shared';
+import type { CurrentUser } from '../shared';
 
 interface AuthState {
   user: CurrentUser | null;
