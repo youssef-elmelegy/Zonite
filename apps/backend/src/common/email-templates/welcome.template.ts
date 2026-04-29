@@ -1,158 +1,79 @@
 export const welcomeTemplate = (firstName: string) => {
   return `
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="supported-color-schemes" content="dark" />
     <title>Welcome to Zonite</title>
-    <style>
-      :root {
-        --ink-900: rgb(16, 6, 19);
-        --ink-850: rgb(23, 14, 27);
-        --ink-800: rgb(27, 20, 39);
-        --accent-yellow: rgb(253, 235, 86);
-        --accent-yellow-deep: rgb(240, 194, 12);
-        --fg-primary: rgb(255, 255, 255);
-        --fg-secondary: rgba(255, 255, 255, 0.9);
-        --fg-tertiary: rgba(255, 255, 255, 0.6);
-        --fg-muted: rgba(255, 255, 255, 0.3);
-        --border-subtle: rgba(255, 255, 255, 0.05);
-      }
-
-      @import url('https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Mulish:wght@400;500;600;700&display=swap');
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: Mulish, system-ui, -apple-system, 'Segoe UI', sans-serif;
-        background-color: var(--ink-900);
-        color: var(--fg-primary);
-        line-height: 1.6;
-      }
-
-      .email-wrapper {
-        padding: 32px 16px;
-        background-color: var(--ink-900);
-      }
-
-      .email-container {
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: var(--ink-850);
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid var(--border-subtle);
-      }
-
-      .email-header {
-        padding: 28px 24px;
-        text-align: center;
-        background: linear-gradient(135deg, var(--accent-yellow), var(--accent-yellow-deep));
-      }
-
-      .email-header h1 {
-        margin: 0;
-        font-family: 'Bruno Ace SC', sans-serif;
-        font-size: 32px;
-        color: var(--ink-900);
-        font-weight: 700;
-        letter-spacing: 0.05em;
-      }
-
-      .email-content {
-        padding: 28px 24px;
-      }
-
-      .email-content p {
-        margin: 12px 0;
-        font-size: 14px;
-        line-height: 1.6;
-        color: var(--fg-secondary);
-        font-weight: 400;
-      }
-
-      .email-content strong {
-        color: var(--fg-primary);
-        font-weight: 600;
-      }
-
-      .greeting {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--fg-primary);
-        margin-bottom: 16px;
-      }
-
-      .cta-button {
-        display: inline-block;
-        margin-top: 16px;
-        padding: 12px 24px;
-        background-color: var(--accent-yellow);
-        color: var(--ink-900);
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 14px;
-        font-family: Mulish, sans-serif;
-        letter-spacing: 0.02em;
-      }
-
-      .divider {
-        margin: 24px 0;
-        height: 1px;
-        background-color: var(--border-subtle);
-      }
-
-      .email-footer {
-        padding: 20px 24px;
-        text-align: center;
-        font-size: 12px;
-        color: var(--fg-muted);
-        border-top: 1px solid var(--border-subtle);
-        background-color: transparent;
-      }
-
-      .email-footer p {
-        margin: 6px 0;
-        font-weight: 500;
-      }
-    </style>
   </head>
+  <body style="margin:0;padding:0;font-family:'Mulish',Arial,Helvetica,sans-serif;color:#ffffff;-webkit-font-smoothing:antialiased;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;width:100%;background-color:#170e1b;border-radius:12px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;">
+            <!-- Header -->
+            <tr>
+              <td align="center" style="padding:32px 24px;background-color:#fdeb56;background-image:linear-gradient(135deg,#fdeb56,#f0c20c);">
+                <h1 style="margin:0;font-family:'Bruno Ace SC','Courier New',Arial,sans-serif;font-size:32px;color:#100613;font-weight:700;letter-spacing:2px;line-height:1.2;">
+                  ZONITE
+                </h1>
+              </td>
+            </tr>
 
-  <body>
-    <div class="email-wrapper">
-      <div class="email-container">
-        <div class="email-header">
-          <h1>ZONITE</h1>
-        </div>
+            <!-- Content -->
+            <tr>
+              <td style="padding:32px 24px;background-color:#170e1b;">
+                <p style="margin:0 0 16px 0;font-family:'Mulish',Arial,Helvetica,sans-serif;font-size:18px;font-weight:600;color:#ffffff;line-height:1.4;">
+                  Welcome, <span style="color:#fdeb56;">${firstName}</span>!
+                </p>
 
-        <div class="email-content">
-          <p class="greeting">Welcome, <strong>${firstName}</strong>!</p>
-          <p>Thanks for joining <strong>Zonite</strong> — your account is ready. Jump in and start claiming blocks, racking up XP, and climbing the leaderboard.</p>
+                <p style="margin:0 0 16px 0;font-family:'Mulish',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:rgba(255,255,255,0.9);">
+                  Thanks for joining <strong style="color:#ffffff;">Zonite</strong> — your account is ready. Jump in and start claiming blocks, racking up XP, and climbing the leaderboard.
+                </p>
 
-          <a href="https://zonite.gg" class="cta-button">Open Zonite</a>
+                <!-- CTA Button -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+                  <tr>
+                    <td align="center" style="background-color:#fdeb56;border-radius:8px;">
+                      <a href="https://zonite.gg" style="display:inline-block;padding:14px 32px;font-family:'Mulish',Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;color:#100613;text-decoration:none;letter-spacing:1px;text-transform:uppercase;">
+                        Open Zonite
+                      </a>
+                    </td>
+                  </tr>
+                </table>
 
-          <div class="divider"></div>
+                <!-- Divider -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:24px 0;">
+                  <tr>
+                    <td style="height:1px;background-color:rgba(255,255,255,0.1);line-height:1px;font-size:1px;">&nbsp;</td>
+                  </tr>
+                </table>
 
-          <p style="font-size: 12px; color: var(--fg-muted); margin: 16px 0 0;">
-            Get ready to battle. Claim your territory. Dominate the grid.
-          </p>
-        </div>
+                <p style="margin:0;font-family:'Mulish',Arial,Helvetica,sans-serif;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.5;font-style:italic;">
+                  Get ready to battle. Claim your territory. Dominate the grid.
+                </p>
+              </td>
+            </tr>
 
-        <div class="email-footer">
-          <p>© 2026 Zonite. All rights reserved.</p>
-          <p>Questions? Contact <strong>support@zonite.gg</strong></p>
-        </div>
-      </div>
-    </div>
+            <!-- Footer -->
+            <tr>
+              <td align="center" style="padding:24px;background-color:#170e1b;border-top:1px solid rgba(255,255,255,0.05);">
+                <p style="margin:0 0 6px 0;font-family:'Mulish',Arial,Helvetica,sans-serif;font-size:12px;color:rgba(255,255,255,0.5);font-weight:500;">
+                  © 2026 Zonite. All rights reserved.
+                </p>
+                <p style="margin:0;font-family:'Mulish',Arial,Helvetica,sans-serif;font-size:12px;color:rgba(255,255,255,0.5);">
+                  Questions? <a href="mailto:support@zonite.gg" style="color:#fdeb56;text-decoration:none;font-weight:600;">support@zonite.gg</a>
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
   `;
