@@ -660,6 +660,7 @@ export class AuthService {
     const options = { httpOnly: true, secure: isProd, sameSite, path: '/' };
     res.clearCookie('accessToken', options);
     res.clearCookie('refreshToken', options);
+    res.clearCookie('tempToken', options);
   }
 
   // private toCurrentUser(user: typeof users.$inferSelect): CurrentUser {
