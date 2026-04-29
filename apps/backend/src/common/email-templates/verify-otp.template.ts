@@ -8,21 +8,14 @@ export const verifyOtpTemplate = (otp: string, userName: string, expiresInMinute
 
   return `
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Verify Your Email</title>
     <style>
       ${emailBaseStyles}
-
-      .email-header {
-        background-color: transparent;
-        padding: 20px 22px;
-      }
-
-      .email-header h2 {
-        color: var(--accent-yellow);
-      }
     </style>
   </head>
 
@@ -30,26 +23,27 @@ export const verifyOtpTemplate = (otp: string, userName: string, expiresInMinute
     <div class="email-wrapper">
       <div class="email-container">
         <div class="email-header">
-          <h2>Email Verification</h2>
+          <h2>Verify Email</h2>
         </div>
 
         <div class="email-content">
-          <p><strong>Hello ${userName},</strong></p>
-          <p>To complete your email verification, use the one-time code below.</p>
+          <p class="greeting">Hey <strong>${userName}</strong>,</p>
+          <p>To complete your email verification, use the one-time code below. This code will expire in <strong>${expiryLabel}</strong>.</p>
 
           <div class="otp-container">
-            <div class="otp-label">Your verification code</div>
+            <div class="otp-label">Your Verification Code</div>
             <div class="otp-code">${otp}</div>
             <div class="otp-expiry">Valid for ${expiryLabel}</div>
           </div>
 
-          <div class="notice">For security reasons, do not share this code. If you did not request this, ignore this email.</div>
+          <div class="notice">For your security, never share this code with anyone. If you didn't request this, you can safely ignore this email.</div>
 
-          <p>If you need assistance, contact <strong>support@zonite.gg</strong>.</p>
+          <p>Need help? Reach out to us at <strong>support@zonite.gg</strong></p>
         </div>
 
         <div class="email-footer">
           <p>© 2026 Zonite. All rights reserved.</p>
+          <p style="font-size: 11px; margin-top: 8px;">Claim. Compete. Conquer.</p>
         </div>
       </div>
     </div>

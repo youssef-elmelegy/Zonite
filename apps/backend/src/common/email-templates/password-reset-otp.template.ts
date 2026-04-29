@@ -12,10 +12,12 @@ export const passwordResetOtpTemplate = (
 
   return `
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Reset Your Password</title>
     <style>
       ${emailBaseStyles}
     </style>
@@ -25,24 +27,27 @@ export const passwordResetOtpTemplate = (
     <div class="email-wrapper">
       <div class="email-container">
         <div class="email-header">
-          <h2>Reset Your Password</h2>
+          <h2>Reset Password</h2>
         </div>
 
         <div class="email-content">
-          <p><strong>Hello ${userName},</strong></p>
-          <p>We received a request to reset your password. Use the verification code below to continue.</p>
+          <p class="greeting">Hey <strong>${userName}</strong>,</p>
+          <p>We received a request to reset your password. Use the code below to continue. This code will expire in <strong>${expiryLabel}</strong>.</p>
 
           <div class="otp-container">
-            <div class="otp-label">Password reset code</div>
+            <div class="otp-label">Password Reset Code</div>
             <div class="otp-code">${otp}</div>
             <div class="otp-expiry">Valid for ${expiryLabel}</div>
           </div>
 
-          <div class="notice">If you did not request a password reset, you can safely ignore this email.</div>
+          <div class="notice">If you did not request a password reset, you can safely ignore this email. Your account remains secure.</div>
+
+          <p>Questions? Contact us at <strong>support@zonite.gg</strong></p>
         </div>
 
         <div class="email-footer">
           <p>© 2026 Zonite. All rights reserved.</p>
+          <p style="font-size: 11px; margin-top: 8px;">Stay Safe. Play Hard. Win Big.</p>
         </div>
       </div>
     </div>
