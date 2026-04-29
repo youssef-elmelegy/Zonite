@@ -1,6 +1,6 @@
-import { GameMode } from '../enums/game-mode.enum';
-import { TeamColor } from '../enums/team-color.enum';
-import type { Block } from './block.type';
+import { GameMode } from '../enums/game-mode.enum.js';
+import { TeamColor } from '../enums/team-color.enum.js';
+import type { Block } from './block.type.js';
 export interface PlayerResult {
     playerId: string;
     fullName: string;

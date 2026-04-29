@@ -1,7 +1,7 @@
-import { GameStatus } from '../enums/game-status.enum';
-import { GameMode } from '../enums/game-mode.enum';
-import type { Block } from './block.type';
-import type { Player } from './player.type';
+import { GameStatus } from '../enums/game-status.enum.js';
+import { GameMode } from '../enums/game-mode.enum.js';
+import type { Block } from './block.type.js';
+import type { Player } from './player.type.js';
 export interface GameState {
     roomId: string;
     /** Square board edge length (N×N). */

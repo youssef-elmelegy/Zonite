@@ -1,5 +1,5 @@
-import { GameMode } from '../enums/game-mode.enum';
-import { GameStatus } from '../enums/game-status.enum';
+import { GameMode } from '../enums/game-mode.enum.js';
+import { GameStatus } from '../enums/game-status.enum.js';
 export interface Room {
     id: string;
     code: string;

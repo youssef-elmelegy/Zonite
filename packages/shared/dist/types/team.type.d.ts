@@ -1,4 +1,4 @@
-import { TeamColor } from '../enums/team-color.enum';
+import { TeamColor } from '../enums/team-color.enum.js';
 export interface Team {
     /** RED or BLUE. NONE is a sentinel, never a real team. */
     color: TeamColor;

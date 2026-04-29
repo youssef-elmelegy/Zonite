@@ -1,4 +1,4 @@
-import { GameMode } from '../enums/game-mode.enum';
+import { GameMode } from '../enums/game-mode.enum.js';
 export interface RoomConfig {
     gameMode: GameMode;
     /** Square board edge length. min 5, max 50, default 12. Board is always N×N. */

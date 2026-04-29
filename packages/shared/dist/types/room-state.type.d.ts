@@ -1,6 +1,6 @@
-import { GameMode } from '../enums/game-mode.enum';
-import { GameStatus } from '../enums/game-status.enum';
-import type { LobbyPlayer } from './lobby-player.type';
+import { GameMode } from '../enums/game-mode.enum.js';
+import { GameStatus } from '../enums/game-status.enum.js';
+import type { LobbyPlayer } from './lobby-player.type.js';
 /** Full lobby snapshot — payload for the `room_state` socket event. */
 export interface RoomState {
     roomCode: string;

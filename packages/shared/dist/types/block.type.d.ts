@@ -1,4 +1,4 @@
-import { TeamColor } from '../enums/team-color.enum';
+import { TeamColor } from '../enums/team-color.enum.js';
 export interface Block {
     x: number;
     y: number;
