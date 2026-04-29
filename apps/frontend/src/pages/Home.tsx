@@ -33,11 +33,12 @@ function MiniStat({
       </div>
       <div
         style={{
-          fontSize: 22,
-          fontWeight: 800,
+          fontSize: 28,
+          fontWeight: 400,
           color,
           fontFamily: 'var(--font-display)',
           lineHeight: 1,
+          textTransform: 'uppercase',
         }}
       >
         {value}
@@ -158,10 +159,12 @@ export default function Home(): JSX.Element {
             style={{
               margin: 0,
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(36px, 7vw, 96px)',
-              lineHeight: 0.95,
-              letterSpacing: '-0.02em',
+              fontSize: 'clamp(48px, 12vw, 140px)',
+              lineHeight: 0.85,
+              letterSpacing: '-0.04em',
               color: 'var(--fg-primary)',
+              fontWeight: 400,
+              textTransform: 'uppercase',
             }}
           >
             CLAIM YOUR

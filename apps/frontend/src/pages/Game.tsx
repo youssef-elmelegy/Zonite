@@ -9,7 +9,7 @@ import { useRoomStore } from '../store/room.store';
 import { useSocket } from '../hooks/useSocket';
 import { useGameState } from '../hooks/useGameState';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { GameEvents, GameMode, TeamColor } from '../shared';
+import { BLOCK_CLAIM_COOLDOWN_MS, GameEvents, GameMode, TeamColor } from '../shared';
 import type { Block } from '../shared';
 import { resolveSoloColor } from '../utils/playerColor';
 
@@ -43,6 +43,14 @@ export default function Game(): JSX.Element {
   const [justClaimed, setJustClaimed] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(!isNarrow);
   const [recentClaims, setRecentClaims] = useState<LiveClaim[]>([]);
+  // Drives the cooldown stripe re-render once per ~50ms while any cell is cooling down.
+  const [, setNowTick] = useState(0);
+  useEffect(() => {
+    const anyCooldown = grid.some((row) => row.some((b) => b.cooldownUntil > Date.now()));
+    if (!anyCooldown) return;
+    const handle = setInterval(() => setNowTick((n) => n + 1), 50);
+    return () => clearInterval(handle);
+  }, [grid]);
 
   // Track live claims for the feed
   useEffect(() => {
@@ -73,7 +81,19 @@ export default function Game(): JSX.Element {
 
   function handleCellClick(_id: string, row: number, col: number) {
     const block = grid[row]?.[col];
-    if (!block || block.claimedBy) return;
+    if (!block) return;
+    // Cooldown is global — nobody can claim while active.
+    if (block.cooldownUntil > Date.now()) return;
+    // Can't claim a block you already own.
+    if (block.claimedBy && block.claimedBy === user?.id) return;
+    // In TEAM mode, can't overwrite a teammate's block.
+    if (block.claimedBy && gameMode === GameMode.TEAM) {
+      const owner = players[block.claimedBy];
+      const me = user ? players[user.id] : null;
+      if (owner && me && owner.teamColor === me.teamColor && me.teamColor !== TeamColor.NONE) {
+        return;
+      }
+    }
     socket.emit(GameEvents.CLAIM_BLOCK, { x: col, y: row });
     setJustClaimed(`${row}-${col}`);
     setTimeout(() => setJustClaimed(null), 500);
@@ -456,6 +476,14 @@ export default function Game(): JSX.Element {
                     row.map((_, x) => {
                       const { state, color } = cellProps(y, x);
                       const key = `${y}-${x}`;
+                      const block = grid[y]?.[x];
+                      const cooldownRemaining =
+                        block && block.cooldownUntil > Date.now()
+                          ? block.cooldownUntil - Date.now()
+                          : 0;
+                      const cooldownProgress = cooldownRemaining
+                        ? 1 - cooldownRemaining / BLOCK_CLAIM_COOLDOWN_MS
+                        : 0;
                       return (
                         <GridCell
                           key={key}
@@ -464,8 +492,9 @@ export default function Game(): JSX.Element {
                           col={x}
                           state={state}
                           color={color}
-                          isOwnBlock={grid[y]?.[x]?.claimedBy === user?.id}
+                          isOwnBlock={block?.claimedBy === user?.id}
                           justClaimed={justClaimed === key}
+                          cooldownProgress={cooldownProgress}
                           onClick={handleCellClick}
                         />
                       );

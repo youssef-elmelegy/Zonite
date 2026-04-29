@@ -52,6 +52,7 @@ export function SocialRow() {
             disabled
             title={`${p.label} — coming soon`}
             style={{
+              position: 'relative',
               background: 'rgba(255,255,255,0.03)',
               border: '1px solid var(--border-default)',
               color: 'var(--fg-secondary)',
@@ -65,10 +66,30 @@ export function SocialRow() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: 6,
-              opacity: 0.6,
+              opacity: 0.65,
+              overflow: 'hidden',
             }}
           >
             <Glyph /> {p.label}
+            <span
+              aria-hidden
+              style={{
+                position: 'absolute',
+                top: -1,
+                right: -1,
+                fontSize: 8,
+                fontWeight: 800,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                background: 'var(--accent-yellow)',
+                color: 'var(--ink-900)',
+                padding: '2px 6px',
+                borderBottomLeftRadius: 8,
+                fontFamily: 'var(--font-ui)',
+              }}
+            >
+              Soon
+            </span>
           </button>
         );
       })}

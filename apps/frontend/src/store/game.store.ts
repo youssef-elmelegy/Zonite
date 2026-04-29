@@ -35,10 +35,20 @@ export const useGameStore = create<GameStore>()((set) => ({
   applyBlockClaim: (block) =>
     set((s) => {
       const newGrid = s.grid.map((row) => [...row]);
+      const previous = newGrid[block.y]?.[block.x];
+      const previousOwnerId = previous?.claimedBy ?? null;
       if (newGrid[block.y]?.[block.x]) {
         newGrid[block.y][block.x] = block;
       }
       const newPlayers = { ...s.players };
+      // Decrement previous owner if this is an overwrite.
+      if (previousOwnerId && previousOwnerId !== block.claimedBy && newPlayers[previousOwnerId]) {
+        newPlayers[previousOwnerId] = {
+          ...newPlayers[previousOwnerId],
+          score: Math.max(0, newPlayers[previousOwnerId].score - 1),
+        };
+      }
+      // Increment new owner.
       if (block.claimedBy && newPlayers[block.claimedBy]) {
         newPlayers[block.claimedBy] = {
           ...newPlayers[block.claimedBy],

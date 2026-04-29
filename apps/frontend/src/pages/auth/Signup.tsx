@@ -1,30 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthLayout } from '../../components/layout/AuthLayout';
 import { MiniGridArt } from '../../components/common/MiniGridArt';
 import { Field } from '../../components/ui/Field';
 import { Button } from '../../components/ui/Button';
 import { SocialRow } from '../../components/ui/SocialRow';
+import { PasswordStrength } from '../../components/ui/PasswordStrength';
+import { LegalModal, type LegalKind } from '../../components/ui/LegalModal';
 import { IconArrowRight, IconCheck, IconEye, IconEyeOff } from '../../components/common/icons';
 import { authService } from '../../services/auth.service';
-
-function calcStrength(pw: string) {
-  if (!pw.length) return null;
-  let s = 0;
-  if (pw.length >= 8) s++;
-  if (/[A-Z]/.test(pw)) s++;
-  if (/[0-9]/.test(pw)) s++;
-  if (/[^A-Za-z0-9]/.test(pw)) s++;
-  const labels = ['Too weak', 'Weak', 'Fair', 'Strong', 'Excellent'];
-  const colors = [
-    'var(--fire-red)',
-    'var(--fire-red)',
-    'var(--orange-500)',
-    'var(--lime-300)',
-    'var(--lime-300)',
-  ];
-  return { score: s, label: labels[s], color: colors[s] };
-}
 
 export default function Signup(): JSX.Element {
   const navigate = useNavigate();
@@ -36,8 +20,7 @@ export default function Signup(): JSX.Element {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const strength = useMemo(() => calcStrength(password), [password]);
+  const [legalOpen, setLegalOpen] = useState<LegalKind | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -132,27 +115,7 @@ export default function Signup(): JSX.Element {
               </button>
             }
           />
-          {password && strength && (
-            <div style={{ marginTop: 8 }}>
-              <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
-                {[0, 1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    style={{
-                      flex: 1,
-                      height: 3,
-                      borderRadius: 100,
-                      background: i < strength.score ? strength.color : 'rgba(255,255,255,0.08)',
-                      transition: 'all 120ms var(--ease-out)',
-                    }}
-                  />
-                ))}
-              </div>
-              <div style={{ fontSize: 11, color: strength.color, fontWeight: 700 }}>
-                {strength.label}
-              </div>
-            </div>
-          )}
+          <PasswordStrength password={password} />
         </div>
 
         {/* Terms checkbox */}
@@ -191,13 +154,27 @@ export default function Signup(): JSX.Element {
           </div>
           <span>
             I agree to the{' '}
-            <a href="#" style={{ color: 'var(--accent-yellow)', textDecoration: 'none' }}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLegalOpen('terms');
+              }}
+              style={legalLinkStyle}
+            >
               Terms
-            </a>{' '}
+            </button>{' '}
             and{' '}
-            <a href="#" style={{ color: 'var(--accent-yellow)', textDecoration: 'none' }}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLegalOpen('privacy');
+              }}
+              style={legalLinkStyle}
+            >
               Privacy Policy
-            </a>
+            </button>
             .
           </span>
         </label>
@@ -242,6 +219,16 @@ export default function Signup(): JSX.Element {
         </Button>
       </form>
 
+      <LegalModal
+        open={legalOpen !== null}
+        initialKind={legalOpen ?? 'terms'}
+        onClose={() => setLegalOpen(null)}
+        onAccept={() => {
+          setAgree(true);
+          setErrors((e) => ({ ...e, agree: '' }));
+        }}
+      />
+
       <p style={{ marginTop: 22, textAlign: 'center', fontSize: 13, color: 'var(--fg-tertiary)' }}>
         Already have an account?{' '}
         <Link
@@ -279,4 +266,15 @@ const showToggleStyle: React.CSSProperties = {
   padding: '0 12px',
   display: 'flex',
   alignItems: 'center',
+};
+const legalLinkStyle: React.CSSProperties = {
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  color: 'var(--accent-yellow)',
+  textDecoration: 'none',
+  fontWeight: 700,
+  fontSize: 'inherit',
+  fontFamily: 'inherit',
+  cursor: 'pointer',
 };

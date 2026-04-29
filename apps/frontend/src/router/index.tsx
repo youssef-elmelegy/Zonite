@@ -7,6 +7,7 @@ import Signup from '../pages/auth/Signup';
 import VerifyOtp from '../pages/auth/VerifyOtp';
 import ForgotPassword from '../pages/auth/ForgotPassword';
 import ResetPassword from '../pages/auth/ResetPassword';
+import SetupProfile from '../pages/auth/SetupProfile';
 import Home from '../pages/Home';
 import CreateRoom from '../pages/CreateRoom';
 import Lobby from '../pages/Lobby';
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
   { path: '/verify-otp', element: <VerifyOtp /> },
   { path: '/forgot', element: <ForgotPassword /> },
   { path: '/reset', element: <ResetPassword /> },
+  { path: '/setup-profile', element: <SetupProfile /> },
   // Protected game pages
   {
     element: <ProtectedRoute />,

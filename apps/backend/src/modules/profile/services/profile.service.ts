@@ -5,6 +5,7 @@ import { users, matchPlayerRecords, rooms } from '@/db/schema';
 import { errorResponse, successResponse } from '@/utils';
 import { PaginationQueryDto } from '@/common/dto';
 import type { SuccessResponse, PaginatedResponse, PaginatedData } from '@/types';
+import { computeLevel } from '@zonite/shared';
 import type { Results } from '@zonite/shared';
 import { EmailService } from '@/common/services';
 import {
@@ -16,7 +17,7 @@ import {
 
 type MatchPlayerRecordsItem = {
   id: string;
-  won: boolean;
+  outcome: 'WIN' | 'LOSS' | 'DRAW';
   mode: 'SOLO' | 'TEAM';
   gridSize: number;
   roomCode: string | null;
@@ -89,7 +90,7 @@ export class ProfileService {
       db
         .select({
           id: matchPlayerRecords.id,
-          won: matchPlayerRecords.won,
+          outcome: matchPlayerRecords.outcome,
           gameMode: matchPlayerRecords.gameMode,
           gridSize: matchPlayerRecords.gridSize,
           roomCode: rooms.code,
@@ -109,7 +110,7 @@ export class ProfileService {
     const paginatedData: PaginatedData<MatchPlayerRecordsItem> = {
       items: items.map((row) => ({
         id: row.id,
-        won: row.won,
+        outcome: row.outcome,
         mode: row.gameMode,
         gridSize: row.gridSize,
         roomCode: row.roomCode ?? null,
@@ -130,13 +131,9 @@ export class ProfileService {
     if (results.playerRankings.length === 0) return;
 
     const insertions = results.playerRankings.map((player) => {
-      const won =
-        results.gameMode === 'SOLO'
-          ? player.rank === 1
-          : results.teamRankings !== null &&
-            results.teamRankings[0]?.teamColor === player.teamColor;
-
-      const xpEarned = 10 * player.score + (won ? 50 : 0);
+      const won = player.outcome === 'WIN';
+      // xpEarned = 2 * blocks + (won ? 50 : 0)
+      const xpEarned = 2 * player.score + (won ? 50 : 0);
 
       return {
         userId: player.playerId,
@@ -144,7 +141,7 @@ export class ProfileService {
         gameMode: results.gameMode as 'SOLO' | 'TEAM',
         gridSize: results.size,
         playerStatus: 'READY' as const,
-        won,
+        outcome: player.outcome,
         blocksClaimed: player.score,
         xpEarned,
       };
@@ -152,11 +149,38 @@ export class ProfileService {
 
     await db.insert(matchPlayerRecords).values(insertions);
 
+    // Update lifetime user stats.
+    // - totalMatchesPlayed: +1 always
+    // - totalBlocksMined: += final blocks held (player.score)
+    // - totalWins: +1 only on WIN (LOSS/DRAW unchanged)
+    // - currentWinStreak: WIN → +1, LOSS → 0, DRAW → unchanged
+    // - xp: += xpEarned
+    // - level: recomputed from new total XP
     for (const row of insertions) {
-      await db
-        .update(users)
-        .set({ xp: sql`${users.xp} + ${row.xpEarned}` })
-        .where(eq(users.id, row.userId));
+      // Read current XP so we can compute the new level deterministically.
+      const current = await db.query.users.findFirst({
+        where: eq(users.id, row.userId),
+        columns: { xp: true },
+      });
+      const newXp = (current?.xp ?? 0) + row.xpEarned;
+      const { level: newLevel } = computeLevel(newXp);
+
+      const setClause: Record<string, unknown> = {
+        xp: newXp,
+        level: newLevel,
+        totalMatchesPlayed: sql`${users.totalMatchesPlayed} + 1`,
+        totalBlocksMined: sql`${users.totalBlocksMined} + ${row.blocksClaimed}`,
+        updatedAt: new Date(),
+      };
+      if (row.outcome === 'WIN') {
+        setClause.totalWins = sql`${users.totalWins} + 1`;
+        setClause.currentWinStreak = sql`${users.currentWinStreak} + 1`;
+      } else if (row.outcome === 'LOSS') {
+        setClause.currentWinStreak = 0;
+      }
+      // DRAW: streak unchanged, totalWins unchanged.
+
+      await db.update(users).set(setClause).where(eq(users.id, row.userId));
     }
   }
 

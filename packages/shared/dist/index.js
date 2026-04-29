@@ -11,6 +11,8 @@ export * from './types/block.type.js';
 export * from './types/team.type.js';
 export * from './types/game-state.type.js';
 export * from './types/results.type.js';
+export * from './constants/game.constants.js';
+export * from './constants/level.constants.js';
 export * from './http/index.js';
 export * from './auth/index.js';
 //# sourceMappingURL=index.js.map

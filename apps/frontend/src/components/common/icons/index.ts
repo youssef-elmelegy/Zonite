@@ -25,4 +25,9 @@ export {
   ArrowLeft as IconArrowLeft,
   Loader as IconLoader,
   User as IconUser,
+  LogOut as IconLogOut,
+  Calendar as IconCalendar,
+  Camera as IconCamera,
+  Upload as IconUpload,
+  SkipForward as IconSkipForward,
 } from 'lucide-react';

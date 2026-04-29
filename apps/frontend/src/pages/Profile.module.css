@@ -3,27 +3,6 @@
 .matchesScroll {
   max-height: 480px;
   overflow-y: auto;
-  /* Firefox */
-  scrollbar-width: thin;
-  scrollbar-color: var(--magenta-700) rgba(255, 255, 255, 0.04);
-}
-
-.matchesScroll::-webkit-scrollbar {
-  width: 5px;
-}
-
-.matchesScroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 100px;
-}
-
-.matchesScroll::-webkit-scrollbar-thumb {
-  background: var(--magenta-700);
-  border-radius: 100px;
-}
-
-.matchesScroll::-webkit-scrollbar-thumb:hover {
-  background: var(--magenta-500);
 }
 
 .statsGrid {

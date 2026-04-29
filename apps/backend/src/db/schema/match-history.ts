@@ -1,10 +1,11 @@
-import { pgTable, uuid, integer, boolean, timestamp, index, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, integer, timestamp, index, pgEnum } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { users } from './users';
 import { rooms } from './rooms';
 
 export const playerStatusEnum = pgEnum('player_status_enum', ['WAITING', 'READY', 'LEFT']);
 export const gameModeEnum = pgEnum('game_mode_enum', ['SOLO', 'TEAM']);
+export const matchOutcomeEnum = pgEnum('match_outcome_enum', ['WIN', 'LOSS', 'DRAW']);
 
 export const matchPlayerRecords = pgTable(
   'match_player_records',
@@ -20,7 +21,7 @@ export const matchPlayerRecords = pgTable(
     selectedColor: integer('selected_color'), // may be enum in the future
     gameMode: gameModeEnum('game_mode').notNull(),
     gridSize: integer('grid_size').notNull(),
-    won: boolean('won').notNull(),
+    outcome: matchOutcomeEnum('outcome').notNull(),
     blocksClaimed: integer('blocks_claimed').notNull().default(0),
     xpEarned: integer('xp_earned').notNull().default(0),
     playedAt: timestamp('played_at', { withTimezone: true })

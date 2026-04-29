@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthLayout } from '../../components/layout/AuthLayout';
 import { MiniGridArt } from '../../components/common/MiniGridArt';
 import { Field } from '../../components/ui/Field';
 import { Button } from '../../components/ui/Button';
+import { PasswordStrength } from '../../components/ui/PasswordStrength';
 import { IconArrowLeft, IconCheck, IconEye, IconEyeOff } from '../../components/common/icons';
 import { authService } from '../../services/auth.service';
 
 export default function ResetPassword(): JSX.Element {
   const navigate = useNavigate();
+  const location = useLocation();
+  const stateEmail = (location.state as { email?: string } | null)?.email;
   const [newPassword, setNewPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -28,7 +31,13 @@ export default function ResetPassword(): JSX.Element {
     setLoading(true);
     try {
       await authService.resetPassword(newPassword);
-      navigate('/home', { replace: true });
+      // Logout to clear the temp/auth cookies, then send to login.
+      try {
+        await authService.logout();
+      } catch {
+        // ignore — we still want to send the user to /login
+      }
+      navigate('/login', { replace: true, state: stateEmail ? { email: stateEmail } : undefined });
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
@@ -70,12 +79,13 @@ export default function ResetPassword(): JSX.Element {
               </button>
             }
           />
+          <PasswordStrength password={newPassword} />
         </div>
 
         <div style={{ marginBottom: 20 }}>
           <Field
             label="Confirm Password"
-            type="password"
+            type={showPw ? 'text' : 'password'}
             value={confirm}
             onChange={(e) => {
               setConfirm(e.target.value);
@@ -84,6 +94,16 @@ export default function ResetPassword(): JSX.Element {
             placeholder="Re-enter your new password"
             error={errors.confirm}
             autoComplete="new-password"
+            right={
+              <button
+                type="button"
+                onClick={() => setShowPw((v) => !v)}
+                style={showToggleStyle}
+                aria-label={showPw ? 'Hide password' : 'Show password'}
+              >
+                {showPw ? <IconEyeOff size={15} /> : <IconEye size={15} />}
+              </button>
+            }
           />
         </div>
 
@@ -116,7 +136,7 @@ export default function ResetPassword(): JSX.Element {
             loading={loading}
             trailingIcon={loading ? undefined : <IconCheck size={14} />}
           >
-            {loading ? 'Saving…' : 'Reset & Sign In'}
+            {loading ? 'Saving…' : 'Reset'}
           </Button>
         </div>
       </form>

@@ -14,6 +14,8 @@ export interface GridCellProps {
   onHover?: (id: string) => void;
   /** Custom fill color — overrides team CSS vars (used in solo mode for per-player colors) */
   color?: string;
+  /** 0..1 progress through cooldown (0 = just locked, 1 = unlocked). 0 means no active cooldown. */
+  cooldownProgress?: number;
 }
 
 export const GridCell = ({
@@ -26,6 +28,7 @@ export const GridCell = ({
   onClick,
   onHover,
   color,
+  cooldownProgress = 0,
 }: GridCellProps) => {
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -50,6 +53,8 @@ export const GridCell = ({
     inlineStyle = { filter: 'brightness(1.3)' };
   }
 
+  const showCooldown = cooldownProgress > 0 && cooldownProgress < 1;
+
   return (
     <button
       className={`${styles.cell} ${styles[state]} ${justClaimed ? styles.justClaimed : ''}`}
@@ -60,6 +65,14 @@ export const GridCell = ({
       data-col={col}
       disabled={state === 'disabled'}
       style={inlineStyle}
-    />
+    >
+      {showCooldown && (
+        <span
+          className={styles.cooldownStripe}
+          style={{ transform: `scaleX(${cooldownProgress})` }}
+          aria-hidden="true"
+        />
+      )}
+    </button>
   );
 };

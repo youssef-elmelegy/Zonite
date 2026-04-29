@@ -2,6 +2,8 @@ import { GameMode } from '../enums/game-mode.enum';
 import { TeamColor } from '../enums/team-color.enum';
 import type { Block } from './block.type';
 
+export type PlayerOutcome = 'WIN' | 'LOSS' | 'DRAW';
+
 export interface PlayerResult {
   playerId: string;
   fullName: string;
@@ -10,6 +12,8 @@ export interface PlayerResult {
   color: string;
   score: number;
   rank: number;
+  /** Per-player outcome — drives stats updates and history rows. */
+  outcome: PlayerOutcome;
 }
 
 export interface TeamResult {
@@ -27,6 +31,6 @@ export interface Results {
   playerRankings: PlayerResult[];
   /** null in SOLO mode. */
   teamRankings: TeamResult[] | null;
-  /** true only in TEAM mode when both teams have equal scores. */
+  /** True when the top scorers tie (TEAM: both teams equal; SOLO: 2+ players tied at the top). */
   isDraw?: boolean;
 }

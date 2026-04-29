@@ -11,5 +11,7 @@ export * from './types/block.type';
 export * from './types/team.type';
 export * from './types/game-state.type';
 export * from './types/results.type';
+export * from './constants/game.constants';
+export * from './constants/level.constants';
 export * from './http';
 export * from './auth';

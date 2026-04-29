@@ -17,9 +17,11 @@ export interface ProfileInfo {
   updatedAt: string;
 }
 
+export type MatchOutcome = 'WIN' | 'LOSS' | 'DRAW';
+
 export interface MatchRecord {
   id: string;
-  won: boolean;
+  outcome: MatchOutcome;
   mode: 'SOLO' | 'TEAM';
   gridSize: number;
   roomCode: string | null;

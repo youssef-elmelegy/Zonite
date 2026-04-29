@@ -61,6 +61,28 @@ export const authService = {
     }
   },
 
+  /** Setup profile — requires the setup-profile tempToken cookie set after verifyOtp(verify_email). */
+  async setupProfile(dto: { dateOfBirth: string; profileImage?: string }): Promise<CurrentUser> {
+    const { data } = await api.post<CurrentUser>('/auth/setup-profile', dto);
+    if (data) {
+      useAuthStore.getState().setAuth(data);
+      useAuthStore.getState().setServerVerified(true);
+    }
+    return data;
+  },
+
+  /** Upload an image (profile avatar). Returns the hosted URL. */
+  async uploadImage(file: File, folder = 'Zonite/avatars'): Promise<{ url: string }> {
+    const form = new FormData();
+    form.append('file', file);
+    const { data } = await api.post<{ url: string }>(
+      `/uploads/image?folder=${encodeURIComponent(folder)}`,
+      form,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+    return data;
+  },
+
   /** Reset password — user must be authenticated (cookies set after verifyOtp) */
   async resetPassword(newPassword: string): Promise<{ message: string; reset: boolean }> {
     const { data } = await api.post<{ message: string; reset: boolean }>('/auth/reset-password', {

@@ -1,0 +1,35 @@
+/* scrollbar.css — Zonite-branded custom scrollbar, applied globally. */
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--magenta-700) transparent;
+}
+
+/* WebKit / Blink */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--magenta-700);
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 160ms var(--ease-out);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--magenta-500);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}

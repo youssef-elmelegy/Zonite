@@ -330,8 +330,17 @@ export class GameGateway implements OnGatewayDisconnect {
         this.server.to(room.code).emit(GameEvents.GAME_TICK, { remaining: state.remainingSeconds });
       },
       onGameOver: async (results) => {
-        await this.roomsService.transitionToFinished(room.code);
-        await this.profileService.recordMatchResults(results, room.id);
+        try {
+          await this.roomsService.transitionToFinished(room.code);
+          await this.profileService.recordMatchResults(results, room.id);
+        } catch (err) {
+          // Persistence failed — log, but still finish the game on the wire so
+          // clients aren't stuck on the "Reconnecting…" overlay.
+          this.logger.error(
+            `Failed to persist match results for room ${room.code}: ${(err as Error).message}`,
+            (err as Error).stack,
+          );
+        }
         // Clear any pending grace timers for all players
         for (const playerId of Object.keys(playerMap)) {
           clearTimeout(this.disconnectTimers.get(playerId));

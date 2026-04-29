@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { GameStatus, GameMode, TeamColor } from '@zonite/shared';
+import { GameStatus, GameMode, TeamColor, BLOCK_CLAIM_COOLDOWN_MS } from '@zonite/shared';
 import type { GameState, Block, Results } from '@zonite/shared';
 import type { DbRoom } from '@/db/schema/rooms';
 import type { InternalGameState, InternalPlayer } from '../types/internal-game-state.type';
@@ -50,6 +50,7 @@ export class GameStateService {
         y,
         claimedBy: null,
         teamColor: null,
+        cooldownUntil: 0,
       })),
     );
 
@@ -93,13 +94,40 @@ export class GameStateService {
     if (!row) throw new Error(`Row y=${y} is out of bounds`);
     const block = row[x];
     if (!block) throw new Error(`Block (${x}, ${y}) is out of bounds`);
-    if (block.claimedBy !== null) throw new Error('Block is already claimed');
 
     const player = state.players[userId];
     if (!player) throw new Error('Player is not in this game');
 
+    // Global per-cell cooldown — applies to everyone, including the previous owner.
+    const now = Date.now();
+    if (block.cooldownUntil > now) {
+      throw new Error('Block is on cooldown');
+    }
+
+    if (block.claimedBy !== null) {
+      // Same player can't reclaim their own block (it would be a no-op + grief).
+      if (block.claimedBy === userId) {
+        throw new Error('Block is already yours');
+      }
+      const previousOwner = state.players[block.claimedBy];
+      // Same-team overwrites are blocked in TEAM mode.
+      if (
+        state.gameMode === GameMode.TEAM &&
+        previousOwner &&
+        previousOwner.teamColor === player.teamColor &&
+        player.teamColor !== TeamColor.NONE
+      ) {
+        throw new Error('Cannot overwrite a teammate block');
+      }
+      // Decrement the previous owner so total score == claimed cells.
+      if (previousOwner && previousOwner.score > 0) {
+        previousOwner.score -= 1;
+      }
+    }
+
     block.claimedBy = userId;
     block.teamColor = player.teamColor !== TeamColor.NONE ? player.teamColor : null;
+    block.cooldownUntil = now + BLOCK_CLAIM_COOLDOWN_MS;
     player.score += 1;
 
     return { ...block };

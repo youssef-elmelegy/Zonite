@@ -942,7 +942,7 @@ function Reset({ email, onDone, onBack }) {
           </Btn>
           <div style={{ flex: 1 }} />
           <Btn variant="primary" type="submit" icon={<IconCheck size={14} />}>
-            Reset & Sign In
+            Reset
           </Btn>
         </div>
       </form>

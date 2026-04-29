@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { AuthLayout } from '../../components/layout/AuthLayout';
 import { MiniGridArt } from '../../components/common/MiniGridArt';
 import { Field } from '../../components/ui/Field';
@@ -10,7 +10,9 @@ import { authService } from '../../services/auth.service';
 
 export default function Login(): JSX.Element {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const prefillEmail = (location.state as { email?: string } | null)?.email ?? '';
+  const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [remember, setRemember] = useState(true);

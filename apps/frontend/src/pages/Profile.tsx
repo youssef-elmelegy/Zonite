@@ -5,138 +5,16 @@ import { Shell } from '../components/layout/Shell';
 import { Modal } from '../components/ui/Modal';
 import { Button } from '../components/ui/Button';
 import { Loader } from '../components/ui/Loader';
+import { DateOfBirthInput } from '../components/ui/DateOfBirthInput';
+import { IconLogOut } from '../components/common/icons';
 import { useAuth } from '../hooks/useAuth';
 import { authService } from '../services/auth.service';
 import { profileService } from '../services/profile.service';
 import type { MatchRecord } from '../services/profile.service';
+import { computeLevel, tierForLevel, MAX_LEVEL } from '../shared';
 import styles from './Profile.module.css';
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
-
-const SELECT_STYLE: React.CSSProperties = {
-  background: 'rgba(23,14,27,0.8)',
-  border: '1px solid var(--border-default)',
-  borderRadius: 8,
-  padding: '12px 16px',
-  fontSize: 14,
-  color: 'var(--fg-primary)',
-  fontFamily: 'var(--font-ui)',
-  outline: 'none',
-  cursor: 'pointer',
-  appearance: 'none',
-  WebkitAppearance: 'none',
-  flex: 1,
-  width: '100%',
-};
-
-function DateSelectInput({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}): JSX.Element {
-  const [y, m, d] = value ? value.split('-') : ['', '', ''];
-
-  function emit(year: string, month: string, day: string) {
-    if (year && month && day) onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-    else onChange('');
-  }
-
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 100 }, (_, i) => String(currentYear - i));
-  const days = Array.from({ length: 31 }, (_, i) => String(i + 1));
-
-  return (
-    <div style={{ display: 'flex', gap: 8 }}>
-      <div style={{ position: 'relative', flex: 2 }}>
-        <select
-          value={m ? String(parseInt(m)) : ''}
-          onChange={(e) => emit(y, e.target.value, d)}
-          style={SELECT_STYLE}
-        >
-          <option value="" disabled style={{ background: 'var(--ink-850)' }}>
-            Month
-          </option>
-          {months.map((name, i) => (
-            <option key={name} value={String(i + 1)} style={{ background: 'var(--ink-850)' }}>
-              {name}
-            </option>
-          ))}
-        </select>
-        <ChevronIcon />
-      </div>
-      <div style={{ position: 'relative', flex: 1 }}>
-        <select
-          value={d ? String(parseInt(d)) : ''}
-          onChange={(e) => emit(y, m, e.target.value)}
-          style={SELECT_STYLE}
-        >
-          <option value="" disabled style={{ background: 'var(--ink-850)' }}>
-            Day
-          </option>
-          {days.map((day) => (
-            <option key={day} value={day} style={{ background: 'var(--ink-850)' }}>
-              {day}
-            </option>
-          ))}
-        </select>
-        <ChevronIcon />
-      </div>
-      <div style={{ position: 'relative', flex: 1.5 }}>
-        <select value={y ?? ''} onChange={(e) => emit(e.target.value, m, d)} style={SELECT_STYLE}>
-          <option value="" disabled style={{ background: 'var(--ink-850)' }}>
-            Year
-          </option>
-          {years.map((year) => (
-            <option key={year} value={year} style={{ background: 'var(--ink-850)' }}>
-              {year}
-            </option>
-          ))}
-        </select>
-        <ChevronIcon />
-      </div>
-    </div>
-  );
-}
-
-function ChevronIcon(): JSX.Element {
-  return (
-    <svg
-      style={{
-        position: 'absolute',
-        right: 12,
-        top: '50%',
-        transform: 'translateY(-50%)',
-        pointerEvents: 'none',
-      }}
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="var(--fg-tertiary)"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
-}
 
 function EyeIcon({ open }: { open: boolean }): JSX.Element {
   return open ? (
@@ -286,16 +164,29 @@ function StatCard({
       </div>
       <div
         style={{
-          fontSize: 30,
-          fontWeight: 800,
+          fontSize: 36,
+          fontWeight: 400,
           color,
           fontFamily: 'var(--font-display)',
           lineHeight: 1,
+          textTransform: 'uppercase',
         }}
       >
         {value}
       </div>
-      {sub && <div style={{ fontSize: 11, color: 'var(--fg-tertiary)', marginTop: 4 }}>{sub}</div>}
+      {sub && (
+        <div
+          style={{
+            fontSize: 12,
+            color: 'var(--fg-tertiary)',
+            marginTop: 4,
+            fontFamily: 'var(--font-ui)',
+            fontWeight: 600,
+          }}
+        >
+          {sub}
+        </div>
+      )}
     </div>
   );
 }
@@ -389,6 +280,29 @@ function MatchRow({ match, index }: { match: MatchRecord; index: number }): JSX.
     return `${Math.floor(hrs / 24)}d ago`;
   })();
 
+  // Badge styling per outcome. DRAW uses the neutral gray reserved for ties.
+  const badge =
+    match.outcome === 'WIN'
+      ? {
+          letter: 'W',
+          fg: 'var(--lime-300)',
+          border: 'var(--lime-300)',
+          bg: 'rgba(75,255,84,0.12)',
+        }
+      : match.outcome === 'DRAW'
+        ? {
+            letter: 'D',
+            fg: '#9CA3AF',
+            border: '#9CA3AF',
+            bg: 'rgba(156,163,175,0.14)',
+          }
+        : {
+            letter: 'L',
+            fg: 'var(--fire-red)',
+            border: 'var(--fire-red)',
+            bg: 'rgba(247,23,86,0.12)',
+          };
+
   return (
     <div
       className={styles.matchRow}
@@ -399,18 +313,18 @@ function MatchRow({ match, index }: { match: MatchRecord; index: number }): JSX.
           width: 40,
           height: 40,
           borderRadius: 10,
-          background: match.won ? 'rgba(75,255,84,0.12)' : 'rgba(247,23,86,0.12)',
-          border: `1px solid ${match.won ? 'var(--lime-300)' : 'var(--fire-red)'}`,
+          background: badge.bg,
+          border: `1px solid ${badge.border}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: match.won ? 'var(--lime-300)' : 'var(--fire-red)',
-          fontWeight: 800,
+          color: badge.fg,
+          fontWeight: 400,
           fontFamily: 'var(--font-display)',
-          fontSize: 14,
+          fontSize: 16,
         }}
       >
-        {match.won ? 'W' : 'L'}
+        {badge.letter}
       </div>
       <div>
         <div style={{ fontSize: 13, color: 'var(--fg-primary)', fontWeight: 700 }}>
@@ -433,11 +347,12 @@ function MatchRow({ match, index }: { match: MatchRecord; index: number }): JSX.
         </div>
         <div
           style={{
-            fontSize: 14,
+            fontSize: 16,
             color: 'var(--fg-primary)',
-            fontWeight: 700,
+            fontWeight: 400,
             fontFamily: 'var(--font-display)',
             marginTop: 2,
+            textTransform: 'uppercase',
           }}
         >
           {match.blocksClaimed}
@@ -456,14 +371,15 @@ function MatchRow({ match, index }: { match: MatchRecord; index: number }): JSX.
         </div>
         <div
           style={{
-            fontSize: 14,
-            color: match.won ? 'var(--lime-300)' : 'var(--fg-tertiary)',
-            fontWeight: 700,
+            fontSize: 16,
+            color: match.outcome === 'WIN' ? 'var(--lime-300)' : badge.fg,
+            fontWeight: 400,
             fontFamily: 'var(--font-display)',
             marginTop: 2,
+            textTransform: 'uppercase',
           }}
         >
-          {match.won ? '+' : ''}
+          {match.xpEarned > 0 ? '+' : ''}
           {match.xpEarned}
         </div>
       </div>
@@ -635,10 +551,13 @@ export default function Profile(): JSX.Element {
 
   // ── Derived values ─────────────────────────────────────────────────────────
   const displayName = profile?.fullName || user?.fullName || user?.email?.split('@')[0] || '?';
-  const level = profile?.level ?? 1;
   const xp = profile?.xp ?? 0;
-  const xpInLevel = xp % 500;
-  const xpPct = (xpInLevel / 500) * 100;
+  // Derive everything from total XP — backend persists `level`, but recomputing
+  // here keeps the bar in sync if XP changes optimistically.
+  const { level, xpInLevel, xpForNext } = computeLevel(xp);
+  const tier = tierForLevel(level);
+  const isMaxLevel = level >= MAX_LEVEL;
+  const xpPct = isMaxLevel ? 100 : Math.min(100, (xpInLevel / xpForNext) * 100);
   const winRate =
     profile && profile.totalMatchesPlayed > 0
       ? Math.round((profile.totalWins / profile.totalMatchesPlayed) * 100)
@@ -810,33 +729,36 @@ export default function Profile(): JSX.Element {
                   style={{
                     margin: 0,
                     fontFamily: 'var(--font-display)',
-                    fontSize: 'clamp(22px, 4vw, 34px)',
+                    fontSize: 'clamp(26px, 5vw, 40px)',
                     color: 'var(--fg-primary)',
-                    letterSpacing: '-0.01em',
+                    letterSpacing: '-0.02em',
+                    fontWeight: 400,
+                    textTransform: 'uppercase',
                   }}
                 >
                   {displayName}
                 </h1>
                 <div
+                  title={`${tier.name} tier · levels ${tier.min}–${tier.max}`}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 6,
                     padding: '4px 10px',
-                    background: 'rgba(253,235,86,0.12)',
-                    border: '1px solid var(--accent-yellow)',
+                    background: `${tier.color}1F`,
+                    border: `1px solid ${tier.color}`,
                     borderRadius: 100,
                   }}
                 >
                   <span
                     style={{
                       fontSize: 11,
-                      color: 'var(--accent-yellow)',
+                      color: tier.color,
                       fontWeight: 800,
                       letterSpacing: '0.12em',
                     }}
                   >
-                    LVL {level}
+                    LVL {level} · {tier.name.toUpperCase()}
                   </span>
                 </div>
               </div>
@@ -854,8 +776,12 @@ export default function Profile(): JSX.Element {
                     fontFamily: 'var(--font-mono)',
                   }}
                 >
-                  <span>{xpInLevel} / 500 XP</span>
-                  <span>LVL {level + 1}</span>
+                  <span>
+                    {isMaxLevel
+                      ? `${xp.toLocaleString()} XP · MAX`
+                      : `${xpInLevel} / ${xpForNext} XP`}
+                  </span>
+                  <span>{isMaxLevel ? 'MAX LEVEL' : `LVL ${level + 1}`}</span>
                 </div>
                 <div
                   style={{
@@ -869,8 +795,8 @@ export default function Profile(): JSX.Element {
                     style={{
                       width: `${xpPct}%`,
                       height: '100%',
-                      background: 'var(--accent-yellow)',
-                      boxShadow: '0 0 12px rgba(253,235,86,0.5)',
+                      background: tier.color,
+                      boxShadow: `0 0 12px ${tier.color}80`,
                       transition: 'width 400ms var(--ease-out)',
                     }}
                   />
@@ -1219,7 +1145,7 @@ export default function Profile(): JSX.Element {
           </div>
           <div>
             <label style={FIELD_LABEL}>Date of Birth</label>
-            <DateSelectInput
+            <DateOfBirthInput
               value={editForm.dateOfBirth}
               onChange={(v) => setEditForm((f) => ({ ...f, dateOfBirth: v }))}
             />
@@ -1317,17 +1243,62 @@ export default function Profile(): JSX.Element {
       {/* Sign out */}
       <Modal
         open={signOutOpen}
-        title="Log out?"
+        title="Log Out?"
         onClose={() => setSignOutOpen(false)}
+        size="sm"
         action={
-          <Button variant="primary" onClick={() => void handleSignOut()} loading={signingOut}>
-            Log Out
-          </Button>
+          <>
+            <Button variant="ghost" onClick={() => setSignOutOpen(false)}>
+              Cancel
+            </Button>
+            <button
+              type="button"
+              onClick={() => void handleSignOut()}
+              disabled={signingOut}
+              style={{
+                background: 'var(--fire-red)',
+                color: 'var(--fg-primary)',
+                border: '1px solid var(--fire-red)',
+                borderRadius: 8,
+                padding: '10px 18px',
+                fontSize: 13,
+                fontWeight: 800,
+                fontFamily: 'var(--font-ui)',
+                cursor: signingOut ? 'not-allowed' : 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                boxShadow: '0 0 18px rgba(247,23,86,0.35)',
+                opacity: signingOut ? 0.7 : 1,
+              }}
+            >
+              <IconLogOut size={14} />
+              {signingOut ? 'Logging out…' : 'Log Out'}
+            </button>
+          </>
         }
       >
-        <p style={{ color: 'var(--fg-secondary)', margin: 0 }}>
-          You&apos;ll be signed out on this device. Your stats and streak stay safe.
-        </p>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+          <div
+            style={{
+              flexShrink: 0,
+              width: 40,
+              height: 40,
+              borderRadius: 10,
+              background: 'var(--fire-red-wash-10)',
+              border: '1px solid var(--fire-red)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--fire-red)',
+            }}
+          >
+            <IconLogOut size={18} />
+          </div>
+          <p style={{ color: 'var(--fg-secondary)', margin: 0, fontSize: 13, lineHeight: 1.55 }}>
+            You&apos;ll be signed out on this device. Your stats and streak stay safe.
+          </p>
+        </div>
       </Modal>
 
       {/* Delete account */}

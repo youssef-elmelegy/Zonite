@@ -7,4 +7,6 @@ export interface Block {
   claimedBy: string | null;
   /** Team color of the claimer, or null if unclaimed. */
   teamColor: TeamColor | null;
+  /** Epoch ms timestamp when this block becomes claimable again. 0 if no active cooldown. */
+  cooldownUntil: number;
 }

@@ -69,9 +69,9 @@ export default function VerifyOtp(): JSX.Element {
     try {
       await authService.verifyOtp(email, otp, purpose);
       if (purpose === 'verify_email') {
-        navigate('/home', { replace: true });
+        navigate('/setup-profile', { replace: true, state: { email } });
       } else {
-        navigate('/reset', { replace: true });
+        navigate('/reset', { replace: true, state: { email } });
       }
     } catch (err: unknown) {
       const msg =

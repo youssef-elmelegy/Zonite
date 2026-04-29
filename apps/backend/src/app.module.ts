@@ -10,6 +10,7 @@ import { RoomsModule } from './modules/rooms/rooms.module';
 import { GameModule } from './modules/game/game.module';
 import { GatewayModule } from './modules/gateway/gateway.module';
 import { ProfileModule } from './modules/profile/profile.module';
+import { UploadModule } from './modules/upload/upload.module';
 import { env } from './env';
 
 @Module({
@@ -27,6 +28,7 @@ import { env } from './env';
     GameModule,
     GatewayModule,
     ProfileModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

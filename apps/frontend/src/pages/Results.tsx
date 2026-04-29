@@ -39,15 +39,24 @@ export default function Results(): JSX.Element {
     .filter((p) => p.teamColor === TeamColor.BLUE)
     .reduce((acc, p) => acc + p.score, 0);
 
+  // Neutral gray reserved for draws — never used in-game so it reads as "no winner".
+  const DRAW_COLOR = '#9CA3AF';
+
+  // Solo draw = top score is shared by 2+ players (and > 0).
+  const topScore = sorted[0]?.score ?? 0;
+  const tiedTop = sorted.filter((p) => p.score === topScore && p.score > 0);
+  const isSoloDraw = gameMode === GameMode.SOLO && tiedTop.length > 1;
+  const isTeamDraw = gameMode === GameMode.TEAM && (isDraw || teamRedScore === teamBlueScore);
+
   // Determine winner presentation
   let winnerColor: string;
   let winnerName: string;
   let winnerSub: string;
 
   if (gameMode === GameMode.TEAM) {
-    if (isDraw || teamRedScore === teamBlueScore) {
-      winnerColor = 'var(--accent-yellow)';
-      winnerName = 'STALEMATE';
+    if (isTeamDraw) {
+      winnerColor = DRAW_COLOR;
+      winnerName = 'DRAW';
       winnerSub = `${teamRedScore} — ${teamBlueScore}`;
     } else if (teamRedScore > teamBlueScore) {
       winnerColor = 'var(--team-red)';
@@ -58,9 +67,13 @@ export default function Results(): JSX.Element {
       winnerName = 'BLUE TEAM WINS';
       winnerSub = `${teamBlueScore} — ${teamRedScore}`;
     }
+  } else if (isSoloDraw) {
+    winnerColor = DRAW_COLOR;
+    winnerName = 'DRAW';
+    winnerSub = `${tiedTop.map((p) => p.fullName).join(' · ')} · ${topScore} blocks`;
   } else {
     const top = sorted[0];
-    winnerColor = top ? resolveSoloColor(top) : 'var(--accent-yellow)';
+    winnerColor = top ? resolveSoloColor(top) : DRAW_COLOR;
     winnerName = top ? `${top.fullName.toUpperCase()} WINS` : 'RESULTS';
     winnerSub = top
       ? `${top.score} blocks · ${Math.round((top.score / totalCells) * 100)}% of the board`
@@ -223,8 +236,12 @@ export default function Results(): JSX.Element {
               {sorted.map((p, i) => {
                 const s = p.score;
                 const pct = Math.round((s / totalCells) * 100);
-                const color =
-                  gameMode === GameMode.TEAM
+                const isTopScorer = s === topScore && s > 0;
+                const isDrawnPlayer =
+                  (isTeamDraw && gameMode === GameMode.TEAM) || (isSoloDraw && isTopScorer);
+                const color = isDrawnPlayer
+                  ? DRAW_COLOR
+                  : gameMode === GameMode.TEAM
                     ? p.teamColor === TeamColor.RED
                       ? 'var(--team-red)'
                       : 'var(--team-blue)'

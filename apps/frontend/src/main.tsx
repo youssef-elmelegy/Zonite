@@ -2,6 +2,7 @@ import './styles/tokens.css';
 import './styles/overlays.css';
 import './styles/tailwind.css';
 import './styles/animations.css';
+import './styles/scrollbar.css';
 
 import { StrictMode, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
