@@ -9,5 +9,6 @@ import { GameGateway } from './game.gateway';
 @Module({
   imports: [GameModule, RoomsModule, ProfileModule],
   providers: [GameGateway, WsJwtGuard, WsExceptionsFilter],
+  exports: [GameGateway],
 })
 export class GatewayModule {}

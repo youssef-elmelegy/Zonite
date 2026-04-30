@@ -117,6 +117,19 @@ export class GameGateway implements OnGatewayDisconnect {
 
     const room = await this.roomsService.getRoomRow(dto.roomCode.toUpperCase());
 
+    // ── Tournament roster gate ──
+    if (room.tournamentRoster) {
+      const inRoster = room.tournamentRoster.some((t) =>
+        t.players.some((p) => p.userId === user.id),
+      );
+      if (!inRoster) {
+        throw new WsException({
+          code: 'NOT_IN_TOURNAMENT_ROSTER',
+          message: 'You are not registered for this match',
+        });
+      }
+    }
+
     // ── Reconnect to an active game ──
     if (room.status === 'PLAYING' && this.gameStateService.hasGame(room.id)) {
       await client.join(room.code);
@@ -158,7 +171,9 @@ export class GameGateway implements OnGatewayDisconnect {
           ? GameStateService.soloColorAt(lobbyPlayers.size)
           : '';
 
-    const teamColor = this.assignTeamColor(room.gameMode as GameMode, lobbyPlayers, user.id);
+    const rosterColor = this.rosterTeamColor(room, user.id);
+    const teamColor =
+      rosterColor ?? this.assignTeamColor(room.gameMode as GameMode, lobbyPlayers, user.id);
 
     const lobbyPlayer: InternalLobbyPlayer = {
       id: user.id,
@@ -307,8 +322,14 @@ export class GameGateway implements OnGatewayDisconnect {
     const playerMap: Record<string, InternalPlayer> = {};
     let i = 0;
     for (const lp of lobbyPlayers.values()) {
+      const rosterColor = this.rosterTeamColor(room, lp.id);
       const teamColor =
-        room.gameMode === 'TEAM' ? (i % 2 === 0 ? TeamColor.RED : TeamColor.BLUE) : TeamColor.NONE;
+        rosterColor ??
+        (room.gameMode === 'TEAM'
+          ? i % 2 === 0
+            ? TeamColor.RED
+            : TeamColor.BLUE
+          : TeamColor.NONE);
 
       playerMap[lp.id] = {
         id: lp.id,
@@ -357,6 +378,104 @@ export class GameGateway implements OnGatewayDisconnect {
 
     this.server.to(room.code).emit(GameEvents.GAME_STARTED, initialState);
     this.logger.log(`Game started in room ${room.code}`);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Tournament — start match (called by HTTP yalgamers endpoint)
+  // ---------------------------------------------------------------------------
+
+  async startTournamentMatch(room: {
+    id: string;
+    code: string;
+    status: string;
+    gameMode: 'SOLO' | 'TEAM';
+    gridSize: number;
+    durationSeconds: number;
+    maxPlayers: number;
+    hostUserId: string;
+    tournamentRoster: Array<{
+      teamId: string;
+      teamName: string;
+      color: 'RED' | 'BLUE' | null;
+      players: Array<{
+        userId: string;
+        userName: string;
+        displayName: string;
+        avatarUrl: string | null;
+      }>;
+    }>;
+    createdAt: Date;
+    startedAt: Date | null;
+    endedAt: Date | null;
+    tournamentId: string | null;
+    roundNumber: number | null;
+  }): Promise<void> {
+    if (room.status !== GameStatus.LOBBY) {
+      throw new Error(`Match is not pending (current status: ${room.status})`);
+    }
+
+    const lobbyPlayers = this.lobby.get(room.code) ?? new Map<string, InternalLobbyPlayer>();
+    const rosterUserIds = room.tournamentRoster.flatMap((t) => t.players.map((p) => p.userId));
+    const missing = rosterUserIds.filter((id) => !lobbyPlayers.has(id));
+    if (missing.length > 0) {
+      throw new Error(
+        `Cannot start match — ${missing.length} of ${rosterUserIds.length} roster players are not connected`,
+      );
+    }
+
+    // Build playerMap from connected lobby + roster colors
+    const playerMap: Record<string, InternalPlayer> = {};
+    let soloIdx = 0;
+    for (const userId of rosterUserIds) {
+      const lp = lobbyPlayers.get(userId)!;
+      const rosterColor = this.rosterTeamColor(room, userId) ?? TeamColor.NONE;
+      const color = room.gameMode === GameMode.SOLO ? GameStateService.soloColorAt(soloIdx) : '';
+      playerMap[userId] = {
+        id: lp.id,
+        fullName: lp.fullName,
+        teamColor: rosterColor,
+        color,
+        score: 0,
+        socketId: lp.socketId,
+      };
+      soloIdx++;
+    }
+
+    await this.roomsService.transitionToPlaying(room.code);
+
+    const initialState = this.gameStateService.startGame(
+      { ...room, status: 'PLAYING' } as never,
+      playerMap,
+      {
+        onTick: (state) => {
+          this.server
+            .to(room.code)
+            .emit(GameEvents.GAME_TICK, { remaining: state.remainingSeconds });
+        },
+        onGameOver: async (results) => {
+          try {
+            await this.roomsService.transitionToFinished(room.code);
+            await this.profileService.recordMatchResults(results, room.id);
+          } catch (err) {
+            this.logger.error(
+              `Failed to persist match results for tournament room ${room.code}: ${(err as Error).message}`,
+              (err as Error).stack,
+            );
+          }
+          for (const playerId of Object.keys(playerMap)) {
+            clearTimeout(this.disconnectTimers.get(playerId));
+            this.disconnectTimers.delete(playerId);
+          }
+          this.server.to(room.code).emit(GameEvents.GAME_OVER, results);
+          this.lobby.delete(room.code);
+          this.logger.log(`Tournament game over for room ${room.code}`);
+        },
+      },
+    );
+
+    this.lobby.delete(room.code);
+    this.server.to(room.code).emit(GameEvents.GAME_STARTED, initialState);
+    this.logger.log(`Tournament match started for room ${room.code}`);
   }
 
   // ---------------------------------------------------------------------------
@@ -439,12 +558,14 @@ export class GameGateway implements OnGatewayDisconnect {
         if (!socketUser) continue;
 
         const isHost = room.hostUserId === socketUser.id;
+        const rosterColor = this.rosterTeamColor(room, socketUser.id);
         const teamColor =
-          room.gameMode === 'TEAM'
+          rosterColor ??
+          (room.gameMode === 'TEAM'
             ? i % 2 === 0
               ? TeamColor.RED
               : TeamColor.BLUE
-            : TeamColor.NONE;
+            : TeamColor.NONE);
         const color = room.gameMode === GameMode.SOLO ? GameStateService.soloColorAt(i) : '';
 
         freshLobby.set(socketUser.id, {
@@ -481,6 +602,7 @@ export class GameGateway implements OnGatewayDisconnect {
       gridSize: number;
       durationSeconds: number;
       maxPlayers: number;
+      tournamentRoster?: unknown;
     },
     lobbyPlayers: Map<string, InternalLobbyPlayer>,
   ): RoomState {
@@ -491,6 +613,7 @@ export class GameGateway implements OnGatewayDisconnect {
       gridSize: room.gridSize,
       durationSeconds: room.durationSeconds,
       maxPlayers: room.maxPlayers,
+      isTournament: Boolean(room.tournamentRoster),
       players: Array.from(lobbyPlayers.values()).map(this.toWire),
     };
   }
@@ -504,6 +627,26 @@ export class GameGateway implements OnGatewayDisconnect {
       isReady: p.isReady,
       isHost: p.isHost,
     };
+  }
+
+  private rosterTeamColor(
+    room: {
+      tournamentRoster: Array<{
+        color: 'RED' | 'BLUE' | null;
+        players: Array<{ userId: string }>;
+      }> | null;
+    },
+    userId: string,
+  ): TeamColor | null {
+    if (!room.tournamentRoster) return null;
+    for (const team of room.tournamentRoster) {
+      if (team.players.some((p) => p.userId === userId)) {
+        if (team.color === 'RED') return TeamColor.RED;
+        if (team.color === 'BLUE') return TeamColor.BLUE;
+        return TeamColor.NONE;
+      }
+    }
+    return null;
   }
 
   private assignTeamColor(

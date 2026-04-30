@@ -10,6 +10,7 @@ export const users = pgTable(
     email: text('email').notNull().unique(),
     password: text('password').notNull(),
     fullName: text('full_name').notNull().default(''),
+    userName: text('username').notNull().unique(),
     xp: integer('xp').notNull().default(0),
     otp: text('otp'),
     otpExpiresAt: timestamp('otp_expires_at', { withTimezone: true }),

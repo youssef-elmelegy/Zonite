@@ -64,6 +64,7 @@ export default function Lobby(): JSX.Element {
   const gridSize = useRoomStore((s) => s.gridSize);
   const durationSeconds = useRoomStore((s) => s.durationSeconds);
   const maxPlayers = useRoomStore((s) => s.maxPlayers);
+  const isTournament = useRoomStore((s) => s.isTournament);
   const socket = useSocket(code);
   useGameState(socket);
   const { isMobile, isTablet } = useWindowSize();
@@ -97,7 +98,7 @@ export default function Lobby(): JSX.Element {
   );
 
   const myPlayer = players.find((p) => p.id === user?.id);
-  const isHost = myPlayer?.isHost ?? false;
+  const isHost = !isTournament && (myPlayer?.isHost ?? false);
   const readyCount = players.filter((p) => p.isReady).length;
   const canStart = isHost && readyCount >= 2;
 
@@ -721,7 +722,24 @@ export default function Lobby(): JSX.Element {
                 />
               </div>
 
-              {isHost ? (
+              {isTournament ? (
+                <div
+                  style={{
+                    padding: '14px',
+                    borderRadius: 8,
+                    background: 'rgba(253,235,86,0.06)',
+                    border: '1px dashed var(--accent-yellow)',
+                    color: 'var(--accent-yellow)',
+                    fontFamily: 'var(--font-ui)',
+                    fontWeight: 700,
+                    fontSize: 13,
+                    textAlign: 'center',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  Waiting for tournament to start…
+                </div>
+              ) : isHost ? (
                 <button
                   type="button"
                   disabled={!canStart}

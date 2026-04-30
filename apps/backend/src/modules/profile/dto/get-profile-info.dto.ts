@@ -11,6 +11,9 @@ export class GetProfileInfoDto {
   @ApiProperty({ example: MOCK_DATA.name.fullName })
   fullName: string;
 
+  @ApiProperty({ example: MOCK_DATA.name.firstName })
+  userName: string;
+
   @ApiProperty({ example: true })
   isEmailVerified: boolean;
 

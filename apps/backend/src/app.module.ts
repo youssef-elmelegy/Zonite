@@ -11,6 +11,7 @@ import { GameModule } from './modules/game/game.module';
 import { GatewayModule } from './modules/gateway/gateway.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { YalgamersModule } from './modules/yalgamers/yalgamers.module';
 import { env } from './env';
 
 @Module({
@@ -29,6 +30,7 @@ import { env } from './env';
     GatewayModule,
     ProfileModule,
     UploadModule,
+    YalgamersModule,
   ],
   controllers: [AppController],
   providers: [

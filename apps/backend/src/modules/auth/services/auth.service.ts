@@ -65,6 +65,7 @@ export class AuthService {
           email: dto.email.toLowerCase(),
           password,
           fullName: dto.fullName,
+          userName: this.generateUsername(dto.fullName),
           isEmailVerified: false,
           otp,
           otpExpiresAt,
@@ -144,6 +145,7 @@ export class AuthService {
           id: user.id,
           email: user.email,
           fullName: user.fullName,
+          userName: user.userName,
           isEmailVerified: purpose === OtpPurpose.VERIFY_EMAIL ? true : user.isEmailVerified,
           createdAt: user.createdAt,
           updatedAt: new Date(),
@@ -164,9 +166,6 @@ export class AuthService {
 
   /**
    * Complete profile setup after email verification.
-   *
-   * Passenger path → update users + upsert userProfile (profileImage)
-   * Driver path    → update users + insert drivers (nationalId, profileImage)
    *
    * Creates an auth session and sends a welcome email on success.
    */
@@ -224,6 +223,7 @@ export class AuthService {
         id: updatedUser.id,
         email: updatedUser.email,
         fullName: updatedUser.fullName,
+        userName: updatedUser.userName,
         dateOfBirth: updatedUser.dateOfBirth ?? null,
         profileImage: updatedUser.profileImage ?? null,
         isEmailVerified: updatedUser.isEmailVerified,
@@ -661,6 +661,16 @@ export class AuthService {
     res.clearCookie('accessToken', options);
     res.clearCookie('refreshToken', options);
     res.clearCookie('tempToken', options);
+  }
+
+  private generateUsername(fullName: string): string {
+    const baseUsername = fullName
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumeric with hyphens
+      .replace(/^-+|-+$/g, ''); // trim leading/trailing hyphens
+
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000); // random 4-digit number
+    return `${baseUsername}-${randomSuffix}`;
   }
 
   // private toCurrentUser(user: typeof users.$inferSelect): CurrentUser {

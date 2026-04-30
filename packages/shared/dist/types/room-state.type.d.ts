@@ -9,6 +9,8 @@ export interface RoomState {
     gridSize: number;
     durationSeconds: number;
     maxPlayers: number;
+    /** True for rooms created by the YalGamers tournament integration. */
+    isTournament: boolean;
     players: LobbyPlayer[];
 }
 //# sourceMappingURL=room-state.type.d.ts.map

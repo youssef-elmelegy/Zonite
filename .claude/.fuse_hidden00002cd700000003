@@ -108,8 +108,29 @@
       "Bash(wait)",
       "Bash(xargs cat *)",
       "Bash(tsc --noEmit)",
-      "Bash(pnpm --filter @zonite/frontend exec tsc --noEmit)"
+      "Bash(pnpm --filter @zonite/frontend exec tsc --noEmit)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite remote -v)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite diff apps/frontend/server.js)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite add apps/frontend/server.js)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite commit -m ' *)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite status)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite diff --stat pnpm-lock.yaml)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite status --short)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite diff pnpm-lock.yaml)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite add pnpm-lock.yaml)",
+      "Bash(node -e \"import\\('./dist/index.js'\\).then\\(m => console.log\\('OK keys:', Object.keys\\(m\\).length\\)\\).catch\\(e => { console.error\\('FAIL:', e.message, e.code\\); process.exit\\(1\\); }\\)\")",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite status --short packages/shared/src)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite add packages/shared/src)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite commit -m 'fix\\(shared\\): add .js extensions to relative imports for Node ESM *)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite log --oneline -5)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite add apps/backend/src/modules/auth/services/auth.service.ts)",
+      "Bash(git -C /media/jo/store/youssef/projects/yal-gaming/zonite commit -m 'fix\\(auth\\): clear tempToken cookie on logout *)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(pnpm --filter @zonite/frontend lint)",
+      "Bash(npx eslint *)"
     ],
-    "additionalDirectories": ["/tmp"]
+    "additionalDirectories": [
+      "/tmp"
+    ]
   }
 }

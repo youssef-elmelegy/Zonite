@@ -8,6 +8,7 @@ interface RoomStore {
   gridSize: number | null;
   durationSeconds: number | null;
   maxPlayers: number | null;
+  isTournament: boolean;
   players: LobbyPlayer[];
   myTeam: TeamColor;
   setRoom: (
@@ -17,6 +18,7 @@ interface RoomStore {
       gridSize: number;
       durationSeconds: number;
       maxPlayers: number;
+      isTournament?: boolean;
     },
   ) => void;
   setPlayers: (players: LobbyPlayer[]) => void;
@@ -33,6 +35,7 @@ export const useRoomStore = create<RoomStore>()((set) => ({
   gridSize: null,
   durationSeconds: null,
   maxPlayers: null,
+  isTournament: false,
   players: [],
   myTeam: TeamColor.NONE,
   setRoom: (code, config) =>
@@ -42,6 +45,7 @@ export const useRoomStore = create<RoomStore>()((set) => ({
       gridSize: config.gridSize,
       durationSeconds: config.durationSeconds,
       maxPlayers: config.maxPlayers,
+      isTournament: config.isTournament ?? false,
     }),
   setPlayers: (players) => set({ players }),
   addOrUpdatePlayer: (player) =>
@@ -62,6 +66,7 @@ export const useRoomStore = create<RoomStore>()((set) => ({
       gridSize: null,
       durationSeconds: null,
       maxPlayers: null,
+      isTournament: false,
       players: [],
       myTeam: TeamColor.NONE,
     }),

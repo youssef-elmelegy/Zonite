@@ -124,6 +124,11 @@ export class RoomsService {
     return this.getRoom(code);
   }
 
+  async findById(id: string): Promise<typeof rooms.$inferSelect | null> {
+    const rows = await this.db.select().from(rooms).where(eq(rooms.id, id)).limit(1);
+    return rows.at(0) ?? null;
+  }
+
   async transitionToPlaying(code: string): Promise<typeof rooms.$inferSelect> {
     const rows = await this.db
       .update(rooms)

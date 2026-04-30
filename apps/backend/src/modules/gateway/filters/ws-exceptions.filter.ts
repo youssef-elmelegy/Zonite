@@ -11,14 +11,21 @@ export class WsExceptionsFilter extends BaseWsExceptionFilter {
     const client = host.switchToWs().getClient<Socket>();
 
     let message = 'Internal server error';
+    let code: string | undefined;
 
     if (exception instanceof WsException) {
       const err = exception.getError();
-      message = typeof err === 'string' ? err : ((err as { message?: string }).message ?? message);
+      if (typeof err === 'string') {
+        message = err;
+      } else if (err && typeof err === 'object') {
+        const obj = err as { message?: string; code?: string };
+        if (obj.message) message = obj.message;
+        if (obj.code) code = obj.code;
+      }
     } else if (exception instanceof Error) {
       this.logger.error(exception.stack);
     }
 
-    client.emit(GameEvents.EXCEPTION, { message });
+    client.emit(GameEvents.EXCEPTION, code ? { message, code } : { message });
   }
 }

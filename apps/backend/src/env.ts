@@ -57,6 +57,9 @@ const envSchema = z
     CLOUDINARY_CLOUD_NAME: z.string().min(1, 'CLOUDINARY_CLOUD_NAME is required'),
     CLOUDINARY_API_KEY: z.string().min(1, 'CLOUDINARY_API_KEY is required'),
     CLOUDINARY_API_SECRET: z.string().min(1, 'CLOUDINARY_API_SECRET is required'),
+
+    // YalGamers
+    YALGAMERS_API_KEY: z.string().min(1, 'YALGAMERS_API_KEY is required'),
   })
   .superRefine((data, ctx) => {
     // Validate auth throttler is stricter than global

@@ -2,6 +2,7 @@ export interface AuthResponse {
   id: string;
   email: string;
   fullName: string;
+  userName: string;
   profileImage: string | null;
   dateOfBirth: string | null;
   isEmailVerified: boolean;
@@ -31,6 +32,7 @@ export interface VerifyOtpResponse {
     id: string;
     email: string;
     fullName: string;
+    userName: string;
     isEmailVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -45,6 +47,7 @@ export interface SetupProfileResponse {
   id: string;
   email: string;
   fullName: string;
+  userName: string;
   profileImage: string | null;
   isEmailVerified: boolean;
   dateOfBirth: string | null;

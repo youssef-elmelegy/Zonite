@@ -3,3 +3,4 @@ export * from './flexible-jwt.guard';
 export * from './refresh-token.guard';
 export * from './refresh-token-cookie.guard';
 export * from './roles.guard';
+export * from './yalgamers-api-key.guard';

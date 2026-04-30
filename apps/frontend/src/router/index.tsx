@@ -14,6 +14,7 @@ import Lobby from '../pages/Lobby';
 import Game from '../pages/Game';
 import Results from '../pages/Results';
 import Profile from '../pages/Profile';
+import NotRegistered from '../pages/NotRegistered';
 
 export const router = createBrowserRouter([
   // Auth pages blocked for authenticated users
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
       { path: '/game/:code', element: <Game /> },
       { path: '/results', element: <Results /> },
       { path: '/profile', element: <Profile /> },
+      { path: '/not-registered', element: <NotRegistered /> },
     ],
   },
 ]);

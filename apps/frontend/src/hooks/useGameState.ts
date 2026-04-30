@@ -30,6 +30,7 @@ export function useGameState(socket: UseSocketReturn) {
             gridSize: state.gridSize,
             durationSeconds: state.durationSeconds,
             maxPlayers: state.maxPlayers,
+            isTournament: state.isTournament,
           });
           navigate('/lobby/' + state.roomCode);
           return;
@@ -94,8 +95,11 @@ export function useGameState(socket: UseSocketReturn) {
 
     unsubs.push(
       socket.on(GameEvents.EXCEPTION, (payload: unknown) => {
-        const ex = payload as { message: string };
+        const ex = payload as { message: string; code?: string };
         console.error('[socket exception]', ex.message);
+        if (ex.code === 'NOT_IN_TOURNAMENT_ROSTER') {
+          navigate('/not-registered', { replace: true });
+        }
       }),
     );
 

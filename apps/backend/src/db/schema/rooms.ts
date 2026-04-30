@@ -1,7 +1,28 @@
-import { pgTable, uuid, text, integer, timestamp, index } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  uuid,
+  text,
+  integer,
+  timestamp,
+  jsonb,
+  index,
+  uniqueIndex,
+} from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { users } from './users';
 import { gameModeEnum } from './match-history';
+
+export type TournamentRosterTeam = {
+  teamId: string;
+  teamName: string;
+  color: 'RED' | 'BLUE' | null;
+  players: Array<{
+    userId: string;
+    userName: string;
+    displayName: string;
+    avatarUrl: string | null;
+  }>;
+};
 
 export const rooms = pgTable(
   'rooms',
@@ -18,6 +39,9 @@ export const rooms = pgTable(
     gridSize: integer('grid_size').notNull().default(12),
     durationSeconds: integer('duration_seconds').notNull().default(60),
     maxPlayers: integer('max_players').notNull().default(6),
+    tournamentId: text('tournament_id'),
+    roundNumber: integer('round_number'),
+    tournamentRoster: jsonb('tournament_roster').$type<TournamentRosterTeam[]>(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
       .default(sql`now()`),
@@ -27,6 +51,9 @@ export const rooms = pgTable(
   (t) => ({
     statusIdx: index('rooms_status_idx').on(t.status),
     hostIdx: index('rooms_host_user_id_idx').on(t.hostUserId),
+    tournamentRoundUnique: uniqueIndex('rooms_tournament_round_unique')
+      .on(t.tournamentId, t.roundNumber)
+      .where(sql`${t.tournamentId} IS NOT NULL`),
   }),
 );
 

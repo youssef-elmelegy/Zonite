@@ -199,6 +199,7 @@ export class ProfileService {
       id: user.id,
       email: user.email,
       fullName: user.fullName,
+      userName: user.userName,
       isEmailVerified: user.isEmailVerified,
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
