@@ -32,8 +32,15 @@ async function bootstrap(): Promise<void> {
   // Trust proxy (for reverse proxy support)
   app.set('trust proxy', true);
 
-  // Global prefix
-  app.setGlobalPrefix('api');
+  // Global prefix (yalgamers integration endpoints are excluded — exposed at root)
+  app.setGlobalPrefix('api', {
+    exclude: [
+      'check-user/:userName',
+      'create-match',
+      'start-match/:matchId',
+      'match-results/:matchId',
+    ],
+  });
 
   // Cookie parser
   app.use(cookieParser(env.COOKIE_SECRET));
