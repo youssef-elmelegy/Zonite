@@ -34,7 +34,7 @@ export class YalgamersController {
     return this.yalgamersService.startMatch(matchId);
   }
 
-  @Get('match-results/:matchId')
+  @Get('match-result/:matchId')
   @YalgamersMatchResultsDecorator()
   getMatchResults(@Param('matchId') matchId: string) {
     return this.yalgamersService.getMatchResults(matchId);
