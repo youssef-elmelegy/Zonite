@@ -12,7 +12,7 @@ export function YalgamersCheckUserDecorator() {
         "Used by the YalGamers Tournament Engine to verify that a player's username exists in the game's system before registering them for a tournament.",
     }),
     ApiHeader({
-      name: 'X-Tournament-Api-Key',
+      name: 'X-API-Key',
       description: 'YalGamers tournament API key',
       required: true,
     }),

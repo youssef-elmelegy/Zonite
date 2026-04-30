@@ -12,7 +12,7 @@ export function YalgamersMatchResultsDecorator() {
         'Returns the current state of a match. While pending or running, winner is null. When completed, winner is the team object whose teamId matches the create-match request.',
     }),
     ApiHeader({
-      name: 'X-Tournament-Api-Key',
+      name: 'X-API-Key',
       description: 'YalGamers tournament API key',
       required: true,
     }),

@@ -12,7 +12,7 @@ export function YalgamersCreateMatchDecorator() {
         'Called by the YalGamers Tournament Engine to generate a match between registered players. Creates a pending room internally and registers all players. For solo matches, each team must contain exactly one player.',
     }),
     ApiHeader({
-      name: 'X-Tournament-Api-Key',
+      name: 'X-API-Key',
       description: 'YalGamers tournament API key',
       required: true,
     }),

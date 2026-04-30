@@ -12,7 +12,7 @@ export function YalgamersStartMatchDecorator() {
         'Transitions a pending match into running state. Triggers the in-game session for all connected roster players. Rejects if any roster player is not currently connected to the lobby.',
     }),
     ApiHeader({
-      name: 'X-Tournament-Api-Key',
+      name: 'X-API-Key',
       description: 'YalGamers tournament API key',
       required: true,
     }),

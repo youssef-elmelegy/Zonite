@@ -9,7 +9,7 @@ import type { Request } from 'express';
 import { env } from '@/env';
 import { errorResponse } from '@/utils';
 
-const HEADER_NAME = 'x-tournament-api-key';
+const HEADER_NAME = 'x-api-key';
 
 @Injectable()
 export class YalgamersApiKeyGuard implements CanActivate {
