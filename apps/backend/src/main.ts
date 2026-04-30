@@ -38,7 +38,7 @@ async function bootstrap(): Promise<void> {
       'check-user/:userName',
       'create-match',
       'start-match/:matchId',
-      'match-results/:matchId',
+      'match-result/:matchId',
     ],
   });
 
