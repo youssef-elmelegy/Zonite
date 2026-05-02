@@ -4,6 +4,7 @@ export interface ProfileInfo {
   id: string;
   email: string;
   fullName: string;
+  userName: string;
   isEmailVerified: boolean;
   profileImage?: string;
   xp: number;

@@ -432,6 +432,8 @@ export default function Profile(): JSX.Element {
   const [pwForm, setPwForm] = useState({ oldPassword: '', newPassword: '' });
   const [pwError, setPwError] = useState('');
 
+  const [copied, setCopied] = useState(false);
+
   // ── Queries ────────────────────────────────────────────────────────────────
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['profile', 'info'],
@@ -583,6 +585,38 @@ export default function Profile(): JSX.Element {
         </div>
       </Shell>
     );
+  }
+
+  async function copyText(userName: string) {
+    const text = `@${userName}`;
+    // Try the modern clipboard API first
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch {
+      // ignore and fallback
+    }
+
+    // Fallback for older browsers: use a hidden textarea and execCommand
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      // Prevent scrolling to bottom
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      ta.style.top = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return !!ok;
+    } catch {
+      return false;
+    }
   }
 
   return (
@@ -738,6 +772,29 @@ export default function Profile(): JSX.Element {
                 >
                   {displayName}
                 </h1>
+                <span
+                  onClick={async () => {
+                    if (!profile?.userName) return;
+
+                    const ok = await copyText(profile.userName);
+                    if (ok) {
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1200);
+                    }
+                  }}
+                  style={{
+                    fontSize: 12,
+                    color: copied ? 'var(--accent-yellow)' : 'var(--fg-tertiary)',
+                    fontFamily: 'var(--font-mono)',
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    marginLeft: 4,
+                    opacity: 0.9,
+                    transition: 'all 120ms ease',
+                  }}
+                >
+                  {copied ? 'Copied!' : `@${profile?.userName}`}
+                </span>
                 <div
                   title={`${tier.name} tier · levels ${tier.min}–${tier.max}`}
                   style={{
