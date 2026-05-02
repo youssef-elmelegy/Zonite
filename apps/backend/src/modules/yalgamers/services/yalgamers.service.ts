@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { and, eq, inArray, isNotNull } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { db } from '@/db';
 import { matchPlayerRecords, rooms, users } from '@/db/schema';
 import type { TournamentRosterTeam } from '@/db/schema';
@@ -97,24 +97,24 @@ export class YalgamersService {
       );
     }
 
-    const existingMatch = await db.query.rooms.findFirst({
-      where: and(
-        eq(rooms.tournamentId, dto.tournamentId),
-        eq(rooms.roundNumber, dto.roundNumber),
-        isNotNull(rooms.tournamentId),
-      ),
-      columns: { id: true },
-    });
-    if (existingMatch) {
-      throw new ConflictException(
-        errorResponse(
-          'Match already exists for this tournament/round combination',
-          HttpStatus.CONFLICT,
-          'ConflictException',
-          { tournamentId: dto.tournamentId, roundNumber: dto.roundNumber },
-        ),
-      );
-    }
+    // const existingMatch = await db.query.rooms.findFirst({
+    //   where: and(
+    //     eq(rooms.tournamentId, dto.tournamentId),
+    //     eq(rooms.roundNumber, dto.roundNumber),
+    //     isNotNull(rooms.tournamentId),
+    //   ),
+    //   columns: { id: true },
+    // });
+    // if (existingMatch) {
+    //   throw new ConflictException(
+    //     errorResponse(
+    //       'Match already exists for this tournament/round combination',
+    //       HttpStatus.CONFLICT,
+    //       'ConflictException',
+    //       { tournamentId: dto.tournamentId, roundNumber: dto.roundNumber },
+    //     ),
+    //   );
+    // }
 
     const foundUsers = await db
       .select({
