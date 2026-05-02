@@ -86,17 +86,17 @@ export class YalgamersService {
 
     const allUserNames = dto.teams.flatMap((t) => t.players);
     const uniqueUserNames = Array.from(new Set(allUserNames));
-    if (uniqueUserNames.length !== allUserNames.length) {
-      const duplicates = allUserNames.filter((u, i) => allUserNames.indexOf(u) !== i);
-      throw new BadRequestException(
-        errorResponse(
-          'A player cannot appear on more than one team',
-          HttpStatus.BAD_REQUEST,
-          'BadRequestException',
-          { duplicates: Array.from(new Set(duplicates)) },
-        ),
-      );
-    }
+    // if (uniqueUserNames.length !== allUserNames.length) {
+    //   const duplicates = allUserNames.filter((u, i) => allUserNames.indexOf(u) !== i);
+    //   throw new BadRequestException(
+    //     errorResponse(
+    //       'A player cannot appear on more than one team',
+    //       HttpStatus.BAD_REQUEST,
+    //       'BadRequestException',
+    //       { duplicates: Array.from(new Set(duplicates)) },
+    //     ),
+    //   );
+    // }
 
     // const existingMatch = await db.query.rooms.findFirst({
     //   where: and(
