@@ -13,6 +13,7 @@ import type { TournamentRosterTeam } from '@/db/schema';
 import { errorResponse, successResponse } from '@/utils';
 import type { SuccessResponse } from '@/types';
 import { GameGateway } from '@/modules/gateway/game.gateway';
+import { env } from '@/env';
 import {
   CheckUserDataDto,
   CreateMatchDataDto,
@@ -211,6 +212,7 @@ export class YalgamersService {
       matchId: createdRoom.id,
       status: 'pending',
       matchType: dto.matchType,
+      matchUrl: `${env.CLIENT_URL}/lobby/${createdRoom.code}`,
       teams: responseTeams,
     };
 

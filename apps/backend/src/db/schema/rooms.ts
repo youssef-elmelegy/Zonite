@@ -1,13 +1,4 @@
-import {
-  pgTable,
-  uuid,
-  text,
-  integer,
-  timestamp,
-  jsonb,
-  index,
-  uniqueIndex,
-} from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, integer, timestamp, jsonb, index } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { users } from './users';
 import { gameModeEnum } from './match-history';
@@ -51,9 +42,9 @@ export const rooms = pgTable(
   (t) => ({
     statusIdx: index('rooms_status_idx').on(t.status),
     hostIdx: index('rooms_host_user_id_idx').on(t.hostUserId),
-    tournamentRoundUnique: uniqueIndex('rooms_tournament_round_unique')
-      .on(t.tournamentId, t.roundNumber)
-      .where(sql`${t.tournamentId} IS NOT NULL`),
+    // tournamentRoundUnique: uniqueIndex('rooms_tournament_round_unique')
+    //   .on(t.tournamentId, t.roundNumber)
+    //   .where(sql`${t.tournamentId} IS NOT NULL`),
   }),
 );
 

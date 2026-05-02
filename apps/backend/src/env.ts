@@ -60,6 +60,9 @@ const envSchema = z
 
     // YalGamers
     YALGAMERS_API_KEY: z.string().min(1, 'YALGAMERS_API_KEY is required'),
+
+    // Client URL
+    CLIENT_URL: z.string().url('CLIENT_URL must be a valid URL').default('http://localhost:5173'),
   })
   .superRefine((data, ctx) => {
     // Validate auth throttler is stricter than global

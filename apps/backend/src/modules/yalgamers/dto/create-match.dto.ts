@@ -102,6 +102,12 @@ export class CreateMatchDataDto {
   @ApiProperty({ example: 'squad', enum: TOURNAMENT_MATCH_TYPES })
   matchType: TournamentMatchType;
 
+  @ApiProperty({
+    example: 'http://localhost:5173/lobby/ABC123',
+    description: 'URL to access the match lobby',
+  })
+  matchUrl: string;
+
   @ApiProperty({ type: [MatchTeamDto] })
   teams: MatchTeamDto[];
 }
