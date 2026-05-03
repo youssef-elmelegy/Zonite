@@ -5,6 +5,7 @@ import type { Player } from './player.type';
 
 export interface GameState {
   roomId: string;
+  roomCode: string;
   /** Square board edge length (N×N). */
   size: number;
   status: GameStatus;

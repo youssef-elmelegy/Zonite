@@ -8,6 +8,8 @@ export declare const GameEvents: {
     readonly REQUEST_STATE: "request_state";
     readonly RESET_GAME: "reset_game";
     readonly EXCEPTION: "exception";
+    readonly GAME_COUNTDOWN: "game_countdown";
+    readonly TOURNAMENT_DRAW_REMATCH: "tournament_draw_rematch";
 };
 export type GameEventName = (typeof GameEvents)[keyof typeof GameEvents];
 //# sourceMappingURL=game-events.enum.d.ts.map

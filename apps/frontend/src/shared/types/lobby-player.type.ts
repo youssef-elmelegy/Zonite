@@ -8,4 +8,5 @@ export interface LobbyPlayer {
   color: string;
   isReady: boolean;
   isHost: boolean;
+  avatarUrl?: string | null;
 }

@@ -212,11 +212,13 @@ export class GameStateService {
         teamColor: p.teamColor,
         score: p.score,
         color: p.color,
+        avatarUrl: p.avatarUrl,
       };
     }
 
     return {
       roomId: state.roomId,
+      roomCode: state.roomCode,
       size: state.size,
       status: state.status,
       gameMode: state.gameMode,

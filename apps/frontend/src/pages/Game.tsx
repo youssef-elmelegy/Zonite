@@ -19,6 +19,7 @@ interface LiveClaim {
   cell: string;
   ts: number;
   isMe: boolean;
+  avatarUrl?: string | null;
 }
 
 function cellLabel(x: number, y: number): string {
@@ -30,7 +31,7 @@ export default function Game(): JSX.Element {
   const navigate = useNavigate();
   const { user } = useAuth();
   const socket = useSocket(code);
-  useGameState(socket);
+  const { countdown, drawRematch } = useGameState(socket);
   const { isMobile, isTablet, width } = useWindowSize();
   const isNarrow = isMobile || isTablet;
 
@@ -72,6 +73,7 @@ export default function Game(): JSX.Element {
           cell: cellLabel(block.x, block.y),
           ts: Date.now(),
           isMe: block.claimedBy === user?.id,
+          avatarUrl: player.avatarUrl,
         },
         ...prev.slice(0, 9),
       ]);
@@ -676,13 +678,31 @@ export default function Game(): JSX.Element {
                           </span>
                           <div
                             style={{
-                              width: 7,
-                              height: 7,
+                              width: 20,
+                              height: 20,
                               borderRadius: '50%',
-                              background: pColor,
+                              background: p.avatarUrl ? 'transparent' : pColor,
+                              border: `1px solid ${pColor}`,
                               flexShrink: 0,
+                              overflow: 'hidden',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: 9,
+                              fontWeight: 800,
+                              color: 'var(--fg-primary)',
                             }}
-                          />
+                          >
+                            {p.avatarUrl ? (
+                              <img
+                                src={p.avatarUrl}
+                                alt={p.fullName}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            ) : (
+                              p.fullName[0]?.toUpperCase()
+                            )}
+                          </div>
                           <span
                             style={{
                               flex: 1,
@@ -753,14 +773,32 @@ export default function Game(): JSX.Element {
                         </div>
                         <div
                           style={{
-                            width: 8,
-                            height: 8,
+                            width: 24,
+                            height: 24,
                             borderRadius: '50%',
-                            background: pColor,
+                            background: p.avatarUrl ? 'transparent' : pColor,
                             boxShadow: `0 0 6px ${pColor}`,
+                            border: `1px solid ${pColor}`,
                             flexShrink: 0,
+                            overflow: 'hidden',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: 10,
+                            fontWeight: 800,
+                            color: 'var(--fg-primary)',
                           }}
-                        />
+                        >
+                          {p.avatarUrl ? (
+                            <img
+                              src={p.avatarUrl}
+                              alt={p.fullName}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          ) : (
+                            p.fullName[0]?.toUpperCase()
+                          )}
+                        </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div
                             style={{
@@ -884,13 +922,31 @@ export default function Game(): JSX.Element {
                     >
                       <div
                         style={{
-                          width: 5,
-                          height: 5,
+                          width: 18,
+                          height: 18,
                           borderRadius: '50%',
-                          background: c.color,
+                          background: c.avatarUrl ? 'transparent' : c.color,
+                          border: `1px solid ${c.color}`,
                           flexShrink: 0,
+                          overflow: 'hidden',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: 8,
+                          fontWeight: 800,
+                          color: 'var(--fg-primary)',
                         }}
-                      />
+                      >
+                        {c.avatarUrl ? (
+                          <img
+                            src={c.avatarUrl}
+                            alt={c.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          c.name[0]?.toUpperCase()
+                        )}
+                      </div>
                       <span
                         style={{
                           color: c.isMe ? 'var(--accent-yellow)' : c.color,
@@ -980,6 +1036,77 @@ export default function Game(): JSX.Element {
             );
           })()}
       </div>
+
+      {/* Countdown overlay */}
+      {(countdown !== null || drawRematch) && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.85)',
+            zIndex: 200,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 'var(--sp-4)',
+          }}
+        >
+          {drawRematch && (
+            <span
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(28px, 6vw, 48px)',
+                fontWeight: 900,
+                color: 'var(--accent-yellow)',
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                textShadow: '0 0 40px rgba(253,235,86,0.6)',
+              }}
+            >
+              DRAW!
+            </span>
+          )}
+          <span
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--fs-sm)',
+              color: 'var(--fg-tertiary)',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {drawRematch ? 'Rematch starting in' : 'Match starting in'}
+          </span>
+          {countdown !== null && (
+            <span
+              key={countdown}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(80px, 20vw, 160px)',
+                fontWeight: 900,
+                color: countdown <= 2 ? 'var(--fire-red)' : 'var(--accent-yellow)',
+                lineHeight: 1,
+                letterSpacing: '-0.02em',
+                animation: 'countdown-pop 0.9s var(--ease-out) both',
+              }}
+            >
+              {countdown}
+            </span>
+          )}
+          <span
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--fs-base)',
+              color: 'var(--fg-muted)',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {drawRematch ? '30-second tiebreaker!' : 'Get ready!'}
+          </span>
+        </div>
+      )}
 
       {/* Reconnect overlay */}
       {!socket.isConnected && (

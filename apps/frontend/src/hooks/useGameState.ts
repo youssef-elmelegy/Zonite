@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GameEvents, GameStatus, RoomEvents, TeamColor } from '../shared';
 import type { GameState, Block, LobbyPlayer, RoomState, Results } from '../shared';
@@ -11,6 +11,8 @@ export function useGameState(socket: UseSocketReturn) {
   const navigate = useNavigate();
   const { code } = useParams<{ code: string }>();
   const resultsRef = useRef<Results | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [drawRematch, setDrawRematch] = useState(false);
 
   useEffect(() => {
     const unsubs: Array<() => void> = [];
@@ -41,6 +43,7 @@ export function useGameState(socket: UseSocketReturn) {
           gridSize: state.gridSize,
           durationSeconds: state.durationSeconds,
           maxPlayers: state.maxPlayers,
+          isTournament: state.isTournament,
         });
       }),
     );
@@ -58,8 +61,23 @@ export function useGameState(socket: UseSocketReturn) {
     );
 
     unsubs.push(
+      socket.on(GameEvents.TOURNAMENT_DRAW_REMATCH, () => {
+        setDrawRematch(true);
+      }),
+    );
+
+    unsubs.push(
+      socket.on(GameEvents.GAME_COUNTDOWN, (payload: unknown) => {
+        const { count } = payload as { count: number };
+        setCountdown(count > 0 ? count : null);
+      }),
+    );
+
+    unsubs.push(
       socket.on(GameEvents.GAME_STARTED, (payload: unknown) => {
         const state = payload as GameState;
+        setCountdown(null);
+        setDrawRematch(false);
         useGameStore.getState().setGameState(state);
         const userId = useAuthStore.getState().user?.id;
         const myTeam = userId
@@ -67,7 +85,7 @@ export function useGameState(socket: UseSocketReturn) {
           : TeamColor.NONE;
         useRoomStore.getState().setMyTeam(myTeam);
         useRoomStore.getState().setGameMode(state.gameMode);
-        navigate(`/game/${code ?? state.roomId}`);
+        navigate(`/game/${state.roomCode || code || state.roomId}`);
       }),
     );
 
@@ -106,5 +124,5 @@ export function useGameState(socket: UseSocketReturn) {
     return () => unsubs.forEach((u) => u());
   }, [socket, navigate, code]);
 
-  return { results: resultsRef };
+  return { results: resultsRef, countdown, drawRematch };
 }

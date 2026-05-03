@@ -9,6 +9,7 @@ interface GameStore {
   remainingSeconds: number;
   size: number;
   isDraw: boolean;
+  roomCode: string;
   setGameState: (s: GameState) => void;
   applyBlockClaim: (block: Block) => void;
   tickTimer: (remaining: number) => void;
@@ -23,6 +24,7 @@ export const useGameStore = create<GameStore>()((set) => ({
   remainingSeconds: 0,
   size: 0,
   isDraw: false,
+  roomCode: '',
   setGameState: (s) =>
     set({
       grid: s.grid,
@@ -31,6 +33,7 @@ export const useGameStore = create<GameStore>()((set) => ({
       remainingSeconds: s.remainingSeconds,
       size: s.size,
       isDraw: false,
+      roomCode: s.roomCode,
     }),
   applyBlockClaim: (block) =>
     set((s) => {

@@ -66,7 +66,7 @@ export default function Lobby(): JSX.Element {
   const maxPlayers = useRoomStore((s) => s.maxPlayers);
   const isTournament = useRoomStore((s) => s.isTournament);
   const socket = useSocket(code);
-  useGameState(socket);
+  const { countdown } = useGameState(socket);
   const { isMobile, isTablet } = useWindowSize();
   const isNarrow = isMobile || isTablet;
 
@@ -332,7 +332,9 @@ export default function Lobby(): JSX.Element {
                         width: 36,
                         height: 36,
                         borderRadius: '50%',
-                        background: `linear-gradient(135deg, ${teamColor}, rgba(0,0,0,0.3))`,
+                        background: p.avatarUrl
+                          ? 'transparent'
+                          : `linear-gradient(135deg, ${teamColor}, rgba(0,0,0,0.3))`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -341,10 +343,19 @@ export default function Lobby(): JSX.Element {
                         color: 'var(--fg-primary)',
                         border: `2px solid ${teamColor}`,
                         flexShrink: 0,
+                        overflow: 'hidden',
                       }}
                     >
-                      {p.fullName[0]?.toUpperCase()}
-                      {p.isHost && (
+                      {p.avatarUrl ? (
+                        <img
+                          src={p.avatarUrl}
+                          alt={p.fullName}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        p.fullName[0]?.toUpperCase()
+                      )}
+                      {!isTournament && p.isHost && (
                         <div
                           style={{
                             position: 'absolute',
@@ -401,7 +412,7 @@ export default function Lobby(): JSX.Element {
                             You
                           </span>
                         )}
-                        {p.isHost && (
+                        {!isTournament && p.isHost && (
                           <span
                             style={{
                               fontSize: 9,
@@ -468,29 +479,31 @@ export default function Lobby(): JSX.Element {
                       </div>
                     )}
 
-                    <div
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: isMobile ? 4 : 6,
-                        padding: isMobile ? '4px 8px' : '6px 12px',
-                        borderRadius: 100,
-                        fontSize: isMobile ? 10 : 11,
-                        fontWeight: 800,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.12em',
-                        background: p.isReady ? 'rgba(75,255,84,0.12)' : 'rgba(255,255,255,0.04)',
-                        color: p.isReady ? 'var(--lime-300)' : 'var(--fg-tertiary)',
-                        border: `1px solid ${p.isReady ? 'var(--lime-300)' : 'var(--border-default)'}`,
-                        boxShadow: p.isReady ? '0 0 12px rgba(75,255,84,0.25)' : 'none',
-                        transition: 'all 140ms var(--ease-out)',
-                        flexShrink: 0,
-                        marginLeft: 'auto',
-                      }}
-                    >
-                      {p.isReady ? <Check size={11} /> : <Clock size={11} />}
-                      {p.isReady ? 'Ready' : 'Waiting'}
-                    </div>
+                    {!isTournament && (
+                      <div
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: isMobile ? 4 : 6,
+                          padding: isMobile ? '4px 8px' : '6px 12px',
+                          borderRadius: 100,
+                          fontSize: isMobile ? 10 : 11,
+                          fontWeight: 800,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.12em',
+                          background: p.isReady ? 'rgba(75,255,84,0.12)' : 'rgba(255,255,255,0.04)',
+                          color: p.isReady ? 'var(--lime-300)' : 'var(--fg-tertiary)',
+                          border: `1px solid ${p.isReady ? 'var(--lime-300)' : 'var(--border-default)'}`,
+                          boxShadow: p.isReady ? '0 0 12px rgba(75,255,84,0.25)' : 'none',
+                          transition: 'all 140ms var(--ease-out)',
+                          flexShrink: 0,
+                          marginLeft: 'auto',
+                        }}
+                      >
+                        {p.isReady ? <Check size={11} /> : <Clock size={11} />}
+                        {p.isReady ? 'Ready' : 'Waiting'}
+                      </div>
+                    )}
                   </div>
                 );
               })
@@ -538,145 +551,149 @@ export default function Lobby(): JSX.Element {
 
           {/* ── Right sidebar ──────────────────────────────────────────── */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 20 }}>
-            {/* Settings panel */}
-            <Panel style={{ padding: isMobile ? 14 : 20, overflow: 'visible' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                <Settings size={14} color="var(--accent-yellow)" />
-                <h3
-                  style={{
-                    margin: 0,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    color: 'var(--fg-primary)',
-                    letterSpacing: '0.04em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Settings
-                </h3>
-              </div>
-              <SettingRow label="Grid" value={gridSize ? `${gridSize} × ${gridSize}` : '—'} />
-              <SettingRow
-                label="Mode"
-                value={
-                  gameMode === GameMode.TEAM
-                    ? 'Red vs Blue'
-                    : gameMode === GameMode.SOLO
-                      ? 'Solo'
-                      : '—'
-                }
-              />
-              <SettingRow label="Timer" value={durationSeconds ? `${durationSeconds}s` : '—'} />
-              <SettingRow
-                label="Max"
-                value={maxPlayers ? `${maxPlayers} players` : '—'}
-                last={!isHost}
-              />
-
-              {isHost && (
-                <div
-                  style={{
-                    marginTop: 16,
-                    paddingTop: 16,
-                    borderTop: '1px solid var(--border-subtle)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 12,
-                  }}
-                >
-                  <p
+            {/* Settings panel — hidden for tournament matches */}
+            {!isTournament && (
+              <Panel style={{ padding: isMobile ? 14 : 20, overflow: 'visible' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                  <Settings size={14} color="var(--accent-yellow)" />
+                  <h3
                     style={{
                       margin: 0,
-                      fontSize: 11,
-                      color: 'var(--accent-yellow)',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.12em',
+                      fontSize: 14,
                       fontWeight: 700,
+                      color: 'var(--fg-primary)',
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
                     }}
                   >
-                    Edit Config
-                  </p>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    {([GameMode.SOLO, GameMode.TEAM] as const).map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => emitUpdate({ gameMode: m })}
-                        style={{
-                          flex: 1,
-                          padding: '6px 4px',
-                          borderRadius: 6,
-                          border: `1px solid ${gameMode === m ? 'var(--accent-yellow)' : 'var(--border-default)'}`,
-                          background: gameMode === m ? 'rgba(253,235,86,0.08)' : 'transparent',
-                          color: gameMode === m ? 'var(--accent-yellow)' : 'var(--fg-tertiary)',
-                          fontFamily: 'var(--font-ui)',
-                          fontSize: 11,
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {m === GameMode.SOLO ? 'Solo' : 'Team'}
-                      </button>
-                    ))}
-                  </div>
-                  <div>
-                    <p style={{ margin: '0 0 6px', fontSize: 10, color: 'var(--fg-tertiary)' }}>
-                      Board: {gridSize ?? 12}×{gridSize ?? 12}
+                    Settings
+                  </h3>
+                </div>
+                <SettingRow label="Grid" value={gridSize ? `${gridSize} × ${gridSize}` : '—'} />
+                <SettingRow
+                  label="Mode"
+                  value={
+                    gameMode === GameMode.TEAM
+                      ? 'Red vs Blue'
+                      : gameMode === GameMode.SOLO
+                        ? 'Solo'
+                        : '—'
+                  }
+                />
+                <SettingRow label="Timer" value={durationSeconds ? `${durationSeconds}s` : '—'} />
+                <SettingRow
+                  label="Max"
+                  value={maxPlayers ? `${maxPlayers} players` : '—'}
+                  last={!isHost}
+                />
+
+                {isHost && (
+                  <div
+                    style={{
+                      marginTop: 16,
+                      paddingTop: 16,
+                      borderTop: '1px solid var(--border-subtle)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 12,
+                    }}
+                  >
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: 11,
+                        color: 'var(--accent-yellow)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.12em',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Edit Config
                     </p>
-                    <input
-                      type="range"
-                      min={5}
-                      max={50}
-                      value={gridSize ?? 12}
-                      onChange={(e) => emitUpdate({ gridSize: Number(e.target.value) })}
-                      style={{ width: '100%', accentColor: 'var(--accent-yellow)' }}
-                    />
-                  </div>
-                  <div>
-                    <p style={{ margin: '0 0 6px', fontSize: 10, color: 'var(--fg-tertiary)' }}>
-                      Duration
-                    </p>
-                    <div style={{ display: 'flex', gap: 4 }}>
-                      {[30, 60, 90, 120].map((d) => (
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      {([GameMode.SOLO, GameMode.TEAM] as const).map((m) => (
                         <button
-                          key={d}
+                          key={m}
                           type="button"
-                          onClick={() => emitUpdate({ durationSeconds: d })}
+                          onClick={() => emitUpdate({ gameMode: m })}
                           style={{
                             flex: 1,
-                            padding: '4px 0',
+                            padding: '6px 4px',
                             borderRadius: 6,
-                            border: `1px solid ${durationSeconds === d ? 'var(--accent-yellow)' : 'var(--border-default)'}`,
-                            background:
-                              durationSeconds === d ? 'rgba(253,235,86,0.08)' : 'transparent',
-                            color:
-                              durationSeconds === d ? 'var(--accent-yellow)' : 'var(--fg-tertiary)',
+                            border: `1px solid ${gameMode === m ? 'var(--accent-yellow)' : 'var(--border-default)'}`,
+                            background: gameMode === m ? 'rgba(253,235,86,0.08)' : 'transparent',
+                            color: gameMode === m ? 'var(--accent-yellow)' : 'var(--fg-tertiary)',
                             fontFamily: 'var(--font-ui)',
-                            fontSize: 10,
+                            fontSize: 11,
+                            fontWeight: 700,
                             cursor: 'pointer',
                           }}
                         >
-                          {d}s
+                          {m === GameMode.SOLO ? 'Solo' : 'Team'}
                         </button>
                       ))}
                     </div>
+                    <div>
+                      <p style={{ margin: '0 0 6px', fontSize: 10, color: 'var(--fg-tertiary)' }}>
+                        Board: {gridSize ?? 12}×{gridSize ?? 12}
+                      </p>
+                      <input
+                        type="range"
+                        min={5}
+                        max={50}
+                        value={gridSize ?? 12}
+                        onChange={(e) => emitUpdate({ gridSize: Number(e.target.value) })}
+                        style={{ width: '100%', accentColor: 'var(--accent-yellow)' }}
+                      />
+                    </div>
+                    <div>
+                      <p style={{ margin: '0 0 6px', fontSize: 10, color: 'var(--fg-tertiary)' }}>
+                        Duration
+                      </p>
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        {[30, 60, 90, 120].map((d) => (
+                          <button
+                            key={d}
+                            type="button"
+                            onClick={() => emitUpdate({ durationSeconds: d })}
+                            style={{
+                              flex: 1,
+                              padding: '4px 0',
+                              borderRadius: 6,
+                              border: `1px solid ${durationSeconds === d ? 'var(--accent-yellow)' : 'var(--border-default)'}`,
+                              background:
+                                durationSeconds === d ? 'rgba(253,235,86,0.08)' : 'transparent',
+                              color:
+                                durationSeconds === d
+                                  ? 'var(--accent-yellow)'
+                                  : 'var(--fg-tertiary)',
+                              fontFamily: 'var(--font-ui)',
+                              fontSize: 10,
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {d}s
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <p style={{ margin: '0 0 6px', fontSize: 10, color: 'var(--fg-tertiary)' }}>
+                        Max: {maxPlayers ?? 6}
+                      </p>
+                      <input
+                        type="range"
+                        min={2}
+                        max={10}
+                        value={maxPlayers ?? 6}
+                        onChange={(e) => emitUpdate({ maxPlayers: Number(e.target.value) })}
+                        style={{ width: '100%', accentColor: 'var(--accent-yellow)' }}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <p style={{ margin: '0 0 6px', fontSize: 10, color: 'var(--fg-tertiary)' }}>
-                      Max: {maxPlayers ?? 6}
-                    </p>
-                    <input
-                      type="range"
-                      min={2}
-                      max={10}
-                      value={maxPlayers ?? 6}
-                      onChange={(e) => emitUpdate({ maxPlayers: Number(e.target.value) })}
-                      style={{ width: '100%', accentColor: 'var(--accent-yellow)' }}
-                    />
-                  </div>
-                </div>
-              )}
-            </Panel>
+                )}
+              </Panel>
+            )}
 
             {/* Ready / Start panel */}
             <Panel style={{ padding: 16, overflow: 'visible' }}>
@@ -809,6 +826,58 @@ export default function Lobby(): JSX.Element {
           </div>
         </div>
       </div>
+      {countdown !== null && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.85)',
+            zIndex: 200,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 'var(--sp-4)',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--fs-sm)',
+              color: 'var(--fg-tertiary)',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Match starting in
+          </span>
+          <span
+            key={countdown}
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(80px, 20vw, 160px)',
+              fontWeight: 900,
+              color: countdown <= 2 ? 'var(--fire-red)' : 'var(--accent-yellow)',
+              lineHeight: 1,
+              letterSpacing: '-0.02em',
+              animation: 'countdown-pop 0.9s var(--ease-out) both',
+            }}
+          >
+            {countdown}
+          </span>
+          <span
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--fs-base)',
+              color: 'var(--fg-muted)',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Get ready!
+          </span>
+        </div>
+      )}
     </Shell>
   );
 }

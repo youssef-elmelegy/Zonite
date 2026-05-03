@@ -9,4 +9,5 @@ export interface Player {
   score: number;
   /** Hex color for solo-mode display. Empty string in team mode (team color is used instead). */
   color: string;
+  avatarUrl?: string | null;
 }

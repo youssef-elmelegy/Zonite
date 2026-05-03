@@ -1,5 +1,11 @@
 /* animations.css — global keyframes + reduced-motion guards + range-input thumb */
 
+@keyframes countdown-pop {
+  0% { transform: scale(1.6); opacity: 0; }
+  40% { transform: scale(0.95); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 /* Contract: specs/003-design-handoff/data-model.md §Animation */
 
 /* =========================================================================

@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { KeyboardEvent, MouseEvent } from 'react';
 import styles from './GridCell.module.css';
 
 export type CellState = 'empty' | 'own' | 'opponent' | 'disabled';
@@ -37,6 +37,13 @@ export const GridCell = ({
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    // Block Enter/Space from triggering claims — keyboard navigation is a cheat vector
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+    }
+  };
+
   const handleMouseEnter = () => {
     if (onHover) onHover(id);
   };
@@ -60,9 +67,11 @@ export const GridCell = ({
       className={`${styles.cell} ${styles[state]} ${justClaimed ? styles.justClaimed : ''}`}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
+      onKeyDown={handleKeyDown}
       aria-label={`Cell ${row}-${col}: ${state}`}
       data-row={row}
       data-col={col}
+      tabIndex={-1}
       disabled={state === 'disabled'}
       style={inlineStyle}
     >

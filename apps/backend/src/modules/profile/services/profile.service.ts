@@ -184,6 +184,15 @@ export class ProfileService {
     }
   }
 
+  async getAvatarUrl(userId: string): Promise<string | null> {
+    const row = await db
+      .select({ profileImage: users.profileImage })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    return row[0]?.profileImage ?? null;
+  }
+
   async getProfileInfo(userId: string): Promise<SuccessResponse<GetProfileInfoDto>> {
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),

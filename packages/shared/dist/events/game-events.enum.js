@@ -8,5 +8,7 @@ export const GameEvents = {
     REQUEST_STATE: 'request_state',
     RESET_GAME: 'reset_game',
     EXCEPTION: 'exception',
+    GAME_COUNTDOWN: 'game_countdown',
+    TOURNAMENT_DRAW_REMATCH: 'tournament_draw_rematch',
 };
 //# sourceMappingURL=game-events.enum.js.map

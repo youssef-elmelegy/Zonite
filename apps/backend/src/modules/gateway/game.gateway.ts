@@ -27,6 +27,7 @@ import { ResetGameDto } from './dto/reset-game.dto';
 /** Backend-only lobby player — extends the wire LobbyPlayer with socketId. */
 interface InternalLobbyPlayer extends LobbyPlayer {
   socketId: string;
+  avatarUrl: string | null;
 }
 
 /** Per-socket context stored for disconnect cleanup. */
@@ -175,6 +176,11 @@ export class GameGateway implements OnGatewayDisconnect {
     const teamColor =
       rosterColor ?? this.assignTeamColor(room.gameMode as GameMode, lobbyPlayers, user.id);
 
+    const avatarUrl =
+      existing?.avatarUrl !== undefined
+        ? existing.avatarUrl
+        : await this.profileService.getAvatarUrl(user.id);
+
     const lobbyPlayer: InternalLobbyPlayer = {
       id: user.id,
       fullName,
@@ -183,7 +189,8 @@ export class GameGateway implements OnGatewayDisconnect {
       isReady: isHost ? true : (existing?.isReady ?? false),
       isHost,
       socketId: client.id,
-    } as InternalLobbyPlayer;
+      avatarUrl,
+    };
 
     lobbyPlayers.set(user.id, lobbyPlayer);
     this.lobby.set(room.code, lobbyPlayers);
@@ -338,6 +345,7 @@ export class GameGateway implements OnGatewayDisconnect {
         color: lp.color,
         score: 0,
         socketId: lp.socketId,
+        avatarUrl: lp.avatarUrl,
       };
       i++;
     }
@@ -437,44 +445,74 @@ export class GameGateway implements OnGatewayDisconnect {
         color,
         score: 0,
         socketId: lp.socketId,
+        avatarUrl: lp.avatarUrl,
       };
       soloIdx++;
     }
 
+    const runCountdown = (): Promise<void> =>
+      new Promise<void>((resolve) => {
+        let count = 5;
+        const tick = () => {
+          this.server.to(room.code).emit(GameEvents.GAME_COUNTDOWN, { count });
+          count--;
+          if (count < 0) resolve();
+          else setTimeout(tick, 1000);
+        };
+        tick();
+      });
+
+    const startRound = async (durationSeconds: number): Promise<void> => {
+      const roundState = this.gameStateService.startGame(
+        { ...room, durationSeconds, status: 'PLAYING' } as never,
+        playerMap,
+        {
+          onTick: (state) => {
+            this.server
+              .to(room.code)
+              .emit(GameEvents.GAME_TICK, { remaining: state.remainingSeconds });
+          },
+          onGameOver: async (results) => {
+            if (results.isDraw) {
+              // Notify clients a draw rematch is starting, reset scores, run a 30s round.
+              this.server.to(room.code).emit(GameEvents.TOURNAMENT_DRAW_REMATCH, {});
+              for (const p of Object.values(playerMap)) {
+                p.score = 0;
+              }
+              await runCountdown();
+              await startRound(30);
+              return;
+            }
+            try {
+              await this.roomsService.transitionToFinished(room.code);
+              await this.profileService.recordMatchResults(results, room.id);
+            } catch (err) {
+              this.logger.error(
+                `Failed to persist match results for tournament room ${room.code}: ${(err as Error).message}`,
+                (err as Error).stack,
+              );
+            }
+            for (const playerId of Object.keys(playerMap)) {
+              clearTimeout(this.disconnectTimers.get(playerId));
+              this.disconnectTimers.delete(playerId);
+            }
+            this.server.to(room.code).emit(GameEvents.GAME_OVER, results);
+            this.lobby.delete(room.code);
+            this.logger.log(`Tournament game over for room ${room.code}`);
+          },
+        },
+      );
+
+      this.lobby.delete(room.code);
+      this.server.to(room.code).emit(GameEvents.GAME_STARTED, roundState);
+    };
+
+    // Initial 5-second prep countdown before the first round.
+    await runCountdown();
+
     await this.roomsService.transitionToPlaying(room.code);
 
-    const initialState = this.gameStateService.startGame(
-      { ...room, status: 'PLAYING' } as never,
-      playerMap,
-      {
-        onTick: (state) => {
-          this.server
-            .to(room.code)
-            .emit(GameEvents.GAME_TICK, { remaining: state.remainingSeconds });
-        },
-        onGameOver: async (results) => {
-          try {
-            await this.roomsService.transitionToFinished(room.code);
-            await this.profileService.recordMatchResults(results, room.id);
-          } catch (err) {
-            this.logger.error(
-              `Failed to persist match results for tournament room ${room.code}: ${(err as Error).message}`,
-              (err as Error).stack,
-            );
-          }
-          for (const playerId of Object.keys(playerMap)) {
-            clearTimeout(this.disconnectTimers.get(playerId));
-            this.disconnectTimers.delete(playerId);
-          }
-          this.server.to(room.code).emit(GameEvents.GAME_OVER, results);
-          this.lobby.delete(room.code);
-          this.logger.log(`Tournament game over for room ${room.code}`);
-        },
-      },
-    );
-
-    this.lobby.delete(room.code);
-    this.server.to(room.code).emit(GameEvents.GAME_STARTED, initialState);
+    await startRound(room.durationSeconds);
     this.logger.log(`Tournament match started for room ${room.code}`);
   }
 
@@ -626,6 +664,7 @@ export class GameGateway implements OnGatewayDisconnect {
       color: p.color,
       isReady: p.isReady,
       isHost: p.isHost,
+      avatarUrl: p.avatarUrl,
     };
   }
 

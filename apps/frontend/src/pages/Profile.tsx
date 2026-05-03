@@ -790,10 +790,23 @@ export default function Profile(): JSX.Element {
                     userSelect: 'none',
                     marginLeft: 4,
                     opacity: 0.9,
-                    transition: 'all 120ms ease',
+                    transition: 'color 120ms ease',
+                    display: 'inline-grid',
+                    whiteSpace: 'nowrap',
                   }}
                 >
-                  {copied ? 'Copied!' : `@${profile?.userName}`}
+                  <span style={{ gridArea: '1 / 1', visibility: copied ? 'hidden' : 'visible' }}>
+                    @{profile?.userName}
+                  </span>
+                  <span
+                    style={{
+                      gridArea: '1 / 1',
+                      visibility: copied ? 'visible' : 'hidden',
+                      textAlign: 'left',
+                    }}
+                  >
+                    Copied!
+                  </span>
                 </span>
                 <div
                   title={`${tier.name} tier · levels ${tier.min}–${tier.max}`}

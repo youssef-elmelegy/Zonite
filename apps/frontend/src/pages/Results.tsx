@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Trophy, Users, LayoutGrid, RefreshCw, ArrowLeft, Crown } from 'lucide-react';
+import { Trophy, Users, LayoutGrid, ArrowLeft, Crown } from 'lucide-react';
 import { useGameStore } from '../store/game.store';
 import { useRoomStore } from '../store/room.store';
 import { useSocket } from '../hooks/useSocket';
 import { useGameState } from '../hooks/useGameState';
 import { useAuth } from '../hooks/useAuth';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { GameEvents, GameMode, TeamColor } from '../shared';
+import { GameMode, TeamColor } from '../shared';
 import { resolveSoloColor } from '../utils/playerColor';
 
 export default function Results(): JSX.Element {
@@ -19,12 +18,11 @@ export default function Results(): JSX.Element {
   const size = useGameStore((s) => s.size);
   const isDraw = useGameStore((s) => s.isDraw);
   const gameMode = useRoomStore((s) => s.gameMode);
-  const roomCode = useRoomStore((s) => s.roomCode);
-  const [waitingReset, setWaitingReset] = useState(false);
+  const gameRoomCode = useGameStore((s) => s.roomCode);
   const { isMobile, isTablet } = useWindowSize();
   const isNarrow = isMobile || isTablet;
 
-  const rc = roomCode ?? code ?? '';
+  const rc = gameRoomCode || code || '';
   const socket = useSocket(rc);
   const { results: resultsRef } = useGameState(socket);
   void resultsRef;
@@ -78,11 +76,6 @@ export default function Results(): JSX.Element {
     winnerSub = top
       ? `${top.score} blocks · ${Math.round((top.score / totalCells) * 100)}% of the board`
       : '';
-  }
-
-  function handlePlayAgain() {
-    setWaitingReset(true);
-    socket.emit(GameEvents.RESET_GAME, { roomCode: rc });
   }
 
   function handleBackHome() {
@@ -284,7 +277,9 @@ export default function Results(): JSX.Element {
                         width: isMobile ? 30 : 40,
                         height: isMobile ? 30 : 40,
                         borderRadius: '50%',
-                        background: `linear-gradient(135deg, ${color}, rgba(0,0,0,0.4))`,
+                        background: p.avatarUrl
+                          ? 'transparent'
+                          : `linear-gradient(135deg, ${color}, rgba(0,0,0,0.4))`,
                         border: `2px solid ${color}`,
                         display: 'flex',
                         alignItems: 'center',
@@ -292,9 +287,18 @@ export default function Results(): JSX.Element {
                         fontSize: isMobile ? 12 : 14,
                         fontWeight: 800,
                         color: 'var(--fg-primary)',
+                        overflow: 'hidden',
                       }}
                     >
-                      {p.fullName[0]?.toUpperCase()}
+                      {p.avatarUrl ? (
+                        <img
+                          src={p.avatarUrl}
+                          alt={p.fullName}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        p.fullName[0]?.toUpperCase()
+                      )}
                     </div>
                     <div style={{ minWidth: 0 }}>
                       <div
@@ -519,32 +523,6 @@ export default function Results(): JSX.Element {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <button
-                type="button"
-                disabled={waitingReset}
-                onClick={handlePlayAgain}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  padding: '14px',
-                  borderRadius: 8,
-                  background: waitingReset ? 'rgba(255,255,255,0.04)' : 'var(--accent-yellow)',
-                  border: waitingReset ? '1px solid var(--border-default)' : 'none',
-                  color: waitingReset ? 'var(--fg-muted)' : 'var(--ink-900)',
-                  fontFamily: 'var(--font-ui)',
-                  fontWeight: 700,
-                  fontSize: 15,
-                  cursor: waitingReset ? 'not-allowed' : 'pointer',
-                  boxShadow: waitingReset ? 'none' : '0 0 20px rgba(253,235,86,0.35)',
-                  transition: 'all 140ms var(--ease-out)',
-                }}
-              >
-                <RefreshCw size={16} />
-                {waitingReset ? 'Waiting for host…' : 'Play Again'}
-              </button>
               <button
                 type="button"
                 onClick={handleBackHome}
