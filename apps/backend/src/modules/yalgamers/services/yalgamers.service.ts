@@ -6,7 +6,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { and, eq, inArray } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { db } from '@/db';
 import { matchPlayerRecords, rooms, users } from '@/db/schema';
 import type { TournamentRosterTeam } from '@/db/schema';
@@ -21,6 +21,7 @@ import {
   MatchResultsDataDto,
   MatchStatus,
   MatchTeamDto,
+  MatchTeamResultDto,
   StartMatchDataDto,
 } from '../dto';
 
@@ -257,29 +258,48 @@ export class YalgamersService {
 
     if (status !== 'completed') {
       return successResponse(
-        { matchId: room.id, status, winner: null },
+        { matchId: room.id, status, winner: null, teams: [] },
         'Match results fetched',
         HttpStatus.OK,
       );
     }
 
-    const winnerRows = await db
-      .select({ userId: matchPlayerRecords.userId })
+    const records = await db
+      .select({
+        userId: matchPlayerRecords.userId,
+        outcome: matchPlayerRecords.outcome,
+        blocksClaimed: matchPlayerRecords.blocksClaimed,
+      })
       .from(matchPlayerRecords)
-      .where(and(eq(matchPlayerRecords.roomId, room.id), eq(matchPlayerRecords.outcome, 'WIN')));
+      .where(eq(matchPlayerRecords.roomId, room.id));
 
-    if (winnerRows.length === 0) {
+    const pointsByUserId = new Map<string, number>(records.map((r) => [r.userId, r.blocksClaimed]));
+
+    const roster = room.tournamentRoster ?? [];
+    const teams: MatchTeamResultDto[] = roster.map((team) => {
+      const players = team.players.map((p) => ({
+        userName: p.userName,
+        points: pointsByUserId.get(p.userId) ?? 0,
+      }));
+      const totalPoints = players.reduce((sum, p) => sum + p.points, 0);
+      return {
+        teamId: team.teamId,
+        teamName: team.teamName,
+        totalPoints,
+        players,
+      };
+    });
+
+    const winnerRecord = records.find((r) => r.outcome === 'WIN');
+    if (!winnerRecord) {
       return successResponse(
-        { matchId: room.id, status, winner: null },
+        { matchId: room.id, status, winner: null, teams },
         'Match results fetched',
         HttpStatus.OK,
       );
     }
 
-    const winnerUserId = winnerRows[0].userId;
-    const winningTeam = (room.tournamentRoster ?? []).find((t) =>
-      t.players.some((p) => p.userId === winnerUserId),
-    );
+    const winningTeam = roster.find((t) => t.players.some((p) => p.userId === winnerRecord.userId));
     if (!winningTeam) {
       throw new InternalServerErrorException(
         errorResponse('Winner could not be mapped back to a roster team'),
@@ -295,6 +315,7 @@ export class YalgamersService {
           teamName: winningTeam.teamName,
           players: winningTeam.players.map((p) => p.userName),
         },
+        teams,
       },
       'Match results fetched',
       HttpStatus.OK,

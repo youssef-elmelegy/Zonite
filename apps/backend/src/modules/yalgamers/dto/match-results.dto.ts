@@ -14,6 +14,31 @@ export class MatchWinnerDto {
   players: string[];
 }
 
+export class MatchPlayerResultDto {
+  @ApiProperty({ example: 'player1' })
+  userName: string;
+
+  @ApiProperty({ example: 12, description: 'Blocks claimed by the player during the match' })
+  points: number;
+}
+
+export class MatchTeamResultDto {
+  @ApiProperty({ example: 'team_A' })
+  teamId: string;
+
+  @ApiProperty({ example: 'Alpha Squad' })
+  teamName: string;
+
+  @ApiProperty({
+    example: 23,
+    description: 'Sum of points across all players on the team (blocks claimed)',
+  })
+  totalPoints: number;
+
+  @ApiProperty({ type: [MatchPlayerResultDto] })
+  players: MatchPlayerResultDto[];
+}
+
 export class MatchResultsDataDto {
   @ApiProperty({ example: 'm_xyz789' })
   matchId: string;
@@ -27,6 +52,13 @@ export class MatchResultsDataDto {
     description: 'null when status is pending or running; team object when status is completed',
   })
   winner: MatchWinnerDto | null;
+
+  @ApiProperty({
+    type: [MatchTeamResultDto],
+    description:
+      'Per-team, per-player points. Empty array while status is pending or running; populated when status is completed.',
+  })
+  teams: MatchTeamResultDto[];
 }
 
 export class MatchResultsResponseDto {
